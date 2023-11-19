@@ -1,0 +1,188 @@
+package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
+
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Contact;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+
+@Route(value = "statut", layout = MainLayout.class)
+@PageTitle("Statut | M3 Application")
+public class StatutView extends VerticalLayout {
+
+    Grid<StatutOperateur> grid = new Grid<>(StatutOperateur.class);
+    TextField filterText = new TextField();
+    StatutForm form;
+    CrmService service;
+
+    public StatutView(CrmService service) {
+        this.service = service;
+        addClassName("contact-view");
+        setSizeFull();
+        configureGrid();
+        configureForm();
+
+        add(getToolbar(), getContent());
+        updateList();
+        closeEditor();
+    }
+
+    private Component getContent() {
+        HorizontalLayout content = new HorizontalLayout(grid, form);
+        content.setFlexGrow(2, grid);
+        content.setFlexGrow(1, form);
+        content.addClassNames("content");
+        content.setSizeFull();
+        return content;
+    }
+
+    private void configureForm() {
+        form = new StatutForm(service.findAllOperateurs(null) , service.findAllStatuses());
+        form.setWidth("25em");
+        form.addSaveListener(this::saveStatut);
+        form.addDeleteListener(this::deleteStatut);
+        form.addCloseListener(e -> closeEditor());
+    }
+    private void saveStatut(StatutForm.SaveEvent event) {
+        service.saveStatutOperateur(event.getStatutOperateur());
+        updateList();
+        closeEditor();
+    }
+
+    private void deleteStatut(StatutForm.DeleteEvent event) {
+        service.deleteStatutOperateur(event.getStatutOperateur());
+        updateList();
+        closeEditor();
+    }
+
+    private void configureGrid() {
+        grid.addClassNames("statut-operateur-grid");
+        grid.setSizeFull();
+        //on retire les colonnes inutiles
+        grid.removeColumnByKey("id");
+        grid.removeColumnByKey("statut");
+        grid.removeColumnByKey("operateur");
+        grid.removeColumnByKey("version");
+        grid.removeColumnByKey("debut");
+        grid.removeColumnByKey("fin");
+        grid.addColumn(statutOperateur -> {
+                    Operateur operateur = statutOperateur.getOperateur();
+                    return (operateur != null) ? operateur.getNom() : "";
+                })
+                .setHeader("Nom").setSortable(true);
+        grid.addColumn(statutOperateur -> {
+                    Operateur operateur = statutOperateur.getOperateur();
+                    return (operateur != null) ? operateur.getPrenom() : "";
+                })
+                .setHeader("Prénom").setSortable(true);
+        grid.addColumn(statutOperateur -> {
+                    Statut statut = statutOperateur.getStatut();
+                    return (statut != null) ? statut.getName() : "";
+                })
+                .setHeader("Nom du Statut").setSortable(true);
+        /*
+        grid.addColumn(statutOperateur -> {
+                    Statut statut = statutOperateur.getStatut();
+                    if (statut != null) {
+                        Span badge = new Span(createIconForStatut(statut), new Span(statut.getName()));
+                        badge.getElement().getThemeList().add("badge");
+                        return badge;
+                    } else {
+                        return new Span(); // Retourne un Span vide si le statut est null
+                    }
+                }).setHeader("Nom du Statut").setSortable(true)
+                .setKey("statutBadgeColumn")
+                .setFlexGrow(0)
+                .setWidth("150px") // Ajuster la largeur au besoin
+                .setResizable(true);
+        */
+        //on ajoute les dates en les formatant
+        grid.addColumn(statutOperateur -> {
+                    return statutOperateur.getDebut().toString();
+                })
+                .setHeader("Date de début").setSortable(true);
+        grid.addColumn(statutOperateur -> {
+                    return statutOperateur.getFin().toString();
+                })
+                .setHeader("Date de fin").setSortable(true);
+        grid.getColumns().forEach(col -> col.setAutoWidth(true));
+        grid.asSingleSelect().addValueChangeListener(event ->
+                editStatutOperateur(event.getValue()));
+    }
+
+    private HorizontalLayout getToolbar() {
+        filterText.setPlaceholder("Filter by name...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.addValueChangeListener(e -> updateList());
+
+        Button addContactButton = new Button("Ajouter statut");
+        addContactButton.addClickListener(click -> addStatutOperateur());
+        var toolbar = new HorizontalLayout(filterText, addContactButton);
+        toolbar.addClassName("toolbar");
+        return toolbar;
+    }
+    public void editStatutOperateur(StatutOperateur statutOperateur) {
+        if (statutOperateur == null) {
+            closeEditor();
+        } else {
+            form.setStatut(statutOperateur);
+            form.setVisible(true);
+            addClassName("editing");
+        }
+    }
+
+    private void closeEditor() {
+        form.setStatut(null);
+        form.setVisible(false);
+        removeClassName("editing");
+    }
+
+    private void addStatutOperateur() {
+        grid.asSingleSelect().clear();
+        editStatutOperateur(new StatutOperateur());
+    }
+
+    private void updateList() {
+        grid.setItems(service.findAllStatutOperateurs(filterText.getValue()));
+    }
+
+    // Créer une icône pour le statut
+    //TODO : à réparer
+    /*
+    private Icon createIconForStatut(Statut statut) {
+        if (statut.getName().equals("malade")) {
+            return createIcon(VaadinIcon.USER_HEART);
+        } else if (statut.getName().equals("absent")) {
+            return createIcon(VaadinIcon.CLOCK);
+        } else if (statut.getName().equals("en congé")) {
+            return createIcon(VaadinIcon.CALENDAR_ENVELOPE);
+        } else if (statut.getName().equals("présent")) {
+            return createIcon(VaadinIcon.CHECK);
+        }
+        else {
+            // Gérer les icônes pour d'autres statuts si nécessaire
+            return createIcon(VaadinIcon.INFO_CIRCLE);
+        }
+    }
+    private Icon createIcon(VaadinIcon vaadinIcon) {
+        Icon icon = vaadinIcon.create();
+        icon.getStyle().set("padding", "var(--lumo-space-xs");
+        return icon;
+    }
+
+     */
+
+}

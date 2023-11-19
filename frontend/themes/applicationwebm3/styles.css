@@ -1,0 +1,7 @@
+@import "theme-editor.css";
+@media all and (max-width: 1100px) {
+    .operateur-view.editing .toolbar,
+    .operateur-view.editing .operateur-grid {
+        display: none;
+    }
+}
