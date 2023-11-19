@@ -2,7 +2,7 @@
 
 # Projet M3 - BDD et Gestion d'un atelier
 
-Voici le projet Github de VIRQUIN Rudy et TRENCHANT Evan pour le S3 d'Informatique. Ce projet réalisé à l'aide de JAVA, MySQL et Vaadin a pour but de réaliser un site web pour gérer l'ensemble de la chaîne de production d'un atelier de fabrication.
+Voici le projet Github de VIRQUIN Rudy, TRENCHANT Evan et TROULLIER Lael pour le S3 d'Informatique. Ce projet réalisé à l'aide de JAVA, MySQL et Vaadin a pour but de réaliser un site web pour gérer l'ensemble de la chaîne de production d'un atelier de fabrication.
 
 ## Installation
 
@@ -34,15 +34,8 @@ Pour sauvegarder les modifications sur le GitHub : `Team/commit` puis `Team/Remo
 	- Si l’on a également l’historique de production des exemplaires, on peut faire pas mal de statistiques sur le taux d’occupation des machines, éventuellement les relations entre la productions de certains produits et certaines pannes...
 	- L’entreprise a un certain nombre d’exemplaires de différent produits à fabriquer durant une période donnée (par exemple un jour). On voudrait calculer un plan global de fabrication : quel opérateur, sur quel poste, utilise quelle machine pour faire quelle opération effective et à quel moment pour que ces exemplaires soient effectivement fabriqués.## Color Reference
 
-| Couleur             | Code Hex                                                                |
-| ----------------- | ------------------------------------------------------------------ |
-| Example Color | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) #0a192f |
-| Example Color | ![#f8f8f8](https://via.placeholder.com/10/f8f8f8?text=+) #f8f8f8 |
-| Example Color | ![#00b48a](https://via.placeholder.com/10/00b48a?text=+) #00b48a |
-| Example Color | ![#00d1a0](https://via.placeholder.com/10/00b48a?text=+) #00d1a0 |
-
 
 ## Auteurs
-
+- Troullier Lael
 - [@Evan Trenchant](https://github.com/EvanTrenchant)
 - [@Rudy Virquin](https://github.com/Lypris)
