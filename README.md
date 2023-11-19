@@ -2,7 +2,7 @@
 
 # Projet M3 - BDD et Gestion d'un atelier
 
-Voici le projet Github de VIRQUIN Rudy, TRENCHANT Evan et TROULLIER Lael pour le S3 d'Informatique. Ce projet réalisé à l'aide de JAVA, MySQL et Vaadin a pour but de réaliser un site web pour gérer l'ensemble de la chaîne de production d'un atelier de fabrication.
+Voici le projet Github de VIRQUIN Rudy, TRENCHANT Evan et TROULLIER Laël pour le Semestre 3 d'Informatique. Ce projet réalisé à l'aide de JAVA, MySQL et Vaadin a pour but de réaliser un site web pour gérer l'ensemble de la chaîne de production d'un atelier de fabrication.
 
 ## Installation
 
@@ -10,6 +10,7 @@ Ce projet est basé sur **Java JDK 21**
 
 Pour actualiser le projet: `Team/Remote/Pull to Uptstream`
 Pour sauvegarder les modifications sur le GitHub : `Team/commit` puis `Team/Remote/Push to Upstream` 
+
 ## TODO
 
 - Localiser les machines sur un plan de l’entreprise
@@ -36,6 +37,6 @@ Pour sauvegarder les modifications sur le GitHub : `Team/commit` puis `Team/Remo
 
 
 ## Auteurs
-- Troullier Lael
+- Troullier Laël
 - [@Evan Trenchant](https://github.com/EvanTrenchant)
 - [@Rudy Virquin](https://github.com/Lypris)
