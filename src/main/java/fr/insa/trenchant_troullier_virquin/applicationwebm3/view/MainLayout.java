@@ -60,10 +60,11 @@ public class MainLayout extends AppLayout {
 
     public void createDrawer() {
         addToDrawer(new VerticalLayout(
+                new RouterLink("Retour à la vue principal", InitialView.class),
                 new RouterLink("Employés", OperatorView.class),
-                new RouterLink("Vue initiale", InitialView.class),
-                new RouterLink("Contact", ContactView.class),
-                new RouterLink("Statut", StatutView.class)
+                new RouterLink("Etat des employés", StatutView.class),
+                new RouterLink("Machines", MachineView.class),
+                new RouterLink("Etat des Machines", EtatMachineView.class)
         ));
     }
     public SessionInfo getSessionInfo() {

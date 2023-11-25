@@ -24,7 +24,7 @@ import java.util.List;
 
 public class StatutForm extends FormLayout {
     ComboBox<Operateur> operateurComboBox = new ComboBox<>("Opérateur");
-    ComboBox<Statut> status = new ComboBox<>("Statut");
+    ComboBox<Statut> statutComboBox = new ComboBox<>("Statut");
     DateTimePicker debut = new DateTimePicker("Début");
     DateTimePicker fin = new DateTimePicker("Fin");
 
@@ -38,17 +38,31 @@ public class StatutForm extends FormLayout {
         addClassName("Statut-form");
         operateurComboBox.setItems(operateurs);
         operateurComboBox.setItemLabelGenerator(operateur -> operateur.getNom() + " " + operateur.getPrenom());
-        status.setItems(statuts);
-        status.setItemLabelGenerator(Statut::getName);
+        statutComboBox.setItems(statuts);
+        statutComboBox.setItemLabelGenerator(Statut::getName);
 
         add(operateurComboBox,
                 debut,
                 fin,
-                status,
+                statutComboBox,
                 createButtonsLayout());
     }
     public void setStatut(StatutOperateur statutOperateur) {
         binder.setBean(statutOperateur);
+        if (statutOperateur != null){
+            // Récupérer l'opérateur du statutOperateur et le sélectionner dans le ComboBox
+            Operateur operateur = statutOperateur.getOperateur();
+            if (operateur != null) {
+                operateurComboBox.setValue(operateur);
+            }
+
+            // Récupérer le statut du statutOperateur et le sélectionner dans le ComboBox
+            Statut statut = statutOperateur.getStatut();
+            if (statut != null) {
+                statutComboBox.setValue(statut);
+            }
+        }
+
     }
 
     private Component createButtonsLayout() {
@@ -125,7 +139,7 @@ public class StatutForm extends FormLayout {
             }
 
             // Récupérer le statut sélectionné dans le ComboBox
-            Statut selectedStatut = status.getValue();
+            Statut selectedStatut = statutComboBox.getValue();
             if (selectedStatut != null) {
                 statutOperateur.setStatut(selectedStatut);
             } else {

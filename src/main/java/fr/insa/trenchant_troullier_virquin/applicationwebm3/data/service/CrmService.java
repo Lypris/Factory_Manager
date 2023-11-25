@@ -10,7 +10,6 @@ import java.util.List;
 @Service
 public class CrmService {
 
-    private final ContactRepository contactRepository;
     private final StatusRepository statusRepository;
     private final OperateurRepository operateurRepository;
     private final StatutOperateurRepository statutOperateurRepository;
@@ -19,15 +18,13 @@ public class CrmService {
     private final EtatMachineRepository etatMachineRepository;
     private final ConfirmationSuppressionView confirmationView;
 
-    public CrmService(ContactRepository contactRepository,
-                      StatusRepository statusRepository,
+    public CrmService(StatusRepository statusRepository,
                       OperateurRepository operateurRepository,
                       StatutOperateurRepository statutOperateurRepository,
                         MachineRepository machineRepository,
                         EtatPossibleMachineRepository etatPossibleMachineRepository,
                         EtatMachineRepository etatMachineRepository,
                       ConfirmationSuppressionView confirmationView) {
-        this.contactRepository = contactRepository;
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -37,32 +34,9 @@ public class CrmService {
         this.confirmationView = confirmationView;
     }
 
-    //////////////////////////// CONTACT ////////////////////////////
-    public List<Contact> findAllContacts(String stringFilter) {
-        if (stringFilter == null || stringFilter.isEmpty()) {
-            return contactRepository.findAll();
-        } else {
-            return contactRepository.search(stringFilter);
-        }
-    }
 
-    public long countContacts() {
-        return contactRepository.count();
-    }
 
-    public void deleteContact(Contact contact) {
-        contactRepository.delete(contact);
-    }
-
-    public void saveContact(Contact contact) {
-        if (contact == null) {
-            System.err.println("Contact is null. Are you sure you have connected your form to the application?");
-            return;
-        }
-        contactRepository.save(contact);
-    }
-
-    //////////////////////////// STATUT DE CONTACT ////////////////////////////
+    //////////////////////////// STATUT POSSIBLE OPERATEUR////////////////////////////
     public List<Statut> findAllStatuses(){
         return statusRepository.findAll();
     }
