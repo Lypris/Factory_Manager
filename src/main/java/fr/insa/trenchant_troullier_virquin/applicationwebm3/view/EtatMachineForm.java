@@ -9,11 +9,14 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class EtatMachineForm extends FormLayout {
@@ -116,28 +119,49 @@ public class EtatMachineForm extends FormLayout {
     public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
         return addListener(CloseEvent.class, listener);
     }
-
+    public void updateEtatsPossibles(List<EtatPossibleMachine> etatsPossibles) {
+        etats.setItems(etatsPossibles);
+    }
     private void validateAndSave() {
-        if(binder.isValid()) {
-            EtatMachine EtatMachine = binder.getBean();
+        if (binder.isValid()) {
+            EtatMachine etatMachine = binder.getBean();
 
-            // Récupérer l'opérateur sélectionné dans le ComboBox
             Machine selectedMachine = machineComboBox.getValue();
-            if (selectedMachine != null) {
-                EtatMachine.setMachine(selectedMachine);
-            } else {
-                // TODO: Gérer le cas où aucun opérateur n'est sélectionné
-            }
-
-            // Récupérer l'état possible de machine sélectionné dans le ComboBox
             EtatPossibleMachine selectedEtatPossibleMachine = etats.getValue();
-            if (selectedEtatPossibleMachine != null) {
-                EtatMachine.setEtat(selectedEtatPossibleMachine);
-            } else {
-                // TODO : Gérer le cas où aucun EtatMachine n'est sélectionné
+            LocalDateTime debutValue = debut.getValue();
+            LocalDateTime finValue = fin.getValue();
+
+            if (selectedMachine == null) {
+                Notification.show("Veuillez sélectionner une machine", 3000, Notification.Position.MIDDLE);
+                return;
             }
 
-            fireEvent(new SaveEvent(this, EtatMachine));
+            if (selectedEtatPossibleMachine == null) {
+                Notification.show("Veuillez sélectionner un état à appliquer", 3000, Notification.Position.MIDDLE);
+                return;
+            }
+
+            if (debutValue == null || finValue == null) {
+                Notification.show("Veuillez saisir une date de début et une date de fin", 3000, Notification.Position.MIDDLE);
+                return;
+            }
+
+            if (debutValue.isAfter(finValue)) {
+                Notification.show("Veuillez saisir une date de début antérieure à la date de fin", 3000, Notification.Position.MIDDLE);
+                return;
+            }
+
+            // TODO : Vérifier si la machine a déjà un état pour la même période
+
+
+
+            etatMachine.setMachine(selectedMachine);
+            etatMachine.setEtat(selectedEtatPossibleMachine);
+            etatMachine.setDebut(debutValue);
+            etatMachine.setFin(finValue);
+
+            fireEvent(new SaveEvent(this, etatMachine));
         }
     }
+
 }

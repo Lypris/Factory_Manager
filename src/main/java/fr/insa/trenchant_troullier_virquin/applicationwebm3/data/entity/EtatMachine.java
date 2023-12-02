@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 
 @Entity
 public class EtatMachine extends AbstractEntity{
+    @NotNull
     private LocalDateTime debut;
+    @NotNull
     private LocalDateTime fin;
     @NotNull
     @ManyToOne

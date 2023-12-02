@@ -5,6 +5,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.view.ConfirmationSuppressionView;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -166,6 +167,9 @@ public class CrmService {
         }
         etatMachineRepository.save(etatMachine);
     }
+
+
+
     //////////////////////////// ETAT POSSIBLE MACHINE ////////////////////////////
     public List<EtatPossibleMachine> findAllEtatPossibleMachines(){
         return etatPossibleMachineRepository.findAll();

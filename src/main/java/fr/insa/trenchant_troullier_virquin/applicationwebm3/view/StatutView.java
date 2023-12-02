@@ -3,16 +3,24 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 
 @Route(value = "statut", layout = MainLayout.class)
 @PageTitle("Statut | M3 Application")
@@ -88,31 +96,43 @@ public class StatutView extends VerticalLayout {
                     return (statut != null) ? statut.getName() : "";
                 })
                 .setHeader("Nom du Statut").setSortable(true);
-        /*
-        grid.addColumn(statutOperateur -> {
-                    Statut statut = statutOperateur.getStatut();
-                    if (statut != null) {
-                        Span badge = new Span(createIconForStatut(statut), new Span(statut.getName()));
-                        badge.getElement().getThemeList().add("badge");
-                        return badge;
-                    } else {
-                        return new Span(); // Retourne un Span vide si le statut est null
-                    }
-                }).setHeader("Nom du Statut").setSortable(true)
-                .setKey("statutBadgeColumn")
-                .setFlexGrow(0)
-                .setWidth("150px") // Ajuster la largeur au besoin
-                .setResizable(true);
-        */
-        //on ajoute les dates en les formatant
+
+        grid.addColumn(new ComponentRenderer<>(statutOperateur -> {
+                    VaadinIcon icon = IconUtils.determineIconOperateur(statutOperateur.getStatut().getName());
+                    Span badge = new Span(IconUtils.createIcon(icon),
+                            new Span(statutOperateur.getStatut().getName()));
+                    IconUtils.applyStyleForStatut(badge, statutOperateur.getStatut().getName());
+                    return badge;
+                }))
+
+                .setHeader("Statut")
+                .setSortable(true)
+                .setKey("etat")
+                .setComparator(Comparator.comparing(statutOperateur -> statutOperateur.getStatut().getName()))
+                .setFlexGrow(0);
+
+
         grid.addColumn(statutOperateur -> {
                     return statutOperateur.getDebut().toString();
                 })
-                .setHeader("Date de début").setSortable(true);
+                .setHeader("Date de début").setSortable(true)
+                .setComparator(Comparator.comparing(StatutOperateur::getDebut))
+                .setRenderer(new TextRenderer<>(statutOperateur -> {
+                    // Personnalisez le format de date selon vos besoins
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                    return statutOperateur.getDebut().format(formatter);
+                }));
         grid.addColumn(statutOperateur -> {
                     return statutOperateur.getFin().toString();
                 })
-                .setHeader("Date de fin").setSortable(true);
+                .setHeader("Date de fin").setSortable(true)
+                .setComparator(Comparator.comparing(StatutOperateur::getDebut))
+                .setRenderer(new TextRenderer<>(statutOperateur -> {
+                    // Personnalisez le format de date selon vos besoins
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                    return statutOperateur.getDebut().format(formatter);
+                }));
+
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editStatutOperateur(event.getValue()));

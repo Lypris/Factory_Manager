@@ -6,57 +6,50 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatPossibleMachine;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 
 public class EtatPossibleMachineDialog extends Dialog {
 
-    private final TextField descriptionField = new TextField("Description");
-    private final Dialog dialog;
+    TextField des = new TextField("Description");
+
     BeanValidationBinder<EtatPossibleMachine> binder = new BeanValidationBinder<>(EtatPossibleMachine.class);
 
     public EtatPossibleMachineDialog() {
 
-        dialog = new Dialog();
-        dialog.setHeaderTitle("Ajouter un état possible");
-        VerticalLayout dialogLayout = new VerticalLayout(descriptionField);
-        dialog.add(dialogLayout);
-
+        binder.bindInstanceFields(this);
+        addClassName("etatpossiblemachine-form");
+        setHeaderTitle("Ajouter un état possible");
+        VerticalLayout dialogLayout = new VerticalLayout(des);
+        add(dialogLayout);
         Button saveButton = createSaveButton();
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveButton.addClickShortcut(Key.ENTER);
         saveButton.getStyle().set("margin-right", "auto");
-        dialog.getFooter().add(saveButton);
+        getFooter().add(saveButton);
 
-        Button cancelButton = new Button("Cancel", (e) -> dialog.close());
+        Button cancelButton = new Button("Cancel", (e) -> close());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         cancelButton.addClickShortcut(Key.ESCAPE);
-        dialog.getFooter().add(cancelButton);
-
-        binder.forField(descriptionField)
-                .bind(EtatPossibleMachine::getDes, EtatPossibleMachine::setDes);
-
+        getFooter().add(cancelButton);
     }
-
     private Button createSaveButton() {
         return new Button("Save", event -> {
-            String description = descriptionField.getValue();
             // TODO : Ajouter la logique pour sauvegarder la description
-            dialog.close();
+            validateAndSave();
+            close();
         });
     }
 
-    public Dialog getDialog() {
-        return dialog;
+    public void openDialog() {
+        open();
     }
 
-    public void openDialog() {
-        dialog.open();
-    }
+
     // Events
     public static abstract class EtatPossibleMachineDialogEvent extends ComponentEvent<EtatPossibleMachineDialog> {
         private EtatPossibleMachine etat;
@@ -89,8 +82,14 @@ public class EtatPossibleMachineDialog extends Dialog {
         return addListener(EtatPossibleMachineDialog.CloseEvent.class, listener);
     }
     private void validateAndSave() {
-        if(binder.isValid()) {
-            fireEvent(new EtatPossibleMachineDialog.SaveEvent(this, binder.getBean()));
+        if (binder.isValid()) {
+            EtatPossibleMachine etatPossibleMachine = new EtatPossibleMachine(); // Initialisez l'objet si nécessaire
+            binder.writeBeanIfValid(etatPossibleMachine);
+            fireEvent(new EtatPossibleMachineDialog.SaveEvent(this, etatPossibleMachine));
+        } else {
+            // Afficher les erreurs de validation
+            Notification.show("Veuillez remplir tous les champs correctement", 3000, Notification.Position.MIDDLE);
         }
     }
+
 }
