@@ -44,7 +44,7 @@ public class ProductView extends VerticalLayout {
     }
     private void configureForm() {
         form = new ProductForm();
-        form.setWidth("25em");
+        form.setWidth("35em");
         form.addSaveListener(this::saveProduct);
         form.addDeleteListener(this::deleteProduct);
         form.addCloseListener(e -> closeEditor());

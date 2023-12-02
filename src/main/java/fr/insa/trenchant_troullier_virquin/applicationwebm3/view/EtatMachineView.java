@@ -19,7 +19,6 @@ import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatPossibleMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.time.format.DateTimeFormatter;

@@ -20,6 +20,7 @@ public class ProductForm extends FormLayout {
     Button save = new Button("Enregistrer");
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
+    UploadHelper upload = new UploadHelper();
 
     //TODO : Zone pour upload une image, à voir si on peut le faire
     BeanValidationBinder<Produit> binder = new BeanValidationBinder<>(Produit.class);
@@ -31,6 +32,7 @@ public class ProductForm extends FormLayout {
         add(ref,
                 des,
                 prix,
+                upload,
                 createButtonsLayout());
     }
     public void setProduit(Produit produit) {
