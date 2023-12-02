@@ -37,6 +37,6 @@ Pour sauvegarder les modifications sur le GitHub : `Team/commit` puis `Team/Remo
 
 
 ## Auteurs
-- Troullier Laël
+- [@Troullier Laël](https://github.com/ltroullier01)
 - [@Evan Trenchant](https://github.com/EvanTrenchant)
 - [@Rudy Virquin](https://github.com/Lypris)
