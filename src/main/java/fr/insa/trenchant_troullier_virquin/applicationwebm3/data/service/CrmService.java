@@ -2,10 +2,8 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service;
 
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository.*;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.view.ConfirmationSuppressionView;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -17,22 +15,21 @@ public class CrmService {
     private final MachineRepository machineRepository;
     private final EtatPossibleMachineRepository etatPossibleMachineRepository;
     private final EtatMachineRepository etatMachineRepository;
-    private final ConfirmationSuppressionView confirmationView;
+    private final ProduitRepository produitRepository;
 
     public CrmService(StatusRepository statusRepository,
                       OperateurRepository operateurRepository,
                       StatutOperateurRepository statutOperateurRepository,
                         MachineRepository machineRepository,
                         EtatPossibleMachineRepository etatPossibleMachineRepository,
-                        EtatMachineRepository etatMachineRepository,
-                      ConfirmationSuppressionView confirmationView) {
+                        EtatMachineRepository etatMachineRepository,ProduitRepository produitRepositor) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
         this.machineRepository = machineRepository;
         this.etatPossibleMachineRepository = etatPossibleMachineRepository;
         this.etatMachineRepository = etatMachineRepository;
-        this.confirmationView = confirmationView;
+        this.produitRepository = produitRepositor;
     }
 
 
@@ -62,20 +59,12 @@ public class CrmService {
             // No associated statutOperateurs, proceed with deletion
             operateurRepository.delete(operateur);
         } else {
-            // Open confirmation dialog
-            confirmationView.openConfirmationDialog(result -> {
-                if (result) {
-                    // User confirmed the deletion, proceed with deleting associated statutOperateurs and the operateur
-                    deleteAssociatedStatuts(statutOperateurs);
-                    operateurRepository.delete(operateur);
-                } else {
-                    // User canceled the deletion, do nothing
-                }
-            });
+            deleteAssociatedStatuts(statutOperateurs);
+            operateurRepository.delete(operateur);
         }
     }
 
-    private void deleteAssociatedStatuts(List<StatutOperateur> statutOperateurs) {
+    public void deleteAssociatedStatuts(List<StatutOperateur> statutOperateurs) {
         for (StatutOperateur statutOperateur : statutOperateurs) {
             statutOperateurRepository.delete(statutOperateur);
         }
@@ -182,4 +171,28 @@ public class CrmService {
         }
         etatPossibleMachineRepository.save(etatPossibleMachine);
     }
+
+
+    //////////////////////////// PRODUIT ////////////////////////////
+    public List<Produit> findAllProduits(String stringFilter) {
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return produitRepository.findAll();
+        } else {
+            return produitRepository.search(stringFilter);
+        }
+    }
+    public long countProduits() {
+        return produitRepository.count();
+    }
+    public void saveProduit(Produit produit) {
+        if (produit == null) {
+            System.err.println("Produit is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        produitRepository.save(produit);
+    }
+    public void deleteProduit(Produit produit) {
+        produitRepository.delete(produit);
+    }
+
 }
