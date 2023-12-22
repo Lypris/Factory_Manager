@@ -64,7 +64,8 @@ public class MainLayout extends AppLayout {
                 new RouterLink("Employés", OperatorView.class),
                 new RouterLink("Etat des employés", StatutView.class),
                 new RouterLink("Machines", MachineView.class),
-                new RouterLink("Etat des Machines", EtatMachineView.class)
+                new RouterLink("Etat des Machines", EtatMachineView.class),
+                new RouterLink("Product", ProductView.class)
         ));
     }
     public SessionInfo getSessionInfo() {

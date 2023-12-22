@@ -5,6 +5,7 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -12,12 +13,15 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 
+
 public class ProductForm extends FormLayout {
     TextField ref = new TextField("Référence");
     TextField des = new TextField("Description");
     TextField prix = new TextField("Prix");
 
     Button save = new Button("Enregistrer");
+    Button defO = new Button("Définir les opérations");
+
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
     UploadHelper upload = new UploadHelper();
@@ -32,8 +36,21 @@ public class ProductForm extends FormLayout {
         add(ref,
                 des,
                 prix,
+                defO,
                 upload,
                 createButtonsLayout());
+        defO.addClickListener(e -> {
+            //TODO : Ouvrir une fenêtre pour définir les opérations
+            Dialog dialogO = new Dialog();
+            dialogO.open();
+            ConfigurDialog(dialogO);
+        });
+
+
+    }
+    public void ConfigurDialog(Dialog dialog){
+        //TODO : Configurer la fenêtre pour définir les opérations
+        dialog.add();
     }
     public void setProduit(Produit produit) {
         binder.setBean(produit);
@@ -88,6 +105,7 @@ public class ProductForm extends FormLayout {
     public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
         return addListener(ProductForm.CloseEvent.class, listener);
     }
+
     private void validateAndSave() {
         binder.validate().isOk();
         fireEvent(new ProductForm.SaveEvent(this, binder.getBean()));
