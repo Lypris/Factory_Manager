@@ -16,13 +16,16 @@ public class CrmService {
     private final EtatPossibleMachineRepository etatPossibleMachineRepository;
     private final EtatMachineRepository etatMachineRepository;
     private final ProduitRepository produitRepository;
+    private final CommandRepository commandRepository;
 
     public CrmService(StatusRepository statusRepository,
                       OperateurRepository operateurRepository,
                       StatutOperateurRepository statutOperateurRepository,
-                        MachineRepository machineRepository,
-                        EtatPossibleMachineRepository etatPossibleMachineRepository,
-                        EtatMachineRepository etatMachineRepository,ProduitRepository produitRepositor) {
+                      MachineRepository machineRepository,
+                      EtatPossibleMachineRepository etatPossibleMachineRepository,
+                      EtatMachineRepository etatMachineRepository,
+                      ProduitRepository produitRepositor,
+                      CommandRepository commandRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -30,6 +33,7 @@ public class CrmService {
         this.etatPossibleMachineRepository = etatPossibleMachineRepository;
         this.etatMachineRepository = etatMachineRepository;
         this.produitRepository = produitRepositor;
+        this.commandRepository = commandRepository;
     }
 
 
@@ -194,5 +198,39 @@ public class CrmService {
     public void deleteProduit(Produit produit) {
         produitRepository.delete(produit);
     }
+    //////////////////////////// Commmand ////////////////////////////
+    public List<Commande> findAllCommande(String stringFilter) {
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return commandRepository.findAll();
+        } else {
+            return commandRepository.search(stringFilter);
+        }
+    }
+    public long countCommande() {
+        return commandRepository.count();
+    }
 
+    public void deleteCommande(Commande commande) {
+        //List<EtatMachine> etatMachines = etatMachineRepository.findByMachine(machine);
+        commandRepository.delete(commande);
+        /*if (etatMachines.isEmpty()) {
+            machineRepository.delete(machine);
+        } else {
+            deleteAssociatedEtatMachines(etatMachines);
+            machineRepository.delete(machine);
+        }*/
+    }
+
+    public void saveCommande(Commande commande) {
+        if (commande == null) {
+            System.err.println("Commande is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        commandRepository.save(commande);
+    }
+    /*private void deleteAssociatedEtatMachines(List<EtatMachine> etatMachines) {
+        for (EtatMachine etatMachine : etatMachines) {
+            etatMachineRepository.delete(etatMachine);
+        }
+    }*/
 }
