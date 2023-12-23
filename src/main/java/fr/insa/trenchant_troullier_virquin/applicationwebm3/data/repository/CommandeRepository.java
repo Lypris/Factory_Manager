@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CommandRepository extends JpaRepository<Commande, Long> {
+public interface CommandeRepository extends JpaRepository<Commande, Long> {
     @Query("select c from Commande c " +
             "where lower(c.des) like lower(concat('%', :searchTerm, '%')) " +
             "or lower(c.ref) like lower(concat('%', :searchTerm, '%'))")

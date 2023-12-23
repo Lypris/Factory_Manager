@@ -11,6 +11,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 @Route(value = "product", layout = MainLayout.class)
@@ -20,6 +21,7 @@ public class ProductView extends VerticalLayout {
     Grid<Produit> grid = new Grid<>(Produit.class);
     TextField filterText = new TextField();
     ProductForm form;
+    TypeOperationForm formTypeOperation;
     CrmService service;
 
     public ProductView(CrmService service) {
@@ -35,19 +37,26 @@ public class ProductView extends VerticalLayout {
     }
 
     private Component getContent() {
-        HorizontalLayout content = new HorizontalLayout(grid, form);
+        HorizontalLayout content = new HorizontalLayout(grid, form, formTypeOperation);
         content.setFlexGrow(2, grid);
         content.setFlexGrow(1, form);
+        content.setFlexGrow(1, formTypeOperation);
         content.addClassNames("content");
         content.setSizeFull();
         return content;
     }
     private void configureForm() {
-        form = new ProductForm();
+        form = new ProductForm(service.findAllTypeOperation());
         form.setWidth("35em");
         form.addSaveListener(this::saveProduct);
         form.addDeleteListener(this::deleteProduct);
         form.addCloseListener(e -> closeEditor());
+
+        formTypeOperation = new TypeOperationForm();
+        formTypeOperation.setWidth("35em");
+        formTypeOperation.addSaveListener(this::saveTypeOperation);
+        formTypeOperation.addDeleteListener(this::deleteTypeOperation);
+        formTypeOperation.addCloseListener(e -> closeEditor());
     }
     private void saveProduct(ProductForm.SaveEvent event) {
         service.saveProduit(event.getProduit());
@@ -56,6 +65,16 @@ public class ProductView extends VerticalLayout {
     }
     private void deleteProduct(ProductForm.DeleteEvent event) {
         service.deleteProduit(event.getProduit());
+        updateList();
+        closeEditor();
+    }
+    private void saveTypeOperation(TypeOperationForm.SaveEvent event) {
+        service.saveTypeOperation(event.getTypeOperation());
+        updateList();
+        closeEditor();
+    }
+    private void deleteTypeOperation(TypeOperationForm.DeleteEvent event) {
+        service.deleteTypeOperation(event.getTypeOperation());
         updateList();
         closeEditor();
     }
@@ -87,14 +106,20 @@ public class ProductView extends VerticalLayout {
         form.setProduit(null);
         form.setVisible(false);
         removeClassName("editing");
+
+        formTypeOperation.setTypeOperation(null);
+        formTypeOperation.setVisible(false);
+        removeClassName("editing");
     }
+
     private HorizontalLayout getToolbar() {
         filterText.setPlaceholder("Filter by name...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
         Button addProductButton = new Button("Add product", click -> addProduct());
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton);
+        Button addTypeOperationButton = new Button("Add type operation", click -> addTypeOperation());
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, addTypeOperationButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -104,6 +129,19 @@ public class ProductView extends VerticalLayout {
     private void addProduct() {
         grid.asSingleSelect().clear();
         editProduit(new Produit());
+    }
+    public void addTypeOperation() {
+        editTypeOperation(new TypeOperation());
+
+    }
+    private void editTypeOperation(TypeOperation typeOperation) {
+        if (typeOperation == null) {
+            closeEditor();
+        } else {
+            formTypeOperation.setTypeOperation(typeOperation);
+            formTypeOperation.setVisible(true);
+            addClassName("editing");
+        }
     }
 
 }

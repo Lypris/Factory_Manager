@@ -16,7 +16,8 @@ public class CrmService {
     private final EtatPossibleMachineRepository etatPossibleMachineRepository;
     private final EtatMachineRepository etatMachineRepository;
     private final ProduitRepository produitRepository;
-    private final CommandRepository commandRepository;
+    private final CommandeRepository commandeRepository;
+    private final TypeOperationRepository typeOperationRepository;
 
     public CrmService(StatusRepository statusRepository,
                       OperateurRepository operateurRepository,
@@ -25,7 +26,8 @@ public class CrmService {
                       EtatPossibleMachineRepository etatPossibleMachineRepository,
                       EtatMachineRepository etatMachineRepository,
                       ProduitRepository produitRepositor,
-                      CommandRepository commandRepository) {
+                      CommandeRepository commandeRepository,
+                      TypeOperationRepository typeOperationRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -33,7 +35,8 @@ public class CrmService {
         this.etatPossibleMachineRepository = etatPossibleMachineRepository;
         this.etatMachineRepository = etatMachineRepository;
         this.produitRepository = produitRepositor;
-        this.commandRepository = commandRepository;
+        this.commandeRepository = commandeRepository;
+        this.typeOperationRepository = typeOperationRepository;
     }
 
 
@@ -198,21 +201,21 @@ public class CrmService {
     public void deleteProduit(Produit produit) {
         produitRepository.delete(produit);
     }
-    //////////////////////////// Commmand ////////////////////////////
+    //////////////////////////// Commmande ////////////////////////////
     public List<Commande> findAllCommande(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
-            return commandRepository.findAll();
+            return commandeRepository.findAll();
         } else {
-            return commandRepository.search(stringFilter);
+            return commandeRepository.search(stringFilter);
         }
     }
     public long countCommande() {
-        return commandRepository.count();
+        return commandeRepository.count();
     }
 
     public void deleteCommande(Commande commande) {
         //List<EtatMachine> etatMachines = etatMachineRepository.findByMachine(machine);
-        commandRepository.delete(commande);
+        commandeRepository.delete(commande);
         /*if (etatMachines.isEmpty()) {
             machineRepository.delete(machine);
         } else {
@@ -226,11 +229,28 @@ public class CrmService {
             System.err.println("Commande is null. Are you sure you have connected your form to the application?");
             return;
         }
-        commandRepository.save(commande);
+        commandeRepository.save(commande);
     }
     /*private void deleteAssociatedEtatMachines(List<EtatMachine> etatMachines) {
         for (EtatMachine etatMachine : etatMachines) {
             etatMachineRepository.delete(etatMachine);
         }
     }*/
+
+    // type d'opération
+    //////////////////////////// TYPE OPERATION ////////////////////////////
+    public List<TypeOperation> findAllTypeOperation(){
+        return typeOperationRepository.findAll();
+    }
+
+    public void saveTypeOperation(TypeOperation typeOperation) {
+        if (typeOperation == null) {
+            System.err.println("TypeOperation is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        typeOperationRepository.save(typeOperation);
+    }
+    public void deleteTypeOperation(TypeOperation typeOperation) {
+        typeOperationRepository.delete(typeOperation);
+    }
 }

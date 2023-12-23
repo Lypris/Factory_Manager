@@ -1,35 +1,32 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.model.Typeoperation;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.view.ProductForm;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.dataview.GridListDataView;
+import com.vaadin.flow.component.grid.dnd.GridDragEndEvent;
+import com.vaadin.flow.component.grid.dnd.GridDragStartEvent;
+import com.vaadin.flow.component.grid.dnd.GridDropMode;
+import com.vaadin.flow.component.html.Div;
 
-    //    import com.vaadin.demo.domain.DataService;
-        import com.vaadin.flow.component.grid.Grid;
-        import com.vaadin.flow.component.grid.dataview.GridListDataView;
-        import com.vaadin.flow.component.grid.dnd.GridDragEndEvent;
-        import com.vaadin.flow.component.grid.dnd.GridDragStartEvent;
-        import com.vaadin.flow.component.grid.dnd.GridDropMode;
-        import com.vaadin.flow.component.html.Div;
-        import com.vaadin.flow.router.Route;
+import java.util.ArrayList;
+import java.util.List;
 
-        import java.util.ArrayList;
-        import java.util.List;
+public class DialogDefOpp extends Dialog {
 
-public class DialogDefOpp extends Div {
+    private TypeOperation draggedItem;
 
-    private Typeoperation draggedItem;
 
-    public DialogDefOpp() {
-        List<Typeoperation> typeoperations = null;//A definir// DataService.gettypeoperations(10);
-        ArrayList<Typeoperation> typeoperationsPossible = new ArrayList<>(typeoperations);
-        ArrayList<Typeoperation> typeoperationsChoisie = new ArrayList<>();
-
-        // tag::snippet[]
-        Grid<Typeoperation> grid1 = setupGrid();
-        Grid<Typeoperation> grid2 = setupGrid();
-
-        GridListDataView<Typeoperation> dataView1 = grid1.setItems(typeoperationsPossible);
-        GridListDataView<Typeoperation> dataView2 = grid2.setItems(typeoperationsChoisie);
+    public DialogDefOpp(List<TypeOperation> typeOperations) {
+        Grid<TypeOperation> grid1 = setupGrid1();
+        Grid<TypeOperation> grid2 = setupGrid2();
+        ArrayList<TypeOperation> typeoperations = (ArrayList<TypeOperation>) typeOperations;
+        ArrayList<TypeOperation> typeoperationsDefini = new ArrayList<>();
+        GridListDataView<TypeOperation> dataView2 = grid1.setItems(typeoperationsDefini);
+        GridListDataView<TypeOperation> dataView1 = grid1.setItems(typeoperations);
 
         grid1.setDropMode(GridDropMode.ON_GRID);
         grid1.setRowsDraggable(true);
@@ -48,31 +45,50 @@ public class DialogDefOpp extends Div {
             dataView2.addItem(draggedItem);
         });
         grid2.addDragEndListener(this::handleDragEnd);
-        // end::snippet[]
 
         Div container = new Div(grid1, grid2);
         setContainerStyles(container);
 
         add(container);
+        configureFooter();
     }
 
-    private static Grid<Typeoperation> setupGrid() {
-        Grid<Typeoperation> grid = new Grid<>(Typeoperation.class, false);
-        grid.addColumn(Typeoperation::getDes).setHeader("Opération");
-        setGridStyles(grid);
+    private void configureFooter() {
+        Button deleteButton = new Button("Enregistrer", (e) -> this.close()); //TODO : Enregistrer les opérations
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
+                ButtonVariant.LUMO_SUCCESS);
+        deleteButton.getStyle().set("margin-right", "auto");
+        this.getFooter().add(deleteButton);
 
+        Button cancelButton = new Button("Cancel", (e) -> this.close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+        this.getFooter().add(cancelButton);
+    }
+
+    private static Grid<TypeOperation> setupGrid1() {
+        Grid<TypeOperation> grid = new Grid<>(TypeOperation.class);
+        grid.removeAllColumns();
+        grid.addColumn(TypeOperation::getDes).setHeader("Opérations disponibles");
+        setGridStyles(grid);
+        return grid;
+    }
+    private static Grid<TypeOperation> setupGrid2() {
+        Grid<TypeOperation> grid = new Grid<>(TypeOperation.class);
+        grid.removeAllColumns();
+        grid.addColumn(TypeOperation::getDes).setHeader("Opérations définies");
+        setGridStyles(grid);
         return grid;
     }
 
-    private void handleDragStart(GridDragStartEvent<Typeoperation> e) {
+    private void handleDragStart(GridDragStartEvent<TypeOperation> e) {
         draggedItem = e.getDraggedItems().get(0);
     }
 
-    private void handleDragEnd(GridDragEndEvent<Typeoperation> e) {
+    private void handleDragEnd(GridDragEndEvent<TypeOperation> e) {
         draggedItem = null;
     }
 
-    private static void setGridStyles(Grid<Typeoperation> grid) {
+    private static void setGridStyles(Grid<TypeOperation> grid) {
         grid.getStyle().set("width", "300px").set("height", "300px")
                 .set("margin-left", "0.5rem").set("margin-top", "0.5rem")
                 .set("align-self", "unset");

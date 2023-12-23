@@ -12,6 +12,9 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
+
+import java.util.List;
 
 
 public class ProductForm extends FormLayout {
@@ -29,7 +32,7 @@ public class ProductForm extends FormLayout {
     //TODO : Zone pour upload une image, à voir si on peut le faire
     BeanValidationBinder<Produit> binder = new BeanValidationBinder<>(Produit.class);
 
-    public ProductForm() {
+    public ProductForm(List<TypeOperation> typeoperations) {
         binder.bindInstanceFields(this);
         addClassName("product-form");
 
@@ -41,7 +44,7 @@ public class ProductForm extends FormLayout {
                 createButtonsLayout());
         defO.addClickListener(e -> {
             //TODO : Ouvrir une fenêtre pour définir les opérations
-            Dialog dialogO = new Dialog();
+            DialogDefOpp dialogO = new DialogDefOpp(typeoperations);
             dialogO.open();
             ConfigurDialog(dialogO);
         });
