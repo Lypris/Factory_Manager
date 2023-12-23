@@ -64,9 +64,12 @@ public class ProductView extends VerticalLayout {
         grid.setSizeFull();
         grid.removeColumnByKey("id");
         grid.removeColumnByKey("version");
-        grid.addColumn(Produit::getRef).setHeader("Référence");
-        grid.addColumn(Produit::getDes).setHeader("Description");
-        grid.addColumn(Produit::getPrix).setHeader("Prix");
+        grid.removeColumnByKey("ref");
+        grid.removeColumnByKey("des");
+        grid.removeColumnByKey("prix");
+        grid.addColumn(Produit::getRef).setHeader("Référence").setSortable(true);
+        grid.addColumn(Produit::getDes).setHeader("Description").setSortable(true);
+        grid.addColumn(Produit::getPrix).setHeader("Prix").setSortable(true);
         //TODO : Ajouter une colonne pour l'image
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
