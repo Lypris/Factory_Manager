@@ -1,5 +1,6 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
@@ -16,6 +17,7 @@ public class Produit extends AbstractEntity{
     @NotNull
     private float prix;
     @Lob
+    @Column(columnDefinition = "LONGBLOB")
     private byte[] image;
 
 

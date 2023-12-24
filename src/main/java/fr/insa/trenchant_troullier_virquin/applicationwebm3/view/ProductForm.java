@@ -29,7 +29,6 @@ public class ProductForm extends FormLayout {
     Button close = new Button("Annuler");
     UploadHelper upload = new UploadHelper();
 
-    //TODO : Zone pour upload une image, à voir si on peut le faire
     BeanValidationBinder<Produit> binder = new BeanValidationBinder<>(Produit.class);
 
     public ProductForm(List<TypeOperation> typeoperations) {
@@ -43,7 +42,6 @@ public class ProductForm extends FormLayout {
                 upload,
                 createButtonsLayout());
         defO.addClickListener(e -> {
-            //TODO : Ouvrir une fenêtre pour définir les opérations
             DialogDefOpp dialogO = new DialogDefOpp(typeoperations);
             dialogO.open();
             ConfigurDialog(dialogO);
@@ -52,11 +50,13 @@ public class ProductForm extends FormLayout {
 
     }
     public void ConfigurDialog(Dialog dialog){
-        //TODO : Configurer la fenêtre pour définir les opérations
         dialog.add();
     }
     public void setProduit(Produit produit) {
+
         binder.setBean(produit);
+        //TODO : Afficher l'image redimensionnée
+        //upload.reset();
     }
     private Component createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -110,8 +110,12 @@ public class ProductForm extends FormLayout {
     }
 
     private void validateAndSave() {
-        binder.validate().isOk();
-        fireEvent(new ProductForm.SaveEvent(this, binder.getBean()));
+        if (binder.isValid()) {
+            Produit produit = binder.getBean();
+            byte[] imageData = upload.getImageData();
+            produit.setImage(imageData);
+            fireEvent(new ProductForm.SaveEvent(this, produit));
+        }
     }
 
 }

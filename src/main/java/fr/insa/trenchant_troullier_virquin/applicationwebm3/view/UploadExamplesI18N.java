@@ -21,7 +21,7 @@ public class UploadExamplesI18N extends UploadI18N {
         setAddFiles(new AddFiles().setOne("Téléverser le fichier...")
                 .setMany("Téléverser les fichiers..."));
         setError(new Error().setTooManyFiles("Trop de fichiers.")
-                .setFileIsTooBig("FLe fichier est trop volumineux.")
+                .setFileIsTooBig("Le fichier est trop volumineux.")
                 .setIncorrectFileType("Type de fichier incorrect."));
         setUploading(new Uploading()
                 .setStatus(new Uploading.Status().setConnecting("Connexion en cours...")

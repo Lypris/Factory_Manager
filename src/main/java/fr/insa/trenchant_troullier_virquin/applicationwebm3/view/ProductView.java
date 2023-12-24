@@ -3,15 +3,21 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+
+import java.io.ByteArrayInputStream;
 
 @Route(value = "product", layout = MainLayout.class)
 @PageTitle("Produits | M3 Application")
@@ -85,13 +91,29 @@ public class ProductView extends VerticalLayout {
         grid.removeColumnByKey("ref");
         grid.removeColumnByKey("des");
         grid.removeColumnByKey("prix");
+        grid.removeColumnByKey("image");
         grid.addColumn(Produit::getRef).setHeader("Référence").setSortable(true);
         grid.addColumn(Produit::getDes).setHeader("Description").setSortable(true);
         grid.addColumn(Produit::getPrix).setHeader("Prix").setSortable(true);
         //TODO : Ajouter une colonne pour l'image
+        grid.addColumn(createProductImageRenderer()).setHeader("Image");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
     }
+
+    private Renderer<Produit> createProductImageRenderer() {
+        return new ComponentRenderer<>(produit -> {
+            Image image = new Image();
+            if (produit.getImage() != null) {
+                StreamResource resource = new StreamResource("image.png", () -> new ByteArrayInputStream(produit.getImage()));
+                image.setSrc(resource);
+                //set height to 0,1 em
+                image.setHeight("5em");
+            }
+            return image;
+        });
+    }
+
     private void editProduit(Produit produit) {
         if (produit == null) {
             closeEditor();
