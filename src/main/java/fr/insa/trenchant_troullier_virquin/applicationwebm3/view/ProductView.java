@@ -19,14 +19,14 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 
 import java.io.ByteArrayInputStream;
 
-@Route(value = "product", layout = MainLayout.class)
+@Route(value = "produit", layout = MainLayout.class)
 @PageTitle("Produits | M3 Application")
 public class ProductView extends VerticalLayout {
 
     Grid<Produit> grid = new Grid<>(Produit.class);
     TextField filterText = new TextField();
     ProductForm form;
-    TypeOperationForm formTypeOperation;
+
     CrmService service;
 
     public ProductView(CrmService service) {
@@ -42,10 +42,9 @@ public class ProductView extends VerticalLayout {
     }
 
     private Component getContent() {
-        HorizontalLayout content = new HorizontalLayout(grid, form, formTypeOperation);
+        HorizontalLayout content = new HorizontalLayout(grid, form);
         content.setFlexGrow(2, grid);
         content.setFlexGrow(1, form);
-        content.setFlexGrow(1, formTypeOperation);
         content.addClassNames("content");
         content.setSizeFull();
         return content;
@@ -56,12 +55,6 @@ public class ProductView extends VerticalLayout {
         form.addSaveListener(this::saveProduct);
         form.addDeleteListener(this::deleteProduct);
         form.addCloseListener(e -> closeEditor());
-
-        formTypeOperation = new TypeOperationForm();
-        formTypeOperation.setWidth("35em");
-        formTypeOperation.addSaveListener(this::saveTypeOperation);
-        formTypeOperation.addDeleteListener(this::deleteTypeOperation);
-        formTypeOperation.addCloseListener(e -> closeEditor());
     }
     private void saveProduct(ProductForm.SaveEvent event) {
         service.saveProduit(event.getProduit());
@@ -73,16 +66,7 @@ public class ProductView extends VerticalLayout {
         updateList();
         closeEditor();
     }
-    private void saveTypeOperation(TypeOperationForm.SaveEvent event) {
-        service.saveTypeOperation(event.getTypeOperation());
-        updateList();
-        closeEditor();
-    }
-    private void deleteTypeOperation(TypeOperationForm.DeleteEvent event) {
-        service.deleteTypeOperation(event.getTypeOperation());
-        updateList();
-        closeEditor();
-    }
+
     private void configureGrid() {
         grid.addClassName("operateur-grid");
         grid.setSizeFull();
@@ -95,7 +79,6 @@ public class ProductView extends VerticalLayout {
         grid.addColumn(Produit::getRef).setHeader("Référence").setSortable(true);
         grid.addColumn(Produit::getDes).setHeader("Description").setSortable(true);
         grid.addColumn(Produit::getPrix).setHeader("Prix").setSortable(true);
-        //TODO : Ajouter une colonne pour l'image
         grid.addColumn(createProductImageRenderer()).setHeader("Image");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
@@ -107,7 +90,6 @@ public class ProductView extends VerticalLayout {
             if (produit.getImage() != null) {
                 StreamResource resource = new StreamResource("image.png", () -> new ByteArrayInputStream(produit.getImage()));
                 image.setSrc(resource);
-                //set height to 0,1 em
                 image.setHeight("5em");
             }
             return image;
@@ -121,17 +103,11 @@ public class ProductView extends VerticalLayout {
             form.setProduit(produit);
             form.setVisible(true);
             addClassName("editing");
-            formTypeOperation.setTypeOperation(null);
-            formTypeOperation.setVisible(false);
         }
     }
     private void closeEditor() {
         form.setProduit(null);
         form.setVisible(false);
-        removeClassName("editing");
-
-        formTypeOperation.setTypeOperation(null);
-        formTypeOperation.setVisible(false);
         removeClassName("editing");
     }
 
@@ -142,8 +118,8 @@ public class ProductView extends VerticalLayout {
         filterText.setWidth("25em");
         filterText.addValueChangeListener(e -> updateList());
         Button addProductButton = new Button("Ajouter", click -> addProduct());
-        Button addTypeOperationButton = new Button("Ajouter un type d'opération", click -> addTypeOperation());
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, addTypeOperationButton);
+        Button TypeOperationView = new Button("Voir les types d'opérations", click -> getUI().get().navigate("typeoperation"));
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, TypeOperationView);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -154,20 +130,6 @@ public class ProductView extends VerticalLayout {
         grid.asSingleSelect().clear();
         editProduit(new Produit());
     }
-    public void addTypeOperation() {
-        editTypeOperation(new TypeOperation());
 
-    }
-    private void editTypeOperation(TypeOperation typeOperation) {
-        if (typeOperation == null) {
-            closeEditor();
-        } else {
-            formTypeOperation.setTypeOperation(typeOperation);
-            formTypeOperation.setVisible(true);
-            addClassName("editing");
-            form.setProduit(null);
-            form.setVisible(false);
-        }
-    }
 
 }

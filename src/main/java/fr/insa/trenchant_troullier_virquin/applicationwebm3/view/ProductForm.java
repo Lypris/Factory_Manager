@@ -7,13 +7,19 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 
+import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 
@@ -21,6 +27,7 @@ public class ProductForm extends FormLayout {
     TextField ref = new TextField("Référence");
     TextField des = new TextField("Description");
     TextField prix = new TextField("Prix");
+    Image produitImage = new Image();
 
     Button save = new Button("Enregistrer");
     Button defO = new Button("Définir les opérations");
@@ -40,6 +47,7 @@ public class ProductForm extends FormLayout {
                 prix,
                 defO,
                 upload,
+                produitImage,
                 createButtonsLayout());
         defO.addClickListener(e -> {
             DialogDefOpp dialogO = new DialogDefOpp(typeoperations);
@@ -56,7 +64,19 @@ public class ProductForm extends FormLayout {
 
         binder.setBean(produit);
         //TODO : Afficher l'image redimensionnée
+        produitImage= createProductImageRenderer(produit);
+
         //upload.reset();
+    }
+    public Image createProductImageRenderer(Produit produit) {
+        Image image = new Image();
+        if (produit!=null && produit.getImage() != null) {
+            StreamResource resource = new StreamResource("image.png", () -> new ByteArrayInputStream(produit.getImage()));
+            image.setSrc(resource);
+            return image;
+        } else {
+            return image;
+        }
     }
     private Component createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

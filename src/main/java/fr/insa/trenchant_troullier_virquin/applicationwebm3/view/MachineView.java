@@ -14,7 +14,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 @Route(value = "machine", layout = MainLayout.class)
-@PageTitle("Machine | M3 Application")
+@PageTitle("Machines | M3 Application")
 public class MachineView extends VerticalLayout {
 
     Grid<Machine> grid = new Grid<>(Machine.class);
