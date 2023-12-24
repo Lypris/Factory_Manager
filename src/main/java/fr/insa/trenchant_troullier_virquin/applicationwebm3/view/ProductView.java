@@ -9,7 +9,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
@@ -100,6 +99,8 @@ public class ProductView extends VerticalLayout {
             form.setProduit(produit);
             form.setVisible(true);
             addClassName("editing");
+            formTypeOperation.setTypeOperation(null);
+            formTypeOperation.setVisible(false);
         }
     }
     private void closeEditor() {
@@ -113,12 +114,13 @@ public class ProductView extends VerticalLayout {
     }
 
     private HorizontalLayout getToolbar() {
-        filterText.setPlaceholder("Filter by name...");
+        filterText.setPlaceholder("Filter par référence ou description...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.setWidth("25em");
         filterText.addValueChangeListener(e -> updateList());
-        Button addProductButton = new Button("Add product", click -> addProduct());
-        Button addTypeOperationButton = new Button("Add type operation", click -> addTypeOperation());
+        Button addProductButton = new Button("Ajouter", click -> addProduct());
+        Button addTypeOperationButton = new Button("Ajouter un type d'opération", click -> addTypeOperation());
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, addTypeOperationButton);
         toolbar.addClassName("toolbar");
         return toolbar;
@@ -141,6 +143,8 @@ public class ProductView extends VerticalLayout {
             formTypeOperation.setTypeOperation(typeOperation);
             formTypeOperation.setVisible(true);
             addClassName("editing");
+            form.setProduit(null);
+            form.setVisible(false);
         }
     }
 
