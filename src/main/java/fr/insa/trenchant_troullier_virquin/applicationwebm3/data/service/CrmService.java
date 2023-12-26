@@ -16,6 +16,7 @@ public class CrmService {
     private final EtatPossibleMachineRepository etatPossibleMachineRepository;
     private final EtatMachineRepository etatMachineRepository;
     private final ProduitRepository produitRepository;
+    private final MatPremiereRepository matPremiereRepository;
     private final CommandeRepository commandeRepository;
     private final TypeOperationRepository typeOperationRepository;
 
@@ -27,7 +28,8 @@ public class CrmService {
                       EtatMachineRepository etatMachineRepository,
                       ProduitRepository produitRepositor,
                       CommandeRepository commandeRepository,
-                      TypeOperationRepository typeOperationRepository) {
+                      TypeOperationRepository typeOperationRepository,
+                      MatPremiereRepository matPremiereRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -37,6 +39,7 @@ public class CrmService {
         this.produitRepository = produitRepositor;
         this.commandeRepository = commandeRepository;
         this.typeOperationRepository = typeOperationRepository;
+        this.matPremiereRepository = matPremiereRepository;
     }
 
 
@@ -252,5 +255,14 @@ public class CrmService {
     }
     public void deleteTypeOperation(TypeOperation typeOperation) {
         typeOperationRepository.delete(typeOperation);
+    }
+    
+    //////////////////////// MATIERE PREMIERE ////////////////////////////
+    public List<MatPremiere> findAllMatPremiere(String stringFilter) {
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return matPremiereRepository.findAll();
+        } else {
+            return matPremiereRepository.search(stringFilter);
+        }
     }
 }
