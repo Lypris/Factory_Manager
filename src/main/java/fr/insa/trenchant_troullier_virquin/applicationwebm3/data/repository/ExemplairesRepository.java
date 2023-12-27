@@ -15,8 +15,9 @@ import org.springframework.data.repository.query.Param;
  * @author laelt
  */
 public interface ExemplairesRepository extends JpaRepository<Exemplaires, Long>{
-    @Query("select p from Produit p " +
-            "where lower(p.des) like lower(concat('%', :searchTerm, '%')) " +
-            "or lower(p.ref) like lower(concat('%', :searchTerm, '%'))")
-    List<Exemplaires> search(@Param("searchTerm") String searchTerm);
+    @Query("SELECT e FROM Exemplaires e WHERE e.etape > 0 AND e.etape < 100")
+    List<Exemplaires> findAllProdEnCours();
+    
+    @Query("SELECT e FROM Exemplaires e WHERE e.etape > 99")
+    List<Exemplaires> findAllProdFini();
 }

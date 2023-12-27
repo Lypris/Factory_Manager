@@ -12,8 +12,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Exemplaires;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatPremiere;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operation_Effectuee;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
@@ -29,7 +31,7 @@ public class StockView extends VerticalLayout{
     private Button b_ProdFini = new Button("Produit fini");
     private Button b_ProdEnCours = new Button("En production");
     private CrmService service;
-    private Grid<Produit> gridProduit = new Grid<>(Produit.class);
+    private Grid<Exemplaires> gridProduitFini = new Grid<>(Exemplaires.class);
     private Grid<MatPremiere> gridMatPremiere = new Grid<>(MatPremiere.class);
     private Grid<Exemplaires> gridProdEnCours = new Grid<>(Exemplaires.class);
     private HorizontalLayout Bandeau = new HorizontalLayout();
@@ -40,7 +42,7 @@ public class StockView extends VerticalLayout{
         this.Bandeau.add(this.b_MatPre,this.b_ProdEnCours,this.b_ProdFini);
         
         configureGridMatPremiere();
-        configureGridProduit();
+        configureGridProduitFini();
         configureGridProdEnCours();
         
         this.b_MatPre.addClickListener((t) -> {
@@ -50,7 +52,7 @@ public class StockView extends VerticalLayout{
             this.ChangeToProdEnCours();
         });
         this.b_ProdFini.addClickListener((t) -> {
-            this.ChangeToProduit();
+            this.ChangeToProduitFini();
         });
         setSizeFull();
         this.add(this.Bandeau);
@@ -63,13 +65,15 @@ public class StockView extends VerticalLayout{
             updateListMatPremiere();
             this.add(Bandeau, this.gridMatPremiere);
         }
-    public void ChangeToProduit(){
+    public void ChangeToProduitFini(){
             this.removeAll();
             updateListProduit();
-            this.add(Bandeau, this.gridProduit);
+            this.add(Bandeau, this.gridProduitFini);
         }
     public void ChangeToProdEnCours(){
-            
+            this.removeAll();
+            updateListProdEncours();
+            this.add(Bandeau, this.gridProdEnCours);
         }
     private void configureGridMatPremiere() {
         this.gridMatPremiere.addClassName("matpremiere-grid");
@@ -85,31 +89,44 @@ public class StockView extends VerticalLayout{
     }
     
     private void configureGridProdEnCours() {
-        this.gridProdEnCours.addClassName("ProdEnCOurs-grid");
+        this.gridProdEnCours.addClassName("ProdEnCours-grid");
         this.gridProdEnCours.setSizeFull();
-        //TODO : Ajouter une colonne pour l'image
+        this.gridProdEnCours.removeAllColumns();
+        this.gridProdEnCours.addColumn(Exemplaires -> {
+                    Commande commande = Exemplaires.getCommande();
+                    return (commande != null) ? commande.getRef() : "";
+                    }).setHeader("Commande");
+        this.gridProdEnCours.addColumn(Exemplaires -> {
+                    Produit produit = Exemplaires.getProduit();
+                    return (produit != null) ? produit.getDes(): "";
+                    }).setHeader("Produit");
+        this.gridProdEnCours.addColumn(Exemplaires::getEtape).setHeader("Etape");
         this.gridProdEnCours.getColumns().forEach(col -> col.setAutoWidth(true));
         //grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
     }
-    private void configureGridProduit() {
-        this.gridProduit.addClassName("Produit-grid");
-        this.gridProduit.setSizeFull();
-        this.gridProduit.removeAllColumns();
-        this.gridProduit.addColumn(Produit::getRef).setHeader("Référence");
-        this.gridProduit.addColumn(Produit::getDes).setHeader("Description");
-        this.gridProduit.addColumn(Produit::getPrix).setHeader("Prix");
-        //TODO : Ajouter une colonne pour l'image
-        this.gridProduit.getColumns().forEach(col -> col.setAutoWidth(true));
+    private void configureGridProduitFini() {
+        this.gridProduitFini.addClassName("ProdFini-grid");
+        this.gridProduitFini.setSizeFull();
+        this.gridProduitFini.removeAllColumns();
+        this.gridProduitFini.addColumn(Exemplaires -> {
+                    Commande commande = Exemplaires.getCommande();
+                    return (commande != null) ? commande.getRef() : "";
+                    }).setHeader("Commande");
+        this.gridProduitFini.addColumn(Exemplaires -> {
+                    Produit produit = Exemplaires.getProduit();
+                    return (produit != null) ? produit.getDes(): "";
+                    }).setHeader("Produit");
+        this.gridProduitFini.getColumns().forEach(col -> col.setAutoWidth(true));
         //grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
     }
     
     private void updateListProduit() {
-        gridProduit.setItems(service.findAllProduits(filterText.getValue()));
+        gridProduitFini.setItems(service.findAllProdFini());
     }
     
-    /*private void updateListProdEncours() {
-        gridProdEnCours.setItems(service.findAllExemplaires(filterText.getValue()));
-    }*/
+    private void updateListProdEncours() {
+        gridProdEnCours.setItems(service.findAllProdEnCours());
+    }
     
     private void updateListMatPremiere() {
         gridMatPremiere.setItems(service.findAllMatPremiere(filterText.getValue()));

@@ -26,6 +26,8 @@ public class CrmService {
     private final TypeOperationRepository typeOperationRepository;
     private final MatPremiereRepository matPremiereRepository;
     private final OperationRepository operationRepository;
+    private final ExemplairesRepository exemplairesRepository;
+    
 
     public CrmService(StatusRepository statusRepository,
                       OperateurRepository operateurRepository,
@@ -38,7 +40,8 @@ public class CrmService {
                       DefinitionCommandeRepository definitionCommandeRepository,
                       TypeOperationRepository typeOperationRepository,
                       MatPremiereRepository matPremiereRepository,
-                      OperationRepository operationRepository) {
+                      OperationRepository operationRepository,
+                      ExemplairesRepository exemplairesRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -51,6 +54,7 @@ public class CrmService {
         this.definitionCommandeRepository = definitionCommandeRepository;
         this.matPremiereRepository = matPremiereRepository;
         this.operationRepository = operationRepository;
+        this.exemplairesRepository = exemplairesRepository;
     }
 
 
@@ -311,6 +315,23 @@ public class CrmService {
     }
     public int test2(){
         return 1;
+    }
+    
+    //////////////////////// Exemplaire ////////////////////////////
+    public void saveExemplaire(Exemplaires exemplaire) {
+        if (exemplaire == null) {
+            System.err.println("Exemplaire is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        exemplairesRepository.save(exemplaire);
+    }
+    
+    public List<Exemplaires> findAllProdEnCours() {
+        return exemplairesRepository.findAllProdEnCours();
+    }
+    
+    public List<Exemplaires> findAllProdFini() {
+        return exemplairesRepository.findAllProdFini();
     }
 
 }
