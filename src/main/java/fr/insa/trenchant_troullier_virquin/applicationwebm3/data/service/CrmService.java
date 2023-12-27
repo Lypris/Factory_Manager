@@ -57,6 +57,10 @@ public class CrmService {
     public List<Statut> findAllStatuses(){
         return statusRepository.findAll();
     }
+    
+    public int test(){
+    return 1;
+    }
 
     //////////////////////////// OPERATEUR ////////////////////////////
     public List<Operateur> findAllOperateurs(String stringFilter) {
