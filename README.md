@@ -4,7 +4,7 @@
 
 Voici le projet Github de VIRQUIN Rudy, TRENCHANT Evan et TROULLIER Laël pour le Semestre 3 d'Informatique. Ce projet réalisé à l'aide de JAVA, MySQL et Vaadin a pour but de réaliser un site web pour gérer l'ensemble de la chaîne de production d'un atelier de fabrication.
 
-Diagramme UML et relationel: https://drive.google.com/file/d/1KDaZfZN__362PJQ8x0-6sh7QD8fNa-En/view?usp=sharing
+ - Diagramme UML et relationel: https://drive.google.com/file/d/1KDaZfZN__362PJQ8x0-6sh7QD8fNa-En/view?usp=sharing
 
 ## Installation
 
@@ -15,6 +15,8 @@ Pour sauvegarder les modifications sur le GitHub : `Team/commit` puis `Team/Remo
 
 ## TODO
 
+- [] Définir le plan d'opération de chaque produit
+- [] Définir els exemplaires avec la dernière opération subie 
 - Localiser les machines sur un plan de l’entreprise
 - une description des produits
 - une photo des produits
