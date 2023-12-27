@@ -65,11 +65,7 @@ public class MachineView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("Machine-grid");
         grid.setSizeFull();
-        grid.removeColumnByKey("id");
-        grid.removeColumnByKey("version");
-        grid.removeColumnByKey("des");
-        grid.removeColumnByKey("ref");
-        grid.removeColumnByKey("puissance");
+        grid.removeAllColumns();
         grid.addColumn(Machine::getRef)
                 .setHeader("Référence").setSortable(true);
         grid.addColumn(Machine::getDes)

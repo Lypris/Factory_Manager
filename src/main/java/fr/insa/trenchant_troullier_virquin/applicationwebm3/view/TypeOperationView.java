@@ -38,9 +38,7 @@ public class TypeOperationView extends VerticalLayout {
     private void configureGrid(){
         grid.addClassName("typeoperation-grid");
         grid.setSizeFull();
-        grid.removeColumnByKey("id");
-        grid.removeColumnByKey("version");
-        grid.removeColumnByKey("des");
+        grid.removeAllColumns();
         grid.addColumn("des").setHeader("Description").setSortable(true);
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(evt -> editTypeOperation(evt.getValue()));

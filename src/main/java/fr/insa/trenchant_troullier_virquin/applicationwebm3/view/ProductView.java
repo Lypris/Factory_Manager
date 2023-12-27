@@ -70,12 +70,7 @@ public class ProductView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassName("operateur-grid");
         grid.setSizeFull();
-        grid.removeColumnByKey("id");
-        grid.removeColumnByKey("version");
-        grid.removeColumnByKey("ref");
-        grid.removeColumnByKey("des");
-        grid.removeColumnByKey("prix");
-        grid.removeColumnByKey("image");
+        grid.removeAllColumns();
         grid.addColumn(Produit::getRef).setHeader("Référence").setSortable(true);
         grid.addColumn(Produit::getDes).setHeader("Description").setSortable(true);
         grid.addColumn(Produit::getPrix).setHeader("Prix").setSortable(true);

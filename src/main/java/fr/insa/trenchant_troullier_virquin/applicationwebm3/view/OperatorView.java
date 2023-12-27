@@ -67,12 +67,7 @@ public class OperatorView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("operateur-grid");
         grid.setSizeFull();
-        grid.removeColumnByKey("id");
-        grid.removeColumnByKey("version");
-        grid.removeColumnByKey("nom");
-        grid.removeColumnByKey("prenom");
-        grid.removeColumnByKey("mail");
-        grid.removeColumnByKey("tel");
+        grid.removeAllColumns();
         grid.addColumn(Operateur::getNom)
                 .setHeader("Nom").setSortable(true);
         grid.addColumn(Operateur::getPrenom)

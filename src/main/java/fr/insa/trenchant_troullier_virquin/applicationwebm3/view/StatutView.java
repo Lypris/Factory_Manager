@@ -74,12 +74,7 @@ public class StatutView extends VerticalLayout {
         grid.addClassNames("statut-operateur-grid");
         grid.setSizeFull();
         //on retire les colonnes inutiles
-        grid.removeColumnByKey("id");
-        grid.removeColumnByKey("statut");
-        grid.removeColumnByKey("operateur");
-        grid.removeColumnByKey("version");
-        grid.removeColumnByKey("debut");
-        grid.removeColumnByKey("fin");
+        grid.removeAllColumns();
         grid.addColumn(statutOperateur -> {
                     Operateur operateur = statutOperateur.getOperateur();
                     return (operateur != null) ? operateur.getNom() : "";

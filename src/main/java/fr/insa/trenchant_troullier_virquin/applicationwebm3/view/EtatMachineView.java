@@ -78,12 +78,7 @@ public class EtatMachineView extends VerticalLayout {
         grid.addClassNames("etat-machine-grid");
         grid.setSizeFull();
         //on retire les colonnes inutiles
-        grid.removeColumnByKey("id");
-        grid.removeColumnByKey("etat");
-        grid.removeColumnByKey("machine");
-        grid.removeColumnByKey("version");
-        grid.removeColumnByKey("debut");
-        grid.removeColumnByKey("fin");
+        grid.removeAllColumns();
         grid.addColumn(EtatMachine -> {
                     Machine Machine = EtatMachine.getMachine();
                     return (Machine != null) ? Machine.getRef() : "";

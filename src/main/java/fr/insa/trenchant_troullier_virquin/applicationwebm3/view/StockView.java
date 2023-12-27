@@ -77,7 +77,6 @@ public class StockView extends VerticalLayout{
         this.gridMatPremiere.removeColumnByKey("id");
         this.gridMatPremiere.removeColumnByKey("ref");
         this.gridMatPremiere.removeColumnByKey("des");
-        this.gridMatPremiere.removeColumnByKey("version");
         this.gridMatPremiere.addColumn(MatPremiere::getRef).setHeader("Référence");
         this.gridMatPremiere.addColumn(MatPremiere::getDes).setHeader("Description");
         //TODO : Ajouter une colonne pour l'image
@@ -95,12 +94,7 @@ public class StockView extends VerticalLayout{
     private void configureGridProduit() {
         this.gridProduit.addClassName("Produit-grid");
         this.gridProduit.setSizeFull();
-        this.gridProduit.removeColumnByKey("id");
-        this.gridProduit.removeColumnByKey("version");
-        this.gridProduit.removeColumnByKey("des");
-        this.gridProduit.removeColumnByKey("image");
-        this.gridProduit.removeColumnByKey("prix");
-        this.gridProduit.removeColumnByKey("ref");
+        this.gridProduit.removeAllColumns();
         this.gridProduit.addColumn(Produit::getRef).setHeader("Référence");
         this.gridProduit.addColumn(Produit::getDes).setHeader("Description");
         this.gridProduit.addColumn(Produit::getPrix).setHeader("Prix");
