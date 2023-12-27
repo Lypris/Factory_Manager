@@ -83,7 +83,8 @@ public class CommandView extends VerticalLayout {
                 .setHeader("Référence").setSortable(true);
         grid.addColumn(Commande::getDes)
                 .setHeader("Description").setSortable(true);
-
+        grid.addColumn(Commande::getDebut).setHeader("Date de début").setSortable(true);
+        grid.addColumn(Commande::getFin).setHeader("Date de fin").setSortable(true);
         grid.addColumn(new ComponentRenderer<>(commande -> {
                     VaadinIcon icon = IconUtils.determineIconCommande(commande.getStatut());
                     Span badge = new Span(IconUtils.createIcon(icon),

@@ -1,10 +1,12 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service;
 
+import com.vaadin.flow.component.notification.Notification;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.DefinitionCommande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -250,6 +252,13 @@ public class CrmService {
             System.err.println("Commande is null. Are you sure you have connected your form to the application?");
             return;
         }
+        if (commande.getDebut() == null){
+            commande.setDebut(LocalDateTime.now());
+        }
+        if ((commande.getStatut().equals("Terminée") || commande.getStatut().equals("Annulée"))
+                && commande.getFin() == null) {
+            commande.setFin(LocalDateTime.now());
+        }else commande.setFin(null);
         commandeRepository.save(commande);
     }
     //////////////////////////Defintion Commande ////////////////////////////

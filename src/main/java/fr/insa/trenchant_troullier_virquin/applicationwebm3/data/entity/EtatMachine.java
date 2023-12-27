@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class EtatMachine extends AbstractEntity{
     @NotNull
     private LocalDateTime debut;
-    @NotNull
+    @NotNull // pas forcement car possibilité de ne pas connaitre cette date en avance
     private LocalDateTime fin;
     @NotNull
     @ManyToOne
