@@ -317,7 +317,16 @@ public class CrmService {
     }
     //méthode pour récupérer les opérations d'un produit
     public List<Operation> findOperationByProduit(Produit produit) {
-        return operationRepository.findByProduit(produit.getId());
+        if(produit!=null){
+            return operationRepository.findByProduit(produit.getId());
+        }
+        else return null;
+    }
+    public void deleteAllOperationForProduit(Produit produit) {
+        List<Operation> operations = operationRepository.findByProduit(produit.getId());
+        for (Operation operation : operations) {
+            operationRepository.delete(operation);
+        }
     }
     public void saveOperation(Operation operation) {
         if (operation == null) {

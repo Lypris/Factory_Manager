@@ -23,21 +23,20 @@ import java.util.List;
 public class DialogDefOpp extends Dialog {
 
     private TypeOperation draggedItem;
-    CrmService service;
-    Grid<TypeOperation> grid1 = setupGrid("Opérations disponibles", false);
-    Grid<TypeOperation> grid2 = setupGrid("Opérations définies", true);
-
-    ArrayList<TypeOperation> typeoperations = new ArrayList<>();
-    ArrayList<TypeOperation> typeoperationsDefini = new ArrayList<>();
-    GridListDataView<TypeOperation> dataView1 = grid1.setItems(typeoperations);
-    GridListDataView<TypeOperation> dataView2 = grid2.setItems(typeoperationsDefini);
-    Produit produit;
+    private CrmService service;
+    private Grid<TypeOperation> grid1 = setupGrid("Opérations disponibles", false);
+    private Grid<TypeOperation> grid2 = setupGrid("Opérations définies", true);
+    private ArrayList<TypeOperation> typeoperations = new ArrayList<>();
+    public ArrayList<TypeOperation> typeoperationsDefini = new ArrayList<>();
+    private GridListDataView<TypeOperation> dataView1 = grid1.setItems(typeoperations);
+    private GridListDataView<TypeOperation> dataView2 = grid2.setItems(typeoperationsDefini);
+    private Produit produit;
     private Grid<TypeOperation> dragSourceGrid;
+    private ProductView.ProduitDetails produitDetails;
+    private List<SaveListener> saveListeners = new ArrayList<>();
 
-
-
-
-    public DialogDefOpp(List<TypeOperation> typeOperations, CrmService service, Produit produit) {
+    public DialogDefOpp(List<TypeOperation> typeOperations, CrmService service, Produit produit, ProductView.ProduitDetails produitDetails) {
+        this.produitDetails = produitDetails;
         this.produit = produit;
         this.service = service;
         this.typeoperations.addAll(typeOperations);
@@ -99,7 +98,10 @@ public class DialogDefOpp extends Dialog {
     }
 
     private void configureFooter() {
-        Button saveButton = new Button("Enregistrer", (e) -> save());
+        Button saveButton = new Button("Enregistrer", e -> {
+            save();
+            notifySaveListeners();
+        });
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
                 ButtonVariant.LUMO_SUCCESS);
         saveButton.getStyle().set("margin-right", "auto");
@@ -143,7 +145,15 @@ public class DialogDefOpp extends Dialog {
         return label;
     }
 
+    private void notifySaveListeners() {
+        for (SaveListener listener : saveListeners) {
+            listener.onSave();
+        }
+    }
 
+    public void addSaveListener(SaveListener listener) {
+        saveListeners.add(listener);
+    }
 
     private void handleDragStart(GridDragStartEvent<TypeOperation> e) {
         draggedItem = e.getDraggedItems().get(0);
@@ -163,18 +173,34 @@ public class DialogDefOpp extends Dialog {
 
     private void save() {
         //TODO : Enregistrer les opérations définies pour un produit
-        //On récupère les types d'opérations définies dans la grid2 et on instancie des Opérations pour le produit
+        service.deleteAllOperationForProduit(produit);
         List<Operation> operations = new ArrayList<>();
         for (TypeOperation typeOperation : typeoperationsDefini) {
             Operation operation = new Operation();
             operation.setProduit(produit);
             operation.setTypeOperation(typeOperation);
-            operation.setOrdre(typeoperationsDefini.indexOf(typeOperation));
+            operation.setOrdre(typeoperationsDefini.indexOf(typeOperation)+1);
             operations.add(operation);
             service.saveOperation(operation);
         }
-        //On ferme la fenêtre
-
+        if (produitDetails != null) {
+            produitDetails.refreshOperations();
+        }
+        notifySaveListeners();
         this.close();
     }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+    public void setProduitDetails(ProductView.ProduitDetails produitDetails) {
+        this.produitDetails = produitDetails;
+    }
+
+    public ProductView.ProduitDetails getProduitDetails() {
+        return produitDetails;
+    }
+}
+interface SaveListener {
+    void onSave();
 }

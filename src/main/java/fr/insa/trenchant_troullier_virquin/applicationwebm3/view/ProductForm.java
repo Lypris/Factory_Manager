@@ -15,12 +15,14 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.awt.*;
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,9 +31,9 @@ public class ProductForm extends FormLayout {
     TextField des = new TextField("Description");
     TextField prix = new TextField("Prix");
     Image produitImage = new Image();
+    private byte[] originalImageData;
 
     Button save = new Button("Enregistrer");
-    Button defO = new Button("Définir les opérations");
 
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
@@ -47,37 +49,39 @@ public class ProductForm extends FormLayout {
         add(ref,
                 des,
                 prix,
-                defO,
                 upload,
                 produitImage,
                 createButtonsLayout());
-        defO.addClickListener(e -> {
-            DialogDefOpp dialogO = new DialogDefOpp(typeoperations, service, binder.getBean());
-            dialogO.open();
-            ConfigurDialog(dialogO);
-        });
-
-
+        upload.setImageUploadListener(this::updateImage);
     }
-    public void ConfigurDialog(Dialog dialog){
-        dialog.add();
-    }
+
     public void setProduit(Produit produit) {
-
         binder.setBean(produit);
-        //TODO : Afficher l'image redimensionnée
-        produitImage= createProductImageRenderer(produit);
-
-        //upload.reset();
-    }
-    public Image createProductImageRenderer(Produit produit) {
-        Image image = new Image();
-        if (produit!=null && produit.getImage() != null) {
-            StreamResource resource = new StreamResource("image.png", () -> new ByteArrayInputStream(produit.getImage()));
-            image.setSrc(resource);
-            return image;
+        if (produit != null && produit.getImage() != null) {
+            originalImageData = produit.getImage(); // Sauvegarder l'image originale
+            updateImage(produit.getImage());
         } else {
-            return image;
+            originalImageData = null;
+        }
+    }
+
+    private void updateImage(byte[] imageData) {
+        if (imageData != null && imageData.length > 0) {
+            StreamResource resource = new StreamResource("productImage", () -> new ByteArrayInputStream(imageData));
+            produitImage.setSrc(resource);
+            //on centre l'image
+            produitImage.getStyle().set("margin-left", "auto");
+            produitImage.getStyle().set("margin-right", "auto");
+            //on redimensionne l'image en CSS en fonction de la largeur de l'écran
+            produitImage.getStyle().set("max-width", "70%");
+        } else {
+            // Restaurer l'image originale si disponible
+            if (originalImageData != null) {
+                StreamResource resource = new StreamResource("originalImage", () -> new ByteArrayInputStream(originalImageData));
+                produitImage.setSrc(resource);
+            } else {
+                produitImage.setSrc(""); // Pas d'image originale, définir une image par défaut
+            }
         }
     }
     private Component createButtonsLayout() {
@@ -134,11 +138,13 @@ public class ProductForm extends FormLayout {
     private void validateAndSave() {
         if (binder.isValid()) {
             Produit produit = binder.getBean();
-            if (upload.getImageData() != null) {
+            // Vérifie si une nouvelle image a été téléversée et n'a pas été supprimée
+            if (upload.isImageUploaded()) {
                 produit.setImage(upload.getImageData());
+            } else if (originalImageData != null) {
+                produit.setImage(originalImageData); // Restaurer l'image originale
             }
             fireEvent(new ProductForm.SaveEvent(this, produit));
         }
     }
-
 }

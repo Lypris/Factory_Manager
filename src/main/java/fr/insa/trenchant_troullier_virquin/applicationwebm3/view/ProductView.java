@@ -2,6 +2,7 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
@@ -20,6 +21,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOper
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Route(value = "produit", layout = MainLayout.class)
@@ -30,7 +32,9 @@ public class ProductView extends VerticalLayout {
     TextField filterText = new TextField();
     ProductForm form;
 
+
     CrmService service;
+    DialogDefOpp dialogDefOpp;
 
     public ProductView(CrmService service) {
         this.service = service;
@@ -38,6 +42,7 @@ public class ProductView extends VerticalLayout {
         setSizeFull();
         configureGrid();
         configureForm();
+
 
         add(getToolbar(), getContent());
         updateList();
@@ -58,6 +63,10 @@ public class ProductView extends VerticalLayout {
         form.addSaveListener(this::saveProduct);
         form.addDeleteListener(this::deleteProduct);
         form.addCloseListener(e -> closeEditor());
+    }
+    private void configureDialogDefOpp() {
+        dialogDefOpp = new DialogDefOpp(service.findAllTypeOperation(), service, grid.asSingleSelect().getValue(), getProduitDetailsForProduit(grid.asSingleSelect().getValue()));
+        dialogDefOpp.setWidth("35em");
     }
     private void saveProduct(ProductForm.SaveEvent event) {
         service.saveProduit(event.getProduit());
@@ -94,7 +103,7 @@ public class ProductView extends VerticalLayout {
     private Renderer<Produit> createProductImageRenderer() {
         return new ComponentRenderer<>(produit -> {
             Image image = new Image();
-            if (produit.getImage() != null) {
+            if (produit != null && produit.getImage() != null) {
                 StreamResource resource = new StreamResource("image.png", () -> new ByteArrayInputStream(produit.getImage()));
                 image.setSrc(resource);
                 image.setHeight("5em");
@@ -126,7 +135,11 @@ public class ProductView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
         Button addProductButton = new Button("Ajouter", click -> addProduct());
         Button TypeOperationView = new Button("Voir les types d'opérations", click -> getUI().get().navigate("typeoperation"));
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, TypeOperationView);
+        Button defineOperation = new Button("Définir les opérations", click -> {
+            configureDialogDefOpp();
+            defineOperation(grid.asSingleSelect().getValue());
+        });
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, TypeOperationView, defineOperation);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -137,10 +150,50 @@ public class ProductView extends VerticalLayout {
         grid.asSingleSelect().clear();
         editProduit(new Produit());
     }
+    private void defineOperation(Produit produit) {
+        if (produit == null) {
+            closeDialog();
+        } else {
+            ProduitDetails produitDetails = createProduitDetails(produit);
+            dialogDefOpp.setProduit(produit);
+            dialogDefOpp.setProduitDetails(produitDetails);
+            dialogDefOpp.setVisible(true);
+            dialogDefOpp.open();
+            dialogDefOpp.addSaveListener(() -> {
+                produitDetails.refreshOperations();
+                refreshSelectedProductDetails();
+            });
+        }
+    }
 
-    private static class ProduitDetails extends VerticalLayout {
+
+    private ProduitDetails createProduitDetails(Produit produit) {
+        ProduitDetails details = new ProduitDetails(service, produit);
+        details.addClassName("product-details");
+        return details;
+    }
+
+
+
+    private ProduitDetails getProduitDetailsForProduit(Produit produit) {
+        return new ProduitDetails(service, produit);
+    }
+
+    private void closeDialog() {
+        dialogDefOpp.setProduit(null);
+        dialogDefOpp.setVisible(false);
+    }
+    public void refreshSelectedProductDetails() {
+        Produit selectedProduit = grid.asSingleSelect().getValue();
+        if (selectedProduit != null) {
+            grid.getDataProvider().refreshItem(selectedProduit);
+        }
+    }
+
+    public static class ProduitDetails extends VerticalLayout {
         //TODO : Afficher les opérations définies pour un produit
         private final Grid<Operation> grid = new Grid<>(Operation.class);
+        private static final double ROW_HEIGHT = 3.5;
         private Produit produit;
         private CrmService service;
 
@@ -150,15 +203,31 @@ public class ProductView extends VerticalLayout {
             this.produit = produit;
             addClassName("produit-details");
             setSizeFull();
-            grid.setColumns("typeOperation.des", "ordre");
+            grid.removeAllColumns();
+            grid.addColumn(Operation -> Operation.getTypeOperation().getDes()).setHeader("Description");
+            grid.addColumn(Operation::getOrdre).setHeader("Ordre").setSortable(true);
             grid.getColumns().forEach(col -> col.setAutoWidth(true));
+            grid.addClassName("my-grid");
             add(grid);
             setProduit(service, produit);
         }
 
         public void setProduit(CrmService service, Produit produit) {
             grid.setItems(service.findOperationByProduit(produit));
+            adjustGridHeight(grid);
         }
+
+        public void refreshOperations() {
+            grid.setItems(service.findOperationByProduit(produit));
+            adjustGridHeight(grid);
+        }
+
+        private void adjustGridHeight(Grid<Operation> grid) {
+            int rowCount = service.findOperationByProduit(produit).size();
+            double gridHeight = ROW_HEIGHT * rowCount;
+            grid.setHeight(gridHeight + "em");
+        }
+
     }
 
 }

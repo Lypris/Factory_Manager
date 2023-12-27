@@ -1,6 +1,7 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.html.Paragraph;
@@ -8,12 +9,18 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Consumer;
 
 public class UploadHelper extends Div {
 
     private MemoryBuffer buffer;
+    private Consumer<byte[]> imageUploadListener;
+    private byte[] currentImageData;
+    private boolean imageUploaded = false;
     public UploadHelper() {
         buffer = new MemoryBuffer();
         H4 title = new H4("Téléverser une image");
@@ -38,18 +45,15 @@ public class UploadHelper extends Div {
         hint.getStyle().set("color", "var(--lumo-secondary-text-color)");
 
         upload.addSucceededListener(event -> {
-            // L'image a été téléchargée avec succès
-            InputStream inputStream = buffer.getInputStream();
-            // Convertir InputStream image redimensionnée en tableau d'octets
             try {
-                byte[] imageData = inputStream.readAllBytes();
-                //TODO : Afficher l'image redimensionnée
-
+                currentImageData = buffer.getInputStream().readAllBytes();
+                if (imageUploadListener != null) {
+                    imageUploadListener.accept(currentImageData);
+                }
             } catch (IOException e) {
-                Notification notification = Notification.show("Erreur lors de la conversion de l'image", 3000,
+                Notification.show("Erreur lors de la conversion de l'image", 3000,
                         Notification.Position.MIDDLE);
             }
-
         });
 
         upload.addFileRejectedListener(event -> {
@@ -59,7 +63,15 @@ public class UploadHelper extends Div {
                     Notification.Position.MIDDLE);
             notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
         });
-
+        upload.addDetachListener(event -> {
+            if (imageUploadListener != null) {
+                imageUploadListener.accept(null);
+            }
+        });
+        // Ajoute un listener JavaScript pour le retrait de fichier
+        upload.getElement().executeJs(
+                "this.addEventListener('file-remove', (e) => $0.$server.fileRemove(e.detail.file.name));",
+                getElement());
     }
     public MemoryBuffer getBuffer() {
         return buffer;
@@ -74,6 +86,36 @@ public class UploadHelper extends Div {
             return null;
         }
     }
+    public void setImageData(byte[] imageData) {
+        this.currentImageData = imageData;
+        if (imageUploadListener != null) {
+            imageUploadListener.accept(imageData);
+        }
+    }
+    public void setImageUploadListener(Consumer<byte[]> listener) {
+        this.imageUploadListener = image -> {
+            if (image != null) {
+                imageUploaded = true; // Marque comme téléversée
+                currentImageData = image;
+            } else {
+                imageUploaded = false; // Marque comme supprimée
+                currentImageData = null;
+            }
+            listener.accept(image);
+        };
+    }
+    // Méthode pour vérifier si une image a été téléversée
+    public boolean isImageUploaded() {
+        return imageUploaded;
+    }
 
+    @ClientCallable
+    public void fileRemove(String fileName) {
+        // Traiter l'événement de suppression de fichier ici
+        if (imageUploadListener != null) {
+            imageUploadListener.accept(null);
+            setImageData(null);
+        }
+    }
 }
 

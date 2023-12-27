@@ -11,6 +11,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
 @Theme("applicationwebm3")
+
 public class ApplicationWebM3Application extends SpringBootServletInitializer implements AppShellConfigurator{
 
     public static void main(String[] args) {
