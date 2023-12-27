@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -30,7 +31,6 @@ public class DialogDefCommande extends Dialog{
         ArrayList<Produit> produit = (ArrayList<Produit>) produits;
         HorizontalLayout toolBar = setupToolBar(produit, commandes);
         produitsDefini = (ArrayList<DefinitionCommande>) service.findAllDefinitionCommandeByCommande(commandes);
-        Notification.show(produitsDefini.toString());
         grid1 = setupGrid1(commandes);
         VerticalLayout layout = new VerticalLayout(toolBar, grid1);
         layout.setSizeFull();
@@ -45,10 +45,6 @@ public class DialogDefCommande extends Dialog{
                 ButtonVariant.LUMO_SUCCESS);
         save.getStyle().set("margin-right", "auto");
         this.getFooter().add(save);
-
-        Button cancelButton = new Button("Cancel", (e) -> this.close());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        this.getFooter().add(cancelButton);
     }
     private HorizontalLayout setupToolBar(ArrayList<Produit> produits, Commande commande) {
         HorizontalLayout toolBar = new HorizontalLayout();
@@ -92,6 +88,16 @@ public class DialogDefCommande extends Dialog{
         grid.removeAllColumns();
         grid.addColumn(DefinitionCommande::getProduitName).setHeader("produit");
         grid.addColumn(DefinitionCommande::getNbr).setHeader("nbr");
+        Grid.Column<DefinitionCommande> suppProduit = grid.addComponentColumn(produit -> {
+            Button suppButton = new Button("Supprimer", VaadinIcon.TRASH.create());
+            suppButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            suppButton.addClickListener(e -> {
+                produitsDefini.remove(produit);
+                grid.setItems(produitsDefini);
+                service.deleteDefinitionCommande(produit);
+            });
+            return suppButton;
+        }).setWidth("180px").setFlexGrow(0);
         grid.setItems(produitsDefini);
         setGridStyles(grid);
         grid.setSizeFull();

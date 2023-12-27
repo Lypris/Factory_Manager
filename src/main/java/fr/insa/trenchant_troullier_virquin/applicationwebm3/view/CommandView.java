@@ -66,6 +66,15 @@ public class CommandView extends VerticalLayout {
         closeEditor();
     }
 
+    public void deleteCommandeNonDefini(List<Commande> commande) {
+        for (Commande c : commande) {
+            if (c.getStatut().isEmpty() || c.getDes().isEmpty() || c.getRef().isEmpty()) {
+                service.deleteCommande(c);
+                updateList();
+                closeEditor();
+            }
+        }
+    }
     private void configureGrid() {
         grid.addClassNames("Command-grid");
         grid.setSizeFull();
@@ -116,6 +125,7 @@ public class CommandView extends VerticalLayout {
         form.setCommande(null);
         form.setVisible(false);
         removeClassName("editing");
+        deleteCommandeNonDefini(service.findAllCommande(null));
     }
 
     private void addCommande() {

@@ -133,6 +133,9 @@ public class CommandForm extends FormLayout {
             fireEvent(new CommandForm.SaveEvent(this, commande));
         }
     }
+    public void suppCommande(){
 
+        fireEvent(new CommandForm.DeleteEvent(this, binder.getBean()));
+    }
 
 }

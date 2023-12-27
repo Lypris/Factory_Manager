@@ -264,6 +264,9 @@ public class CrmService {
     public ArrayList findAllDefinitionCommandeByCommande(Commande commande) {
         return (ArrayList) definitionCommandeRepository.findByIdCommande(commande.getId());
     }
+    public void deleteDefinitionCommande(DefinitionCommande definitionCommande) {
+        definitionCommandeRepository.delete(definitionCommande);
+    }
     // type d'opération
     //////////////////////////// TYPE OPERATION ////////////////////////////
     public List<TypeOperation> findAllTypeOperation(){
