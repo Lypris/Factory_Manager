@@ -17,6 +17,7 @@ import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.awt.*;
 import java.io.ByteArrayInputStream;
@@ -35,10 +36,11 @@ public class ProductForm extends FormLayout {
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
     UploadHelper upload = new UploadHelper();
+    CrmService service;
 
     BeanValidationBinder<Produit> binder = new BeanValidationBinder<>(Produit.class);
 
-    public ProductForm(List<TypeOperation> typeoperations) {
+    public ProductForm(List<TypeOperation> typeoperations, CrmService service) {
         binder.bindInstanceFields(this);
         addClassName("product-form");
 
@@ -50,7 +52,7 @@ public class ProductForm extends FormLayout {
                 produitImage,
                 createButtonsLayout());
         defO.addClickListener(e -> {
-            DialogDefOpp dialogO = new DialogDefOpp(typeoperations);
+            DialogDefOpp dialogO = new DialogDefOpp(typeoperations, service);
             dialogO.open();
             ConfigurDialog(dialogO);
         });

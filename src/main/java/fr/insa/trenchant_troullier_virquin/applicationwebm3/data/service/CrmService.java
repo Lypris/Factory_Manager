@@ -294,4 +294,5 @@ public class CrmService {
         return operationRepository.findByProduit(produit.getId());
     }
 
+
 }

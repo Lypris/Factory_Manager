@@ -50,7 +50,7 @@ public class ProductView extends VerticalLayout {
         return content;
     }
     private void configureForm() {
-        form = new ProductForm(service.findAllTypeOperation());
+        form = new ProductForm(service.findAllTypeOperation(), service);
         form.setWidth("35em");
         form.addSaveListener(this::saveProduct);
         form.addDeleteListener(this::deleteProduct);

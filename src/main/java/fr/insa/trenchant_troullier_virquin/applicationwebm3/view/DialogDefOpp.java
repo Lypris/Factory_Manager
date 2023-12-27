@@ -13,6 +13,7 @@ import com.vaadin.flow.component.grid.dnd.GridDragEndEvent;
 import com.vaadin.flow.component.grid.dnd.GridDragStartEvent;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Div;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +21,20 @@ import java.util.List;
 public class DialogDefOpp extends Dialog {
 
     private TypeOperation draggedItem;
-    BeanValidationBinder<Produit> binder = new BeanValidationBinder<>(Produit.class);
+    CrmService service;
+    Grid<TypeOperation> grid1 = setupGrid("Opérations disponibles");
+    Grid<TypeOperation> grid2 = setupGrid("Opérations définies");
+    ArrayList<TypeOperation> typeoperations = new ArrayList<>();
+    ArrayList<TypeOperation> typeoperationsDefini = new ArrayList<>();
+    GridListDataView<TypeOperation> dataView1 = grid1.setItems(typeoperations);
+    GridListDataView<TypeOperation> dataView2 = grid2.setItems(typeoperationsDefini);
 
-    public DialogDefOpp(List<TypeOperation> typeOperations) {
-        Grid<TypeOperation> grid1 = setupGrid("Opérations disponibles");
-        Grid<TypeOperation> grid2 = setupGrid("Opérations définies");
-        ArrayList<TypeOperation> typeoperations = new ArrayList<>(typeOperations);
-        ArrayList<TypeOperation> typeoperationsDefini = new ArrayList<>();
-        GridListDataView<TypeOperation> dataView1 = grid1.setItems(typeoperations);
-        GridListDataView<TypeOperation> dataView2 = grid2.setItems(typeoperationsDefini);
+
+
+    public DialogDefOpp(List<TypeOperation> typeOperations, CrmService service){
+        this.service = service;
+        this.typeoperations.addAll(typeOperations);
+        this.typeoperationsDefini.addAll(getOperationsDefini());
 
 
         grid1.setDropMode(GridDropMode.ON_GRID);
@@ -65,6 +71,7 @@ public class DialogDefOpp extends Dialog {
 
         Button cancelButton = new Button("Cancel", (e) -> this.close());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
         this.getFooter().add(cancelButton);
     }
 
@@ -94,13 +101,16 @@ public class DialogDefOpp extends Dialog {
         container.getStyle().set("display", "flex").set("flex-direction", "row")
                 .set("flex-wrap", "wrap");
     }
-    public void setProduit(Produit produit) {
-        //permet de récupérer les opérations définies pour un produit
-        //TODO : Récupérer les opérations définies
+    //méthode arraylist qui réc
+    private ArrayList<TypeOperation> getOperationsDefini(){
+        ArrayList<TypeOperation> operationsDefini = new ArrayList<>();
+        operationsDefini.addAll(service.findAllTypeOperation());
+        return operationsDefini;
     }
     private void save() {
         //TODO : Enregistrer les opérations définies pour un produit
 
     }
+
 
 }
