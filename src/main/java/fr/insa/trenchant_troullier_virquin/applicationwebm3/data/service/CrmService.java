@@ -297,6 +297,8 @@ public class CrmService {
     public List<Operation> findOperationByProduit(Produit produit) {
         return operationRepository.findByProduit(produit.getId());
     }
-
+    public int test2(){
+        return 1;
+    }
 
 }
