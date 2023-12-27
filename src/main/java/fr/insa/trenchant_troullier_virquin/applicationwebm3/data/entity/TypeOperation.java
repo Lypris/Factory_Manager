@@ -21,4 +21,5 @@ public class TypeOperation extends AbstractEntity{
                 "des='" + des + '\'' +
                 '}';
     }
+
 }

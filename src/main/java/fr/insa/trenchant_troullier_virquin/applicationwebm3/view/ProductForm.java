@@ -52,7 +52,7 @@ public class ProductForm extends FormLayout {
                 produitImage,
                 createButtonsLayout());
         defO.addClickListener(e -> {
-            DialogDefOpp dialogO = new DialogDefOpp(typeoperations, service);
+            DialogDefOpp dialogO = new DialogDefOpp(typeoperations, service, binder.getBean());
             dialogO.open();
             ConfigurDialog(dialogO);
         });
@@ -134,8 +134,9 @@ public class ProductForm extends FormLayout {
     private void validateAndSave() {
         if (binder.isValid()) {
             Produit produit = binder.getBean();
-            byte[] imageData = upload.getImageData();
-            produit.setImage(imageData);
+            if (upload.getImageData() != null) {
+                produit.setImage(upload.getImageData());
+            }
             fireEvent(new ProductForm.SaveEvent(this, produit));
         }
     }

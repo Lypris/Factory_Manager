@@ -2,6 +2,7 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -13,11 +14,13 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.io.ByteArrayInputStream;
+import java.util.stream.Stream;
 
 @Route(value = "produit", layout = MainLayout.class)
 @PageTitle("Produits | M3 Application")
@@ -77,6 +80,15 @@ public class ProductView extends VerticalLayout {
         grid.addColumn(createProductImageRenderer()).setHeader("Image");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
+        grid.setItemDetailsRenderer(createPersonDetailsRenderer());
+    }
+
+    private ComponentRenderer<ProduitDetails, Produit> createPersonDetailsRenderer() {
+        return new ComponentRenderer<>(produit -> {
+            ProduitDetails details = new ProduitDetails(service, produit);
+            details.addClassName("product-details");
+            return details;
+        });
     }
 
     private Renderer<Produit> createProductImageRenderer() {
@@ -126,5 +138,27 @@ public class ProductView extends VerticalLayout {
         editProduit(new Produit());
     }
 
+    private static class ProduitDetails extends VerticalLayout {
+        //TODO : Afficher les opérations définies pour un produit
+        private final Grid<Operation> grid = new Grid<>(Operation.class);
+        private Produit produit;
+        private CrmService service;
+
+
+        public ProduitDetails(CrmService service, Produit produit) {
+            this.service = service;
+            this.produit = produit;
+            addClassName("produit-details");
+            setSizeFull();
+            grid.setColumns("typeOperation.des", "ordre");
+            grid.getColumns().forEach(col -> col.setAutoWidth(true));
+            add(grid);
+            setProduit(service, produit);
+        }
+
+        public void setProduit(CrmService service, Produit produit) {
+            grid.setItems(service.findOperationByProduit(produit));
+        }
+    }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -27,7 +28,7 @@ public class CrmService {
     private final MatPremiereRepository matPremiereRepository;
     private final OperationRepository operationRepository;
     private final ExemplairesRepository exemplairesRepository;
-    
+
 
     public CrmService(StatusRepository statusRepository,
                       OperateurRepository operateurRepository,
@@ -63,10 +64,7 @@ public class CrmService {
     public List<Statut> findAllStatuses(){
         return statusRepository.findAll();
     }
-    
-    public int test(){
-    return 1;
-    }
+
 
     //////////////////////////// OPERATEUR ////////////////////////////
     public List<Operateur> findAllOperateurs(String stringFilter) {
@@ -293,6 +291,14 @@ public class CrmService {
         }
         typeOperationRepository.save(typeOperation);
     }
+    public List<TypeOperation> findAllTypeOperationForProduit(Produit produit) {
+        List<Operation> operationsproduit = this.findOperationByProduit(produit);
+        List<TypeOperation> typeOperations = new ArrayList<>();
+        for (Operation operation : operationsproduit) {
+            typeOperations.add(operation.getTypeOperation());
+        }
+        return typeOperations;
+    }
     public void deleteTypeOperation(TypeOperation typeOperation) {
         typeOperationRepository.delete(typeOperation);
     }
@@ -313,10 +319,17 @@ public class CrmService {
     public List<Operation> findOperationByProduit(Produit produit) {
         return operationRepository.findByProduit(produit.getId());
     }
-    public int test2(){
-        return 1;
+    public void saveOperation(Operation operation) {
+        if (operation == null) {
+            System.err.println("Operation is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        operationRepository.save(operation);
     }
-    
+    public void deleteOperation(Operation operation) {
+        operationRepository.delete(operation);
+    }
+
     //////////////////////// Exemplaire ////////////////////////////
     public void saveExemplaire(Exemplaires exemplaire) {
         if (exemplaire == null) {
@@ -325,11 +338,11 @@ public class CrmService {
         }
         exemplairesRepository.save(exemplaire);
     }
-    
+
     public List<Exemplaires> findAllProdEnCours() {
         return exemplairesRepository.findAllProdEnCours();
     }
-    
+
     public List<Exemplaires> findAllProdFini() {
         return exemplairesRepository.findAllProdFini();
     }
