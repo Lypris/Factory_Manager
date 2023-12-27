@@ -10,6 +10,7 @@ import java.util.List;
 public interface CommandeRepository extends JpaRepository<Commande, Long> {
     @Query("select c from Commande c " +
             "where lower(c.des) like lower(concat('%', :searchTerm, '%')) " +
-            "or lower(c.ref) like lower(concat('%', :searchTerm, '%'))")
+            "or lower(c.ref) like lower(concat('%', :searchTerm, '%'))" +
+            "or lower(c.statut) like lower(concat('%', :searchTerm, '%'))")
     List<Commande> search(@Param("searchTerm") String searchTerm);
 }

@@ -5,10 +5,10 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 @Entity
 public class Commande extends AbstractEntity {
-    @NotEmpty
     private String des = "";
-    @NotEmpty
     private String ref = "";
+
+    private String statut = "";
 
     public String getDes() {
         return des;
@@ -26,11 +26,13 @@ public class Commande extends AbstractEntity {
         this.ref = ref;
     }
 
-    @Override
-    public String toString() {
-        return "Commande{" +
-                "des='" + des + '\'' +
-                ", ref='" + ref + '\'' +
-                '}';
+    public String getStatut() {
+        return statut;
     }
+
+    public void setStatut(String statut) {
+        this.statut = statut;
+    }
+
+
 }
