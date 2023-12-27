@@ -22,6 +22,8 @@ public class CrmService {
     private final CommandeRepository commandeRepository;
     private final DefinitionCommandeRepository definitionCommandeRepository;
     private final TypeOperationRepository typeOperationRepository;
+    private final MatPremiereRepository matPremiereRepository;
+    private final OperationRepository operationRepository;
 
     public CrmService(StatusRepository statusRepository,
                       OperateurRepository operateurRepository,
@@ -32,7 +34,9 @@ public class CrmService {
                       ProduitRepository produitRepositor,
                       CommandeRepository commandeRepository,
                       DefinitionCommandeRepository definitionCommandeRepository,
-                      TypeOperationRepository typeOperationRepository) {
+                      TypeOperationRepository typeOperationRepository,
+                      MatPremiereRepository matPremiereRepository,
+                      OperationRepository operationRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -43,6 +47,8 @@ public class CrmService {
         this.commandeRepository = commandeRepository;
         this.typeOperationRepository = typeOperationRepository;
         this.definitionCommandeRepository = definitionCommandeRepository;
+        this.matPremiereRepository = matPremiereRepository;
+        this.operationRepository = operationRepository;
     }
 
 
@@ -270,4 +276,22 @@ public class CrmService {
     public void deleteTypeOperation(TypeOperation typeOperation) {
         typeOperationRepository.delete(typeOperation);
     }
+    //////////////////////// MATIERE PREMIERE ////////////////////////////
+    public List<MatPremiere> findAllMatPremiere(String stringFilter) {
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return matPremiereRepository.findAll();
+        } else {
+            return matPremiereRepository.search(stringFilter);
+        }
+    }
+
+    //////////////////////// OPERATION ////////////////////////////
+    public List<Operation> findAllOperation() {
+        return operationRepository.findAll();
+    }
+    //méthode pour récupérer les opérations d'un produit
+    public List<Operation> findOperationByProduit(Produit produit) {
+        return operationRepository.findByProduit(produit.getId());
+    }
+
 }

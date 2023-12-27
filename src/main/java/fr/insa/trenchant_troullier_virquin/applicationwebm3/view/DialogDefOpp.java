@@ -3,7 +3,9 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
@@ -18,15 +20,16 @@ import java.util.List;
 public class DialogDefOpp extends Dialog {
 
     private TypeOperation draggedItem;
-
+    BeanValidationBinder<Produit> binder = new BeanValidationBinder<>(Produit.class);
 
     public DialogDefOpp(List<TypeOperation> typeOperations) {
-        Grid<TypeOperation> grid1 = setupGrid1();
-        Grid<TypeOperation> grid2 = setupGrid2();
-        ArrayList<TypeOperation> typeoperations = (ArrayList<TypeOperation>) typeOperations;
+        Grid<TypeOperation> grid1 = setupGrid("Opérations disponibles");
+        Grid<TypeOperation> grid2 = setupGrid("Opérations définies");
+        ArrayList<TypeOperation> typeoperations = new ArrayList<>(typeOperations);
         ArrayList<TypeOperation> typeoperationsDefini = new ArrayList<>();
-        GridListDataView<TypeOperation> dataView2 = grid1.setItems(typeoperationsDefini);
         GridListDataView<TypeOperation> dataView1 = grid1.setItems(typeoperations);
+        GridListDataView<TypeOperation> dataView2 = grid2.setItems(typeoperationsDefini);
+
 
         grid1.setDropMode(GridDropMode.ON_GRID);
         grid1.setRowsDraggable(true);
@@ -54,28 +57,21 @@ public class DialogDefOpp extends Dialog {
     }
 
     private void configureFooter() {
-        Button deleteButton = new Button("Enregistrer", (e) -> this.close()); //TODO : Enregistrer les opérations
-        deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
+        Button saveButton = new Button("Enregistrer", (e) -> this.close()); //TODO : Enregistrer les opérations
+        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
                 ButtonVariant.LUMO_SUCCESS);
-        deleteButton.getStyle().set("margin-right", "auto");
-        this.getFooter().add(deleteButton);
+        saveButton.getStyle().set("margin-right", "auto");
+        this.getFooter().add(saveButton);
 
         Button cancelButton = new Button("Cancel", (e) -> this.close());
         cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         this.getFooter().add(cancelButton);
     }
 
-    private static Grid<TypeOperation> setupGrid1() {
+    private static Grid<TypeOperation> setupGrid(String header) {
         Grid<TypeOperation> grid = new Grid<>(TypeOperation.class);
         grid.removeAllColumns();
-        grid.addColumn(TypeOperation::getDes).setHeader("Opérations disponibles");
-        setGridStyles(grid);
-        return grid;
-    }
-    private static Grid<TypeOperation> setupGrid2() {
-        Grid<TypeOperation> grid = new Grid<>(TypeOperation.class);
-        grid.removeAllColumns();
-        grid.addColumn(TypeOperation::getDes).setHeader("Opérations définies");
+        grid.addColumn(TypeOperation::getDes).setHeader(header);
         setGridStyles(grid);
         return grid;
     }
@@ -97,6 +93,14 @@ public class DialogDefOpp extends Dialog {
     private static void setContainerStyles(Div container) {
         container.getStyle().set("display", "flex").set("flex-direction", "row")
                 .set("flex-wrap", "wrap");
+    }
+    public void setProduit(Produit produit) {
+        //permet de récupérer les opérations définies pour un produit
+        //TODO : Récupérer les opérations définies
+    }
+    private void save() {
+        //TODO : Enregistrer les opérations définies pour un produit
+
     }
 
 }

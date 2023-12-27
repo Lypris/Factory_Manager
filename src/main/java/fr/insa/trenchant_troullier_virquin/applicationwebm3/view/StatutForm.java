@@ -7,18 +7,14 @@ import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 
 import java.util.List;
 

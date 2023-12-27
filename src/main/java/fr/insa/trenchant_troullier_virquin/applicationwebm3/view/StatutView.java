@@ -13,10 +13,9 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.time.format.DateTimeFormatter;
@@ -95,7 +94,7 @@ public class StatutView extends VerticalLayout {
                     Statut statut = statutOperateur.getStatut();
                     return (statut != null) ? statut.getName() : "";
                 })
-                .setHeader("Nom du Statut").setSortable(true);
+                .setHeader("Etat").setSortable(true);
 
         grid.addColumn(new ComponentRenderer<>(statutOperateur -> {
                     VaadinIcon icon = IconUtils.determineIconOperateur(statutOperateur.getStatut().getName());

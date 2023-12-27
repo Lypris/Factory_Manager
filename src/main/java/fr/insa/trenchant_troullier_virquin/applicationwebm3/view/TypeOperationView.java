@@ -47,7 +47,7 @@ public class TypeOperationView extends VerticalLayout {
     }
     private HorizontalLayout getToolbar(){
         Button addTypeOperationButton = new Button("Ajouter un type d'opération", click -> addTypeOperation());
-        Button ProductButton = new Button("Produits", click -> getUI().ifPresent(ui -> ui.navigate("product")));
+        Button ProductButton = new Button("Produits", click -> getUI().ifPresent(ui -> ui.navigate("produit")));
         HorizontalLayout toolbar = new HorizontalLayout(addTypeOperationButton, ProductButton);
         toolbar.addClassName("toolbar");
         return toolbar;
