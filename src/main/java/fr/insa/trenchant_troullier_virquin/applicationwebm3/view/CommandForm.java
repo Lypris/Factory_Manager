@@ -6,32 +6,56 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+
+import java.util.List;
 
 public class CommandForm extends FormLayout {
 
-    TextField ref = new TextField("Référence");
-    TextField des = new TextField("Description");
+    static TextField ref = new TextField("Référence");
+    static TextField des = new TextField("Description");
     Button addProduct = new Button("Add product");
+    static ComboBox<String> etats = new ComboBox<>("Etat");
+
     Button save = new Button("Enregistrer");
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
     BeanValidationBinder<Commande> binder = new BeanValidationBinder<>(Commande.class);
 
-    public CommandForm() {
+    public CommandForm(List<Produit> produits, CrmService service) {
         binder.bindInstanceFields(this);
         addClassName("Commande-form");
-
-        add(ref, des, addProduct,
+        etats.setItems("En cours", "En attente", "Terminée", "Annulée");
+        add(ref, des, addProduct, etats,
                 createButtonsLayout());
+        addProduct.addClickListener(e ->{
+            DialogDefCommande dialogAddProduct = new DialogDefCommande(binder.getBean(), produits, service);
+            dialogAddProduct.open();
+            configureDialog(dialogAddProduct);
+        });
     }
+
+
+
     public void setCommande(Commande commande) {
         binder.setBean(commande);
+        if (commande != null){
+            String etat = commande.getStatut();
+            if (etat != null) {
+                etats.setValue(etat);
+            }
+        }else {
+
+            etats.setValue("En cours");
+        }
     }
 
     private Component createButtonsLayout() {
@@ -42,10 +66,11 @@ public class CommandForm extends FormLayout {
         save.addClickShortcut(Key.ENTER);
         close.addClickShortcut(Key.ESCAPE);
 
-        addProduct.addClickListener(event -> AddProduct());
         save.addClickListener(event -> validateAndSave());
         delete.addClickListener(event -> fireEvent(new CommandForm.DeleteEvent(this, binder.getBean())));
-        close.addClickListener(event -> fireEvent(new CommandForm.CloseEvent(this)));
+        close.addClickListener(event -> {
+            fireEvent(new CommandForm.CloseEvent(this));
+        });
 
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
         return new HorizontalLayout(save, delete, close);
@@ -96,13 +121,18 @@ public class CommandForm extends FormLayout {
         return addListener(CommandForm.CloseEvent.class, listener);
     }
 
+    private void configureDialog(DialogDefCommande dialogAddProduct) {
+        dialogAddProduct.setSizeFull();
+    }
+
     private void validateAndSave() {
-        if(binder.isValid()) {
-            fireEvent(new CommandForm.SaveEvent(this, binder.getBean()));
+        if(!etats.isEmpty() && !des.isEmpty() && !ref.isEmpty()){
+            Commande commande = binder.getBean();
+            String etatSelectionne = etats.getValue();
+            commande.setStatut(etatSelectionne);
+            fireEvent(new CommandForm.SaveEvent(this, commande));
         }
     }
 
-    private void AddProduct() {
-        //TODO
-    }
+
 }

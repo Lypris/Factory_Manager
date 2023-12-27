@@ -1,9 +1,12 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service;
 
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.DefinitionCommande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -16,8 +19,8 @@ public class CrmService {
     private final EtatPossibleMachineRepository etatPossibleMachineRepository;
     private final EtatMachineRepository etatMachineRepository;
     private final ProduitRepository produitRepository;
-    private final MatPremiereRepository matPremiereRepository;
     private final CommandeRepository commandeRepository;
+    private final DefinitionCommandeRepository definitionCommandeRepository;
     private final TypeOperationRepository typeOperationRepository;
 
     public CrmService(StatusRepository statusRepository,
@@ -28,8 +31,8 @@ public class CrmService {
                       EtatMachineRepository etatMachineRepository,
                       ProduitRepository produitRepositor,
                       CommandeRepository commandeRepository,
-                      TypeOperationRepository typeOperationRepository,
-                      MatPremiereRepository matPremiereRepository) {
+                      DefinitionCommandeRepository definitionCommandeRepository,
+                      TypeOperationRepository typeOperationRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -39,7 +42,7 @@ public class CrmService {
         this.produitRepository = produitRepositor;
         this.commandeRepository = commandeRepository;
         this.typeOperationRepository = typeOperationRepository;
-        this.matPremiereRepository = matPremiereRepository;
+        this.definitionCommandeRepository = definitionCommandeRepository;
     }
 
 
@@ -217,14 +220,19 @@ public class CrmService {
     }
 
     public void deleteCommande(Commande commande) {
-        //List<EtatMachine> etatMachines = etatMachineRepository.findByMachine(machine);
-        commandeRepository.delete(commande);
-        /*if (etatMachines.isEmpty()) {
-            machineRepository.delete(machine);
+        List<DefinitionCommande> defCommande = definitionCommandeRepository.findByIdCommande(commande.getId());
+
+        if (defCommande.isEmpty()) {
+            commandeRepository.delete(commande);
         } else {
-            deleteAssociatedEtatMachines(etatMachines);
-            machineRepository.delete(machine);
-        }*/
+            deleteAssociateDefinitionCommande(defCommande);
+            commandeRepository.delete(commande);
+        }
+    }
+    private void deleteAssociateDefinitionCommande(List<DefinitionCommande> defCommande) {
+        for (DefinitionCommande def : defCommande) {
+            definitionCommandeRepository.delete(def);
+        }
     }
 
     public void saveCommande(Commande commande) {
@@ -234,12 +242,18 @@ public class CrmService {
         }
         commandeRepository.save(commande);
     }
-    /*private void deleteAssociatedEtatMachines(List<EtatMachine> etatMachines) {
-        for (EtatMachine etatMachine : etatMachines) {
-            etatMachineRepository.delete(etatMachine);
-        }
-    }*/
+    //////////////////////////Defintion Commande ////////////////////////////
 
+    public void saveDefinitionCommande(DefinitionCommande definitionCommande) {
+        if (definitionCommande == null) {
+            System.err.println("DefinitionCommande is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        definitionCommandeRepository.save(definitionCommande);
+    }
+    public ArrayList findAllDefinitionCommandeByCommande(Commande commande) {
+        return (ArrayList) definitionCommandeRepository.findByIdCommande(commande.getId());
+    }
     // type d'opération
     //////////////////////////// TYPE OPERATION ////////////////////////////
     public List<TypeOperation> findAllTypeOperation(){
@@ -255,14 +269,5 @@ public class CrmService {
     }
     public void deleteTypeOperation(TypeOperation typeOperation) {
         typeOperationRepository.delete(typeOperation);
-    }
-    
-    //////////////////////// MATIERE PREMIERE ////////////////////////////
-    public List<MatPremiere> findAllMatPremiere(String stringFilter) {
-        if (stringFilter == null || stringFilter.isEmpty()) {
-            return matPremiereRepository.findAll();
-        } else {
-            return matPremiereRepository.search(stringFilter);
-        }
     }
 }

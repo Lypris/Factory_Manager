@@ -3,14 +3,21 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+
+import java.util.List;
+
 @Route(value = "commande", layout = MainLayout.class)
 @PageTitle("Commande | M3 Application")
 public class CommandView extends VerticalLayout {
@@ -41,7 +48,7 @@ public class CommandView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new CommandForm();
+        form = new CommandForm(service.findAllProduits(null), service);
         form.setWidth("25em");
         form.addSaveListener(this::saveCommande);
         form.addDeleteListener(this::deleteCommande);
@@ -62,15 +69,21 @@ public class CommandView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("Command-grid");
         grid.setSizeFull();
-        grid.removeColumnByKey("des");
-        grid.removeColumnByKey("ref");
-        /*Je ne comprend pas pourquoi je dois rajouter cette ligne pour que version et id ne s'affiche pas */
-        grid.removeColumnByKey("version");
-        grid.removeColumnByKey("id");
+        grid.removeAllColumns();
         grid.addColumn(Commande::getRef)
                 .setHeader("Référence").setSortable(true);
         grid.addColumn(Commande::getDes)
                 .setHeader("Description").setSortable(true);
+
+        grid.addColumn(new ComponentRenderer<>(commande -> {
+                    VaadinIcon icon = IconUtils.determineIconCommande(commande.getStatut());
+                    Span badge = new Span(IconUtils.createIcon(icon),
+                            new Span(commande.getStatut()));
+                    IconUtils.applyStyleForStatutCommande(badge, commande.getStatut());
+                    return badge;
+                }))
+                .setHeader("Statut").setSortable(true);
+
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editCommande(event.getValue()));
@@ -92,6 +105,7 @@ public class CommandView extends VerticalLayout {
         if (commande == null) {
             closeEditor();
         } else {
+            service.saveCommande(commande);
             form.setCommande(commande);
             form.setVisible(true);
             addClassName("editing");

@@ -37,6 +37,42 @@ public class IconUtils {
                 break;
         }
     }
+    public static VaadinIcon determineIconCommande(String statut) {
+        // Exemple : associer différentes descriptions à différentes icônes
+        switch (statut.toLowerCase()) {
+            case "en cours":
+                return VaadinIcon.PROGRESSBAR;
+            case "en attente":
+                return VaadinIcon.CLOCK;
+            case "terminée":
+                return VaadinIcon.CHECK;
+            case "annulée":
+                return VaadinIcon.WARNING;
+            // Ajoutez d'autres cas selon vos besoins
+            default:
+                return VaadinIcon.QUESTION;
+        }
+    }
+    public static void applyStyleForStatutCommande(Span element, String statut) {
+        switch (statut) {
+            case "En cours":
+                element.getElement().getThemeList().add("badge ");
+                break;
+            case "En attente":
+                element.getElement().getThemeList().add("badge contrast");
+                break;
+            case "Terminée":
+                element.getElement().getThemeList().add("badge success");
+                break;
+            case "Annulée":
+                element.getElement().getThemeList().add("badge error");
+                break;
+            default:
+                // Style par défaut si l'état n'est pas reconnu
+                element.getElement().getThemeList().add("badge contrast");
+                break;
+        }
+    }
     public static VaadinIcon determineIconOperateur(String description) {
         // Exemple : associer différentes descriptions à différentes icônes
         switch (description.toLowerCase()) {
