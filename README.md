@@ -15,12 +15,12 @@ Pour sauvegarder les modifications sur le GitHub : `Team/commit` puis `Team/Remo
 
 ## TODO
 
-- [] Définir le plan d'opération de chaque produit
-- [] Définir els exemplaires avec la dernière opération subie 
-- Localiser les machines sur un plan de l’entreprise
-- une description des produits
-- une photo des produits
-- Détailler plus ou moins les types d’opération
+[ ] Définir le plan d'opération de chaque produit
+[ ] Définir els exemplaires avec la dernière opération subie 
+[ ] Localiser les machines sur un plan de l’entreprise
+[X] une description des produits
+[X] une photo des produits
+[X] Détailler plus ou moins les types d’opération
 - définir un modèle de machine : C’est le modèle de machine qui fixe les types d’opérations possibles. L’entreprise peut posséder plusieurs machines du même type.
 - Définition d’objets individuels/ exemplaire : un produit correspond à un type d’objet : par exemple un modèle de téléphone. On parlera d’exemplaire pour faire référence à un téléphone particulier (par exemple celui que vous avez dans votre poche). Tout exemplaire correspond à un produit, et pourra par exemple posséder un numéro de série.
 - Définition de la fabrication effective des objets: 
@@ -29,7 +29,7 @@ Pour sauvegarder les modifications sur le GitHub : `Team/commit` puis `Team/Remo
 - Les machines sont souvent regroupées par postes de travail. Il faudrait tenir compte du passage d’un poste de travail à un autre lorsque l’on calcule par exemple le temps de fabrication effective d’un produit en fonction des machines choisies pour le fabriquer.
 - Gestion des qualifications des opérateurs pour les différents postes de travail.
 - Etats possibles pour les machine. Chaque machine est associée à différents états possibles pour différentes plages horaire (avec par exemple un timestamp de début et un timestamp de fin avec la convention que le timestamp de fin est NULL pour un état courant sans connaissance de sa fin (panne...)).
-- Horaires des opérateurs, congés, éventuellement des maladies... Comme pour les machines, on peut définir un ensemble d’états possibles, et des plages horaires.
+[X] Horaires des opérateurs, congés, éventuellement des maladies... Comme pour les machines, on peut définir un ensemble d’états possibles, et des plages horaires.
 - Représentation/Gestion des:
 	- Stocks
 	- Produits intermédiaires ou semi-finis
