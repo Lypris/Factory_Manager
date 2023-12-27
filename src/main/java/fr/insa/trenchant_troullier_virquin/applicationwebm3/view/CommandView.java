@@ -13,9 +13,12 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Route(value = "commande", layout = MainLayout.class)
@@ -83,8 +86,16 @@ public class CommandView extends VerticalLayout {
                 .setHeader("Référence").setSortable(true);
         grid.addColumn(Commande::getDes)
                 .setHeader("Description").setSortable(true);
-        grid.addColumn(Commande::getDebut).setHeader("Date de début").setSortable(true);
-        grid.addColumn(Commande::getFin).setHeader("Date de fin").setSortable(true);
+        grid.addColumn(Commande -> {
+                    LocalDateTime debut = Commande.getDebut();
+                    return (debut != null) ? debut.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "";
+                })
+                .setHeader("Date de début").setSortable(true);
+        grid.addColumn(Commande -> {
+                    LocalDateTime fin = Commande.getFin();
+                    return (fin != null) ? fin.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "";
+                })
+                .setHeader("Date de fin").setSortable(true);
         grid.addColumn(new ComponentRenderer<>(commande -> {
                     VaadinIcon icon = IconUtils.determineIconCommande(commande.getStatut());
                     Span badge = new Span(IconUtils.createIcon(icon),
