@@ -15,12 +15,12 @@ Pour sauvegarder les modifications sur le GitHub : `Team/commit` puis `Team/Remo
 
 ## TODO
 
-[ ] Définir le plan d'opération de chaque produit
-[ ] Définir els exemplaires avec la dernière opération subie 
-[ ] Localiser les machines sur un plan de l’entreprise
-[X] une description des produits
-[X] une photo des produits
-[X] Détailler plus ou moins les types d’opération
+- [ ] Définir le plan d'opération de chaque produit
+- [ ] Définir els exemplaires avec la dernière opération subie 
+- [ ] Localiser les machines sur un plan de l’entreprise
+- [ ] une description des produits
+- [x] une photo des produits
+- [x] Détailler plus ou moins les types d’opération
 - définir un modèle de machine : C’est le modèle de machine qui fixe les types d’opérations possibles. L’entreprise peut posséder plusieurs machines du même type.
 - Définition d’objets individuels/ exemplaire : un produit correspond à un type d’objet : par exemple un modèle de téléphone. On parlera d’exemplaire pour faire référence à un téléphone particulier (par exemple celui que vous avez dans votre poche). Tout exemplaire correspond à un produit, et pourra par exemple posséder un numéro de série.
 - Définition de la fabrication effective des objets: 
