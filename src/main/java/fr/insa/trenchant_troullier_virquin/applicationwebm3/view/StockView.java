@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Exemplaires;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatPremiere;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
@@ -30,6 +31,7 @@ public class StockView extends VerticalLayout{
     private CrmService service;
     private Grid<Produit> gridProduit = new Grid<>(Produit.class);
     private Grid<MatPremiere> gridMatPremiere = new Grid<>(MatPremiere.class);
+    private Grid<Exemplaires> gridProdEnCours = new Grid<>(Exemplaires.class);
     private HorizontalLayout Bandeau = new HorizontalLayout();
     TextField filterText = new TextField();
     
@@ -39,6 +41,7 @@ public class StockView extends VerticalLayout{
         
         configureGridMatPremiere();
         configureGridProduit();
+        configureGridProdEnCours();
         
         this.b_MatPre.addClickListener((t) -> {
             this.ChangeToMatPremiere();
@@ -81,6 +84,14 @@ public class StockView extends VerticalLayout{
         this.gridMatPremiere.getColumns().forEach(col -> col.setAutoWidth(true));
         //grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
     }
+    
+    private void configureGridProdEnCours() {
+        this.gridProdEnCours.addClassName("ProdEnCOurs-grid");
+        this.gridProdEnCours.setSizeFull();
+        //TODO : Ajouter une colonne pour l'image
+        this.gridProdEnCours.getColumns().forEach(col -> col.setAutoWidth(true));
+        //grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
+    }
     private void configureGridProduit() {
         this.gridProduit.addClassName("Produit-grid");
         this.gridProduit.setSizeFull();
@@ -101,6 +112,10 @@ public class StockView extends VerticalLayout{
     private void updateListProduit() {
         gridProduit.setItems(service.findAllProduits(filterText.getValue()));
     }
+    
+    /*private void updateListProdEncours() {
+        gridProdEnCours.setItems(service.findAllExemplaires(filterText.getValue()));
+    }*/
     
     private void updateListMatPremiere() {
         gridMatPremiere.setItems(service.findAllMatPremiere(filterText.getValue()));
