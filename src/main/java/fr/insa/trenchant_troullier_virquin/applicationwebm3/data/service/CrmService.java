@@ -310,6 +310,18 @@ public class CrmService {
             return matPremiereRepository.search(stringFilter);
         }
     }
+    
+    public void saveMatPremiere(MatPremiere matPremiere) {
+         if (matPremiere == null) {
+            System.err.println("MatPremiere is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        matPremiereRepository.save(matPremiere);
+    }
+    
+    public void deleteMatPremiere(MatPremiere matPremiere) {
+        matPremiereRepository.delete(matPremiere);
+    }
 
     //////////////////////// OPERATION ////////////////////////////
     public List<Operation> findAllOperation() {
@@ -355,5 +367,7 @@ public class CrmService {
     public List<Exemplaires> findAllProdFini() {
         return exemplairesRepository.findAllProdFini();
     }
+
+    
 
 }

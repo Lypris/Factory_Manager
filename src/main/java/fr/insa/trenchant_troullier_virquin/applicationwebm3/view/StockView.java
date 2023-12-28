@@ -4,8 +4,11 @@
  */
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -30,20 +33,23 @@ public class StockView extends VerticalLayout{
     private Button b_MatPre = new Button("Matiere Première");
     private Button b_ProdFini = new Button("Produit fini");
     private Button b_ProdEnCours = new Button("En production");
+    private Button b_Ajouter_MatPre = new Button("Ajouter");
     private CrmService service;
     private Grid<Exemplaires> gridProduitFini = new Grid<>(Exemplaires.class);
     private Grid<MatPremiere> gridMatPremiere = new Grid<>(MatPremiere.class);
+    private MatPremiereForm matPremiereForm;
     private Grid<Exemplaires> gridProdEnCours = new Grid<>(Exemplaires.class);
     private HorizontalLayout Bandeau = new HorizontalLayout();
     TextField filterText = new TextField();
     
     public StockView(CrmService service) {
         this.service = service;
-        this.Bandeau.add(this.b_MatPre,this.b_ProdEnCours,this.b_ProdFini);
+        getBandeau();
         
         configureGridMatPremiere();
         configureGridProduitFini();
         configureGridProdEnCours();
+        configureMatPremiereForm();
         
         this.b_MatPre.addClickListener((t) -> {
             this.ChangeToMatPremiere();
@@ -63,17 +69,17 @@ public class StockView extends VerticalLayout{
     public void ChangeToMatPremiere(){
             this.removeAll();
             updateListMatPremiere();
-            this.add(Bandeau, this.gridMatPremiere);
+            this.add(getBandeauMatPremiere(), getContentMatPremiere());
         }
     public void ChangeToProduitFini(){
             this.removeAll();
             updateListProduit();
-            this.add(Bandeau, this.gridProduitFini);
+            this.add(getBandeau(), this.gridProduitFini);
         }
     public void ChangeToProdEnCours(){
             this.removeAll();
             updateListProdEncours();
-            this.add(Bandeau, this.gridProdEnCours);
+            this.add(getBandeau(), this.gridProdEnCours);
         }
     private void configureGridMatPremiere() {
         this.gridMatPremiere.addClassName("matpremiere-grid");
@@ -83,9 +89,48 @@ public class StockView extends VerticalLayout{
         this.gridMatPremiere.removeColumnByKey("des");
         this.gridMatPremiere.addColumn(MatPremiere::getRef).setHeader("Référence");
         this.gridMatPremiere.addColumn(MatPremiere::getDes).setHeader("Description");
-        //TODO : Ajouter une colonne pour l'image
         this.gridMatPremiere.getColumns().forEach(col -> col.setAutoWidth(true));
-        //grid.asSingleSelect().addValueChangeListener(event -> editProduit(event.getValue()));
+        this.gridMatPremiere.asSingleSelect().addValueChangeListener(event -> editMatPremiere(event.getValue()));
+    }
+    private void configureMatPremiereForm() {
+        matPremiereForm = new MatPremiereForm(service);
+        matPremiereForm.setWidth("35em");
+        matPremiereForm.setVisible(false);
+        matPremiereForm.addSaveListener(this::saveMatPremiere);
+        matPremiereForm.addDeleteListener(this::deleteMatPremiere);
+        matPremiereForm.addCloseListener(e -> closeEditor());
+    }
+    private Component getContentMatPremiere() {
+        HorizontalLayout content = new HorizontalLayout(gridMatPremiere, matPremiereForm);
+        content.setFlexGrow(2, gridMatPremiere);
+        content.setFlexGrow(1, matPremiereForm);
+        content.addClassNames("content");
+        content.setSizeFull();
+        return content;
+    }
+    private void editMatPremiere(MatPremiere matPre) {
+        if (matPre == null) {
+            closeEditor();
+        } else {
+            matPremiereForm.setMatPremiere(matPre);
+            matPremiereForm.setVisible(true);
+            addClassName("editing");
+        }
+    }
+    private void closeEditor() {
+        matPremiereForm.setMatPremiere(null);
+        matPremiereForm.setVisible(false);
+        removeClassName("editing");
+    }
+    private void saveMatPremiere(MatPremiereForm.SaveEvent event) {
+        service.saveMatPremiere(event.getMatPremiere());
+        updateListMatPremiere();
+        closeEditor();
+    }
+    private void deleteMatPremiere(MatPremiereForm.DeleteEvent event) {
+        service.deleteMatPremiere(event.getMatPremiere());
+        updateListMatPremiere();
+        closeEditor();
     }
     
     private void configureGridProdEnCours() {
@@ -130,5 +175,19 @@ public class StockView extends VerticalLayout{
     
     private void updateListMatPremiere() {
         gridMatPremiere.setItems(service.findAllMatPremiere(filterText.getValue()));
+    }
+    
+    public HorizontalLayout getBandeau(){
+        this.Bandeau.removeAll();
+        this.Bandeau.add(this.b_MatPre,this.b_ProdEnCours,this.b_ProdFini);
+        return this.Bandeau;
+    }
+    public HorizontalLayout getBandeauMatPremiere(){
+        this.Bandeau.removeAll();
+        H1 txtVide = new H1(" ");
+        this.Bandeau.setWidthFull();
+        this.Bandeau.add(this.b_MatPre,this.b_ProdEnCours,this.b_ProdFini, txtVide, this.b_Ajouter_MatPre);
+        this.Bandeau.expand(txtVide);
+        return this.Bandeau;
     }
 }
