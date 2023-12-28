@@ -165,6 +165,13 @@ public class CrmService {
             etatMachineRepository.delete(etatMachine);
         }
     }
+    public List<Machine> findAllMachineDisponibles(){
+        return machineRepository.findAllMachineDisponibles();
+    }
+    public List<Machine> findAllMachineDisponiblesForTypeOperation(Long idTypeOperation){
+        return machineRepository.findAllMachineDisponiblesForTypeOperation(idTypeOperation);
+    }
+
     //////////////////////////// ETAT MACHINE ////////////////////////////
     public List<EtatMachine> findAllEtatMachines(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
@@ -242,6 +249,9 @@ public class CrmService {
             return commandeRepository.search(stringFilter);
         }
     }
+    public Commande findCommandeById(Long id) {
+        return commandeRepository.findById(id).get();
+    }
     public long countCommande() {
         return commandeRepository.count();
     }
@@ -276,6 +286,9 @@ public class CrmService {
     public List<Commande> findAllCommandeEnAttente() {
         return commandeRepository.findAllCommandeEnAttente();
     }
+    public List<Commande> findAllCommandeEnCours() {
+        return commandeRepository.findAllCommandeEnCours();
+    }
 
     //////////////////////////Definition Commande ////////////////////////////
 
@@ -291,6 +304,9 @@ public class CrmService {
     }
     public List<DefinitionCommande> getDefinitionByProduitAndCommande(Produit produit, Commande commande) {
         return definitionCommandeRepository.findAllDefinitionByProduitAndCommande(produit, commande);
+    }
+    public DefinitionCommande getDefinitionByProduitAndCommandeUnique(Produit produit, Commande commande) {
+        return definitionCommandeRepository.findDefinitionByProduitAndCommande(produit, commande);
     }
     private void deleteAssociateDefinitionCommande(List<DefinitionCommande> defCommande) {
         for (DefinitionCommande def : defCommande) {
@@ -382,6 +398,7 @@ public class CrmService {
         exemplairesRepository.save(exemplaire);
     }
 
+
     public List<Exemplaires> findAllProdEnCours() {
         return exemplairesRepository.findAllProdEnCours();
     }
@@ -394,7 +411,12 @@ public class CrmService {
 
     public List<Exemplaires> findAllProdFini() {
         return exemplairesRepository.findAllProdFini();
-    }
+    } //récupère les exemplaires dont l'étape est null
+    public List<Exemplaires> findAllProdFiniByProduitAndCommande(Produit produit, Commande commande) {
+        int nbOperation = operationRepository.findByProduit(produit.getId()).size();
+        return exemplairesRepository.findAllProdFiniByProduitAndCommande(produit, commande, nbOperation);
+    } //récupère les exemplaires dont l'étape est null et qui sont associés à un produit et une commande donnée
+
 
     public void deleteAssociateExemplaire(List<Exemplaires> exemplaires) {
         for (Exemplaires exemplaire : exemplaires) {

@@ -9,6 +9,8 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
@@ -123,26 +125,40 @@ public class StatutForm extends FormLayout {
     }
 
     private void validateAndSave() {
-        if(binder.isValid()) {
+        if (binder.isValid()) {
             StatutOperateur statutOperateur = binder.getBean();
 
-            // Récupérer l'opérateur sélectionné dans le ComboBox
             Operateur selectedOperateur = operateurComboBox.getValue();
             if (selectedOperateur != null) {
                 statutOperateur.setOperateur(selectedOperateur);
             } else {
-                // TODO: Gérer le cas où aucun opérateur n'est sélectionné
+                Notification.show("Aucun opérateur sélectionné", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return; // Arrête la sauvegarde si aucune sélection
             }
 
-            // Récupérer le statut sélectionné dans le ComboBox
             Statut selectedStatut = statutComboBox.getValue();
             if (selectedStatut != null) {
                 statutOperateur.setStatut(selectedStatut);
             } else {
-                // TODO : Gérer le cas où aucun statut n'est sélectionné
+                Notification.show("Aucun statut sélectionné", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return; // Arrête la sauvegarde si aucune sélection
+            }
+
+            if (debut.getValue() != null && fin.getValue() != null) {
+                if (debut.getValue().isBefore(fin.getValue())) {
+                    statutOperateur.setDebut(debut.getValue());
+                    statutOperateur.setFin(fin.getValue());
+                } else {
+                    Notification.show("La date de début doit être antérieure à la date de fin", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    return; // Arrête la sauvegarde si les dates sont invalides
+                }
+            } else {
+                Notification.show("Les dates de début et de fin doivent être remplies", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_ERROR);
+                return; // Arrête la sauvegarde si les dates ne sont pas remplies
             }
 
             fireEvent(new SaveEvent(this, statutOperateur));
         }
     }
+
 }
