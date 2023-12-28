@@ -211,23 +211,12 @@ public class ProductView extends VerticalLayout {
             add(grid);
             setProduit(service, produit);
         }
-
         public void setProduit(CrmService service, Produit produit) {
             grid.setItems(service.findOperationByProduit(produit));
-            adjustGridHeight(grid);
         }
-
         public void refreshOperations() {
             grid.setItems(service.findOperationByProduit(produit));
-            adjustGridHeight(grid);
         }
-
-        private void adjustGridHeight(Grid<Operation> grid) {
-            int rowCount = service.findOperationByProduit(produit).size();
-            double gridHeight = ROW_HEIGHT * rowCount;
-            grid.setHeight(gridHeight + "em");
-        }
-
     }
 
 }
