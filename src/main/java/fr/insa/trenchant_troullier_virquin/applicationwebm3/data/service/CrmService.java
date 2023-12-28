@@ -273,7 +273,11 @@ public class CrmService {
         }else commande.setFin(null);
         commandeRepository.save(commande);
     }
-    //////////////////////////Defintion Commande ////////////////////////////
+    public List<Commande> findAllCommandeEnAttente() {
+        return commandeRepository.findAllCommandeEnAttente();
+    }
+
+    //////////////////////////Definition Commande ////////////////////////////
 
     public void saveDefinitionCommande(DefinitionCommande definitionCommande) {
         if (definitionCommande == null) {

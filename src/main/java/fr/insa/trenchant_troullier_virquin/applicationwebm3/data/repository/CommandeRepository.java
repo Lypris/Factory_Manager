@@ -13,4 +13,8 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
             "or lower(c.ref) like lower(concat('%', :searchTerm, '%'))" +
             "or lower(c.statut) like lower(concat('%', :searchTerm, '%'))")
     List<Commande> search(@Param("searchTerm") String searchTerm);
+
+    //cette requête permet de récupérer toutes les commandes en cours
+    @Query("select c from Commande c where c.statut = 'En attente'")
+    List<Commande> findAllCommandeEnAttente();
 }

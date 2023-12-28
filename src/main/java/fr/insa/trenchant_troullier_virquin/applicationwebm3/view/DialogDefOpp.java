@@ -102,8 +102,7 @@ public class DialogDefOpp extends Dialog {
             save();
             notifySaveListeners();
         });
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
-                ButtonVariant.LUMO_SUCCESS);
+        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         saveButton.getStyle().set("margin-right", "auto");
         this.getFooter().add(saveButton);
 

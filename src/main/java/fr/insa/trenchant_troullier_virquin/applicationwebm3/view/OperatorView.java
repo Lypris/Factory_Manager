@@ -4,6 +4,7 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -88,6 +89,7 @@ public class OperatorView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
 
         Button addOperateurButton = new Button("Ajouter un opérateur");
+        addOperateurButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addOperateurButton.addClickListener(click -> addOperateur());
         var toolbar = new HorizontalLayout(filterText, addOperateurButton);
         toolbar.addClassName("toolbar");

@@ -41,8 +41,7 @@ public class DialogDefCommande extends Dialog{
 
     private void configureFooter() {
         Button save = new Button("Enregistrer", (e) -> this.close());
-        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY,
-                ButtonVariant.LUMO_SUCCESS);
+        save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         save.getStyle().set("margin-right", "auto");
         this.getFooter().add(save);
     }
