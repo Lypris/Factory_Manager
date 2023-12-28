@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author laelt
@@ -31,9 +33,8 @@ public class Operation_Effectuee extends AbstractEntity{
     private Operation operation;
     
     @NotNull
-    private float début;
-    
-    private float fin;
+    private LocalDateTime debut;
+    private LocalDateTime fin;
 
     public Operation_Effectuee() {
     }
@@ -62,21 +63,19 @@ public class Operation_Effectuee extends AbstractEntity{
         this.operation = operation;
     }
 
-    public float getDébut() {
-        return début;
+    public LocalDateTime getDebut() {
+        return debut;
     }
 
-    public void setDébut(float début) {
-        this.début = début;
+    public void setDebut(LocalDateTime debut) {
+        this.debut = debut;
     }
 
-    public float getFin() {
+    public LocalDateTime getFin() {
         return fin;
     }
 
-    public void setFin(float fin) {
+    public void setFin(LocalDateTime fin) {
         this.fin = fin;
     }
-    
-    
 }
