@@ -44,7 +44,7 @@ public class MachineView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new MachineForm();
+        form = new MachineForm(service.findAllTypeOperation());
         form.setWidth("25em");
         form.addSaveListener(this::saveMachine);
         form.addDeleteListener(this::deleteMachine);
@@ -72,6 +72,8 @@ public class MachineView extends VerticalLayout {
                 .setHeader("Description").setSortable(true);
         grid.addColumn(Machine::getPuissance)
                 .setHeader("Puissance (kW)").setSortable(true);
+        grid.addColumn(Machine->Machine.getTypeOperation().getDes())
+                .setHeader("Type d'opération").setSortable(true);
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editMachine(event.getValue()));
