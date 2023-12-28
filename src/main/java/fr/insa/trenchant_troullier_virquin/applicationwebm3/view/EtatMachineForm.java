@@ -141,12 +141,12 @@ public class EtatMachineForm extends FormLayout {
                 return;
             }
 
-            if (debutValue == null || finValue == null) {
-                Notification.show("Veuillez saisir une date de début et une date de fin", 3000, Notification.Position.MIDDLE);
+            if (debutValue == null) {
+                Notification.show("Veuillez saisir une date de début", 3000, Notification.Position.MIDDLE);
                 return;
             }
 
-            if (debutValue.isAfter(finValue)) {
+            if (finValue != null && debutValue.isAfter(finValue)) {
                 Notification.show("Veuillez saisir une date de début antérieure à la date de fin", 3000, Notification.Position.MIDDLE);
                 return;
             }

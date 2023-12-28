@@ -59,6 +59,7 @@ public class CommandView extends VerticalLayout {
     }
     private void saveCommande(CommandForm.SaveEvent event) {
         service.saveCommande(event.getCommande());
+        event.getCommande().creatExemplairesAssociate(service);
         updateList();
         closeEditor();
     }
