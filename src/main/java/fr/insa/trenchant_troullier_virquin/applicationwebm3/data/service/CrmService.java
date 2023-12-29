@@ -219,14 +219,8 @@ public class CrmService {
         produitRepository.save(produit);
     }
     public void deleteProduit(Produit produit) {
-        List<DefinitionCommande> defCommande = definitionCommandeRepository.findByProduit(produit);
-        List<Exemplaires> exemplaires = exemplairesRepository.findByProduit(produit);
-        if (!exemplaires.isEmpty()) {
-            deleteAssociateExemplaire(exemplaires);
-        }
-        if (!defCommande.isEmpty()) {
-            deleteAssociateDefinitionCommande(defCommande);
-        }
+        deleteAllExemplaireEnAttenteByProduit(produit);//supprime les exemplaires associés au produit dont etape = 0
+        deleteAllDefinitionByProduit(produit);//supprime les définitions de commande associées au produit
         produitRepository.delete(produit);
     }
     public ArrayList findAllProduitByCommande(Commande commande) {
@@ -246,15 +240,9 @@ public class CrmService {
         return commandeRepository.count();
     }
 
-    public void deleteCommande(Commande commande) {
-        List<DefinitionCommande> defCommande = definitionCommandeRepository.findByIdCommande(commande.getId());
-        List<Exemplaires> exemplaires = exemplairesRepository.findByCommande(commande);
-        if (!exemplaires.isEmpty()) {
-            deleteAssociateExemplaire(exemplaires);
-        }
-        if (!defCommande.isEmpty()) {
-            deleteAssociateDefinitionCommande(defCommande);
-        }
+    public void deleteCommande(Commande commande) {//normalement appelé que si la commande est en attente
+        deleteExemplaireEnAttenteByCommande(commande);//supprime les exemplaires associés à la commande
+        deleteAllDefinitionByCommande(commande);//supprime les définitions de commande associées à la commande
         commandeRepository.delete(commande);
     }
 
@@ -292,10 +280,11 @@ public class CrmService {
     public List<DefinitionCommande> getDefinitionByProduitAndCommande(Produit produit, Commande commande) {
         return definitionCommandeRepository.findAllDefinitionByProduitAndCommande(produit, commande);
     }
-    private void deleteAssociateDefinitionCommande(List<DefinitionCommande> defCommande) {
-        for (DefinitionCommande def : defCommande) {
-            definitionCommandeRepository.delete(def);
-        }
+    public void deleteAllDefinitionByCommande(Commande commande) {
+        definitionCommandeRepository.deleteAllDefinitionByCommande(commande);
+    }
+    public void deleteAllDefinitionByProduit(Produit produit) {
+        definitionCommandeRepository.deleteAllDefinitionByProduit(produit);
     }
     public void deleteDefinitionCommande(DefinitionCommande definitionCommande) {
         definitionCommandeRepository.delete(definitionCommande);
@@ -381,34 +370,32 @@ public class CrmService {
         }
         exemplairesRepository.save(exemplaire);
     }
+    public void saveAllExemplaire(List<Exemplaires> exemplaires) {
+        if (exemplaires == null) {
+            System.err.println("Exemplaire is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        exemplairesRepository.saveAll(exemplaires);
+    }
 
-    public List<Exemplaires> findAllProdEnCours() {
-        return exemplairesRepository.findAllProdEnCours();
-    }
-    public List<Exemplaires> findAllExemplaireEnCoursByProduitAndCommande(Produit produit, Commande commande) {
-        return exemplairesRepository.findAllExemplaireEnCoursByProduitAndCommande(produit, commande);
-    }
-    public int countExemplaires(Commande commande, Produit  produit){
-        return exemplairesRepository.countExemplaires(commande, produit);
+    public int countExemplairesByCommandeAndProduit(Commande commande, Produit  produit){
+        return exemplairesRepository.countExemplairesByCommandeAndProduit(commande, produit);
     }
 
     public List<Exemplaires> findAllProdFini() {
         return exemplairesRepository.findAllProdFini();
     }
-
-    public void deleteAssociateExemplaire(List<Exemplaires> exemplaires) {
-        for (Exemplaires exemplaire : exemplaires) {
-            if (exemplaire.getEtape() == 0) { //supprime les exemplaires qui ne sont pas encore en production
-                exemplairesRepository.delete(exemplaire);
-            } else {
-                exemplaire.setCommande(null); //supprime l'id_commande les exemplaires qui sont en production
-            }
-        }
+    public List<Exemplaires> findAllProdEnCours() {
+        return exemplairesRepository.findAllProdEnCours();
     }
-    public void deleteExemplaire(Commande commande) {//supprime les exemplaires associés à la commande dont etape = 0
-        List<Exemplaires> exemplaires = exemplairesRepository.findByCommande(commande);
-        if (!exemplaires.isEmpty()) {
-            deleteAssociateExemplaire(exemplaires);
-        }
+    public void deleteExemplaireEnAttenteByCommande(Commande commande) {
+        exemplairesRepository.deleteAllExemplaireByCommande(commande);//supprime les exemplaires associés à la commande
+    }
+    public void deleteAllExemplaireEnAttenteByProduit(Produit produit) {
+        exemplairesRepository.deleteAllExemplaireEnAttenteByProduit(produit);//supprime les exemplaires associés au produit dont etape = 0
+    }
+
+    public void deleteNExemplaireByProduitAndCommande(int n, Produit produit, Commande commande) {
+        exemplairesRepository.deleteNExemplaireByProduitAndCommande(n, produit.getId(), commande.getId());
     }
 }

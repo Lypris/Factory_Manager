@@ -59,7 +59,9 @@ public class CommandView extends VerticalLayout {
     }
     private void saveCommande(CommandForm.SaveEvent event) {
         service.saveCommande(event.getCommande());
-        event.getCommande().creatExemplairesAssociate(service);
+        if(event.getCommande().getStatut().equals("En attente")){
+            event.getCommande().creatExemplairesAssociate(service);
+        }
         updateList();
         closeEditor();
     }
@@ -74,8 +76,6 @@ public class CommandView extends VerticalLayout {
         for (Commande c : commande) {
             if (c.getStatut().isEmpty() || c.getDes().isEmpty() || c.getRef().isEmpty()) {
                 service.deleteCommande(c);
-                updateList();
-                closeEditor();
             }
         }
     }
@@ -138,7 +138,6 @@ public class CommandView extends VerticalLayout {
         form.setCommande(null);
         form.setVisible(false);
         removeClassName("editing");
-        deleteCommandeNonDefini(service.findAllCommande(null));
     }
 
     private void addCommande() {
@@ -147,6 +146,7 @@ public class CommandView extends VerticalLayout {
     }
 
     private void updateList() {
+        deleteCommandeNonDefini(service.findAllCommande(null));
         grid.setItems(service.findAllCommande(filterText.getValue()));
     }
 }
