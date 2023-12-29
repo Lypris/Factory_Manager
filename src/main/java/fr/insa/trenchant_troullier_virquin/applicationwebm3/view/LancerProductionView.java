@@ -21,7 +21,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 
 import java.util.List;
 
-@Route(value = "lancerProduction/:commandeID", layout = MainLayout.class)
+@Route(value = "lancerproduction/:commandeID", layout = MainLayout.class)
 public class LancerProductionView extends VerticalLayout implements BeforeEnterObserver {
     private final CrmService service;
     private Grid<DefinitionCommande> gridDefinitionCommande;
@@ -33,6 +33,12 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     public LancerProductionView(CrmService service) {
         this.service = service;
         initGridEtapes();
+        //ajout d'un bouton pour lancer la production
+        Button lancerProductionButton = new Button("Valider la production");
+        lancerProductionButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        //Griser le bouton tant que les comboBox ne sont pas renseignées pour chaque étape
+        lancerProductionButton.setEnabled(false);
+
     }
     //Cette méthode est appelée avant que la vue ne soit affichée afin de récupérer l'ID de la commande
     @Override
@@ -62,10 +68,8 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         gridEtapes.addColumn(Operation::getOrdre).setHeader("Ordre").setSortable(true);
         // Ajoute une colonne avec un bouton dans chaque ligne
         gridEtapes.addComponentColumn(operation -> {
-            Button choixMachineBtn = new Button("Associer une machine", event -> {
-                openMachineDialog(operation);
-            });
-            return choixMachineBtn;
+            ComboBox<Machine> machineComboBox = setupMachineComboBox(operation);
+            return machineComboBox;
         });
     }
 
@@ -90,60 +94,19 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         produitComboBox.setItems(service.findAllProduitByCommande(commande));
         this.add(produitComboBox);
     }
-
-    private void openMachineDialog(Operation operation) {
-        Dialog dialog = createDialog();
-        FormLayout form = createMachineSelectionForm(dialog, operation);
-        dialog.add(form);
-        dialog.open();
-    }
-
-    private Dialog createDialog() {
-        Dialog dialog = new Dialog();
-        dialog.setCloseOnEsc(true);
-        dialog.setCloseOnOutsideClick(false);
-        return dialog;
-    }
-
-    private FormLayout createMachineSelectionForm(Dialog dialog, Operation operation) {
-        FormLayout form = new FormLayout();
-        form.addClassName("dialog-form");
-        ComboBox<Machine> machineComboBox = setupMachineComboBox(operation);
-        form.add(machineComboBox);
-        HorizontalLayout buttonsLayout = createDialogButtonsLayout(dialog, machineComboBox);
-        form.add(buttonsLayout);
-        return form;
-    }
-
     private ComboBox<Machine> setupMachineComboBox(Operation operation) {
         ComboBox<Machine> machineComboBox = new ComboBox<>("Veuillez choisir une machine disponible et compatible:");
         machineComboBox.setItemLabelGenerator(Machine::getDes);
+        machineComboBox.setAllowCustomValue(false);
+        machineComboBox.setAllowedCharPattern("[]");
+        //setwitdh("100%") pour que la liste déroulante soit aussi large que le composant
+        machineComboBox.setWidth("100%");
 
         // Récupère les machines disponibles et dont le type d'opération correspond à celui de l'étape sélectionnée
         List<Machine> machinesDisponibles = service.findAllMachineDisponiblesForTypeOperation(operation.getTypeOperation().getId());
         machineComboBox.setItems(machinesDisponibles);
 
         return machineComboBox;
-    }
-
-    private HorizontalLayout createDialogButtonsLayout(Dialog dialog, ComboBox<Machine> machineComboBox) {
-        Button confirmBtn = new Button("Confirmer", event -> {
-            // Ici tu définis ce qui se passe quand l'utilisateur clique sur le bouton
-            // Par exemple, mettre à jour la machine sélectionnée dans le grid
-            dialog.close();
-        });
-        Button cancelBtn = new Button("Annuler", event -> {
-            dialog.close();
-        });
-        confirmBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        cancelBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        H1 titre = new H1("");
-        HorizontalLayout buttonsLayout = new HorizontalLayout(confirmBtn, titre, cancelBtn);
-        buttonsLayout.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
-        buttonsLayout.expand(titre);
-        buttonsLayout.addClassNames(LumoUtility.Padding.Vertical.NONE, LumoUtility.Padding.Horizontal.MEDIUM);
-        return buttonsLayout;
     }
 
 }

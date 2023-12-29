@@ -123,7 +123,7 @@ public class ProductionView extends VerticalLayout {
                 //on redirige vers 2 pages différentes selon le statut de la commande
                 if(commande.getStatut().equals("En attente")){
                     //on redirige vers la page de lancement de la production
-                    getUI().ifPresent(ui -> ui.navigate("lancerProduction/" + commande.getId()));
+                    getUI().ifPresent(ui -> ui.navigate("lancerproduction/" + commande.getId()));
                     /*
                 commande.setStatut("En cours");
                 commande.setDebut(LocalDateTime.now());
