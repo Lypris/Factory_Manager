@@ -26,14 +26,12 @@ import java.util.List;
 public interface ExemplairesRepository extends JpaRepository<Exemplaires, Long>{
     @Query("SELECT e FROM Exemplaires e WHERE e.etape > 0 AND e.etape < 100")
     List<Exemplaires> findAllProdEnCours();
-    
+
     @Query("SELECT e FROM Exemplaires e WHERE e.etape =null ")
     List<Exemplaires> findAllProdFini();
     //méthode pour trouver les exemplaires finis d'un produit donné et d'une commande donnée
     @Query("SELECT e FROM Exemplaires e WHERE e.etape > :etapes AND e.produit = :produit AND e.commande = :commande")
     List<Exemplaires> findAllProdFiniByProduitAndCommande(Produit produit, Commande commande, int etapes);
-
-
     @Query("SELECT e FROM Exemplaires e WHERE e.commande = :commande")
     List<Exemplaires> findByCommande(Commande commande);
 
