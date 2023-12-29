@@ -12,4 +12,22 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
             "where lower(m.des) like lower(concat('%', :searchTerm, '%')) " +
             "or lower(m.ref) like lower(concat('%', :searchTerm, '%'))")
     List<Machine> search(@Param("searchTerm") String searchTerm);
+
+    @Query("SELECT m FROM Machine m " +
+            "JOIN EtatMachine em ON m.id = em.machine.id " +
+            "JOIN EtatPossibleMachine epm ON em.etat.id = epm.id " +
+            "WHERE epm.des = 'Disponible' " +
+            "AND (em.fin IS NULL OR em.fin > CURRENT_TIMESTAMP)")
+    List<Machine> findAllMachineDisponibles();
+
+    @Query("SELECT m FROM Machine m " +
+            "JOIN EtatMachine em ON m.id = em.machine.id " +
+            "JOIN EtatPossibleMachine epm ON em.etat.id = epm.id " +
+            "WHERE epm.des = 'Disponible' " +
+            "AND (em.fin IS NULL OR em.fin > CURRENT_TIMESTAMP) " +
+            "AND m.typeOperation.id = :idTypeOperation")
+    List<Machine> findAllMachineDisponiblesForTypeOperation(@Param("idTypeOperation") Long idTypeOperation);
+
+
+
 }

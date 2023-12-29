@@ -191,9 +191,7 @@ public class ProductView extends VerticalLayout {
     }
 
     public static class ProduitDetails extends VerticalLayout {
-        //TODO : Afficher les opérations définies pour un produit
         private final Grid<Operation> grid = new Grid<>(Operation.class);
-        private static final double ROW_HEIGHT = 3.5;
         private Produit produit;
         private CrmService service;
 

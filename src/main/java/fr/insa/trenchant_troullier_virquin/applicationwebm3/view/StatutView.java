@@ -169,30 +169,4 @@ public class StatutView extends VerticalLayout {
         grid.setItems(service.findAllStatutOperateurs(filterText.getValue()));
     }
 
-    // Créer une icône pour le statut
-    //TODO : à réparer
-    /*
-    private Icon createIconForStatut(Statut statut) {
-        if (statut.getName().equals("malade")) {
-            return createIcon(VaadinIcon.USER_HEART);
-        } else if (statut.getName().equals("absent")) {
-            return createIcon(VaadinIcon.CLOCK);
-        } else if (statut.getName().equals("en congé")) {
-            return createIcon(VaadinIcon.CALENDAR_ENVELOPE);
-        } else if (statut.getName().equals("présent")) {
-            return createIcon(VaadinIcon.CHECK);
-        }
-        else {
-            // Gérer les icônes pour d'autres statuts si nécessaire
-            return createIcon(VaadinIcon.INFO_CIRCLE);
-        }
-    }
-    private Icon createIcon(VaadinIcon vaadinIcon) {
-        Icon icon = vaadinIcon.create();
-        icon.getStyle().set("padding", "var(--lumo-space-xs");
-        return icon;
-    }
-
-     */
-
 }

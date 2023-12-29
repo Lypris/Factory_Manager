@@ -6,33 +6,49 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
+
+import java.util.List;
 
 public class MachineForm extends FormLayout {
     TextField ref = new TextField("Référence");
     TextField des = new TextField("Description");
     TextField puissance = new TextField("Puissance (kW)");
+    ComboBox<TypeOperation> typeOperationComboBox = new ComboBox<>("Type d'opération");
 
     Button save = new Button("Enregistrer");
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
     BeanValidationBinder<Machine> binder = new BeanValidationBinder<>(Machine.class);
 
-    public MachineForm() {
+    public MachineForm(List<TypeOperation> typeOperations) {
         binder.bindInstanceFields(this);
         addClassName("Machine-form");
+        typeOperationComboBox.setItems(typeOperations);
+        typeOperationComboBox.setItemLabelGenerator(TypeOperation::getDes);
 
-        add(ref, des, puissance,
+        add(ref, des, puissance, typeOperationComboBox,
                 createButtonsLayout());
     }
     public void setMachine(Machine Machine) {
+
         binder.setBean(Machine);
+        if (Machine != null){
+            // Récupérer le type d'opération de la Machine et le sélectionner dans le ComboBox
+            TypeOperation typeOperation = Machine.getTypeOperation();
+            if (typeOperation != null) {
+                this.typeOperationComboBox.setValue(typeOperation);
+            }
+        }
     }
 
     private Component createButtonsLayout() {
@@ -98,6 +114,14 @@ public class MachineForm extends FormLayout {
 
     private void validateAndSave() {
         if(binder.isValid()) {
+            Machine machine = binder.getBean();
+            TypeOperation selectedTypeOperation = typeOperationComboBox.getValue();
+            if (selectedTypeOperation != null) {
+                machine.setTypeOperation(selectedTypeOperation);
+            } else {
+                Notification.show("Veuillez sélectionner un type d'opération");
+                return;
+            }
             fireEvent(new MachineForm.SaveEvent(this, binder.getBean()));
         }
     }

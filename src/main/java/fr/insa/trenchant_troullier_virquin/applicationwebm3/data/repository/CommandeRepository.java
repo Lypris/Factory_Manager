@@ -17,4 +17,6 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
     //cette requête permet de récupérer toutes les commandes en cours
     @Query("select c from Commande c where c.statut = 'En attente'")
     List<Commande> findAllCommandeEnAttente();
+    @Query("select c from Commande c where c.statut = 'En cours'")
+    List<Commande> findAllCommandeEnCours();
 }

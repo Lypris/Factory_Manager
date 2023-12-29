@@ -165,6 +165,13 @@ public class CrmService {
             etatMachineRepository.delete(etatMachine);
         }
     }
+    public List<Machine> findAllMachineDisponibles(){
+        return machineRepository.findAllMachineDisponibles();
+    }
+    public List<Machine> findAllMachineDisponiblesForTypeOperation(Long idTypeOperation){
+        return machineRepository.findAllMachineDisponiblesForTypeOperation(idTypeOperation);
+    }
+
     //////////////////////////// ETAT MACHINE ////////////////////////////
     public List<EtatMachine> findAllEtatMachines(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
@@ -219,8 +226,14 @@ public class CrmService {
         produitRepository.save(produit);
     }
     public void deleteProduit(Produit produit) {
-        deleteAllExemplaireEnAttenteByProduit(produit);//supprime les exemplaires associés au produit dont etape = 0
-        deleteAllDefinitionByProduit(produit);//supprime les définitions de commande associées au produit
+        List<DefinitionCommande> defCommande = definitionCommandeRepository.findByProduit(produit);
+        List<Exemplaires> exemplaires = exemplairesRepository.findByProduit(produit);
+        if (!exemplaires.isEmpty()) {
+            deleteAssociateExemplaire(exemplaires);
+        }
+        if (!defCommande.isEmpty()) {
+            deleteAssociateDefinitionCommande(defCommande);
+        }
         produitRepository.delete(produit);
     }
     public ArrayList findAllProduitByCommande(Commande commande) {
@@ -235,6 +248,9 @@ public class CrmService {
         } else {
             return commandeRepository.search(stringFilter);
         }
+    }
+    public Commande findCommandeById(Long id) {
+        return commandeRepository.findById(id).get();
     }
     public long countCommande() {
         return commandeRepository.count();
@@ -263,6 +279,9 @@ public class CrmService {
     }
     public List<Commande> findAllCommandeEnAttente() {
         return commandeRepository.findAllCommandeEnAttente();
+    }
+    public List<Commande> findAllCommandeEnCours() {
+        return commandeRepository.findAllCommandeEnCours();
     }
 
     //////////////////////////Definition Commande ////////////////////////////
