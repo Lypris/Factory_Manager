@@ -19,6 +19,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "lancerproduction/:commandeID", layout = MainLayout.class)
@@ -29,15 +30,21 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     private ComboBox<Produit> produitComboBox;
     private Grid<Operation> gridEtapes;
     private Long commandeId;
+    // Ajoutez un champ pour stocker les ComboBox des machines
+    private List<ComboBox<Machine>> machineComboBoxes = new ArrayList<>();
+
+    private Button lancerProductionButton; // Bouton pour lancer la production
 
     public LancerProductionView(CrmService service) {
         this.service = service;
         initGridEtapes();
-        //ajout d'un bouton pour lancer la production
-        Button lancerProductionButton = new Button("Valider la production");
+        // Initialiser le bouton pour lancer la production
+        lancerProductionButton = new Button("Valider la production");
         lancerProductionButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        //Griser le bouton tant que les comboBox ne sont pas renseignées pour chaque étape
         lancerProductionButton.setEnabled(false);
+
+        // Ajouter le bouton à la vue
+        add(lancerProductionButton);
 
     }
     //Cette méthode est appelée avant que la vue ne soit affichée afin de récupérer l'ID de la commande
@@ -69,10 +76,18 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         // Ajoute une colonne avec un bouton dans chaque ligne
         gridEtapes.addComponentColumn(operation -> {
             ComboBox<Machine> machineComboBox = setupMachineComboBox(operation);
+            machineComboBoxes.add(machineComboBox); // Ajoutez le ComboBox à la liste
+            machineComboBox.addValueChangeListener(event -> updateLancerProductionButtonState());
             return machineComboBox;
         });
     }
-
+    private void updateLancerProductionButtonState() {
+        // Vérifiez si tous les ComboBox ont une machine sélectionnée
+        boolean allSelected = machineComboBoxes.stream()
+                .allMatch(comboBox -> comboBox.getValue() != null);
+        // Activez ou désactivez le bouton en fonction de la sélection
+        lancerProductionButton.setEnabled(allSelected);
+    }
     private void setupProduitComboBox(Commande commande) {
         produitComboBox = new ComboBox<>("Choisir un produit");
         produitComboBox.setItemLabelGenerator(Produit::getDes);
