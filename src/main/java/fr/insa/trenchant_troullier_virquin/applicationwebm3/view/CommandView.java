@@ -2,8 +2,10 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -119,6 +121,8 @@ public class CommandView extends VerticalLayout {
 
         Button addCommandeButton = new Button("Ajouter une Commandes");
         addCommandeButton.addClickListener(click -> addCommande());
+        addCommandeButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
+        addCommandeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         var toolbar = new HorizontalLayout(filterText, addCommandeButton);
         toolbar.addClassName("toolbar");
         return toolbar;

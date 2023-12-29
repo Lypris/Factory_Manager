@@ -2,10 +2,15 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -24,7 +29,7 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Route(value = "produit", layout = MainLayout.class)
+@Route(value = "produits", layout = MainLayout.class)
 @PageTitle("Produits | M3 Application")
 public class ProductView extends VerticalLayout {
 
@@ -133,12 +138,24 @@ public class ProductView extends VerticalLayout {
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.setWidth("25em");
         filterText.addValueChangeListener(e -> updateList());
-        Button addProductButton = new Button("Ajouter", click -> addProduct());
+        Button addProductButton = new Button("Ajouter un produit", click -> addProduct());
+        addProductButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
+        addProductButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         Button TypeOperationView = new Button("Voir les types d'opérations", click -> getUI().get().navigate("typeoperation"));
+        TypeOperationView.setIcon(new Icon(VaadinIcon.COGS));
         Button defineOperation = new Button("Définir les opérations", click -> {
-            configureDialogDefOpp();
-            defineOperation(grid.asSingleSelect().getValue());
+            if(grid.asSingleSelect().getValue() == null) {
+                Notification notification = new Notification();
+                notification.setPosition(Notification.Position.MIDDLE);
+                notification.setText("Veuillez sélectionner un produit");
+                notification.setDuration(1200);
+                notification.open();
+            } else {
+                configureDialogDefOpp();
+                defineOperation(grid.asSingleSelect().getValue());
+            }
         });
+        defineOperation.setIcon(new Icon(VaadinIcon.COGS));
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, TypeOperationView, defineOperation);
         toolbar.addClassName("toolbar");
         return toolbar;
@@ -153,6 +170,7 @@ public class ProductView extends VerticalLayout {
     private void defineOperation(Produit produit) {
         if (produit == null) {
             closeDialog();
+            Notification.show("Veuillez sélectionner un produit").setPosition(Notification.Position.MIDDLE);
         } else {
             ProduitDetails produitDetails = createProduitDetails(produit);
             dialogDefOpp.setProduit(produit);
@@ -168,15 +186,26 @@ public class ProductView extends VerticalLayout {
 
 
     private ProduitDetails createProduitDetails(Produit produit) {
-        ProduitDetails details = new ProduitDetails(service, produit);
-        details.addClassName("product-details");
-        return details;
+        if(produit == null) {
+            Notification.show("Veuillez sélectionner un produit").setPosition(Notification.Position.MIDDLE);
+            return null;
+        } else{
+            ProduitDetails details = new ProduitDetails(service, produit);
+            details.addClassName("product-details");
+            return details;
+        }
     }
 
 
 
     private ProduitDetails getProduitDetailsForProduit(Produit produit) {
-        return new ProduitDetails(service, produit);
+        if (produit == null) {
+            Notification.show("Veuillez sélectionner un produit").setPosition(Notification.Position.MIDDLE);
+            return null;
+        } else {
+            return new ProduitDetails(service, produit);
+        }
+
     }
 
     private void closeDialog() {

@@ -2,8 +2,10 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -21,7 +23,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 
-@Route(value = "statut", layout = MainLayout.class)
+@Route(value = "statuts", layout = MainLayout.class)
 @PageTitle("Statut | M3 Application")
 public class StatutView extends VerticalLayout {
 
@@ -139,8 +141,13 @@ public class StatutView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
 
         Button addContactButton = new Button("Ajouter statut");
+        addContactButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
+        addContactButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addContactButton.addClickListener(click -> addStatutOperateur());
-        var toolbar = new HorizontalLayout(filterText, addContactButton);
+        Button goToOperateurButton = new Button("Liste des Opérateurs");
+        goToOperateurButton.setIcon(new Icon(VaadinIcon.USERS));
+        goToOperateurButton.addClickListener(click ->getUI().ifPresent(ui -> ui.navigate("operateurs")));
+        var toolbar = new HorizontalLayout(filterText, addContactButton, goToOperateurButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

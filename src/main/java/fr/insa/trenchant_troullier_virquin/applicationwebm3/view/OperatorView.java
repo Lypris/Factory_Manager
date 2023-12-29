@@ -6,6 +6,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -16,7 +18,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateu
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
-@Route(value = "operateur", layout = MainLayout.class)
+@Route(value = "operateurs", layout = MainLayout.class)
 @PageTitle("Opérateurs | M3 Application")
 public class OperatorView extends VerticalLayout {
 
@@ -90,8 +92,12 @@ public class OperatorView extends VerticalLayout {
 
         Button addOperateurButton = new Button("Ajouter un opérateur");
         addOperateurButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addOperateurButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
         addOperateurButton.addClickListener(click -> addOperateur());
-        var toolbar = new HorizontalLayout(filterText, addOperateurButton);
+        Button goToStatutButton = new Button("Etats des opérateurs");
+        goToStatutButton.setIcon(new Icon(VaadinIcon.CALENDAR_USER));
+        goToStatutButton.addClickListener(click -> getUI().ifPresent(ui -> ui.navigate("statuts")));
+        var toolbar = new HorizontalLayout(filterText, addOperateurButton, goToStatutButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

@@ -2,7 +2,10 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -13,7 +16,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
-@Route(value = "machine", layout = MainLayout.class)
+@Route(value = "machines", layout = MainLayout.class)
 @PageTitle("Machines | M3 Application")
 public class MachineView extends VerticalLayout {
 
@@ -86,8 +89,13 @@ public class MachineView extends VerticalLayout {
         filterText.addValueChangeListener(e -> updateList());
 
         Button addMachineButton = new Button("Ajouter une machine");
+        addMachineButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
+        addMachineButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Button goToEtatMachineButton = new Button("Etat des machines");
+        goToEtatMachineButton.setIcon(new Icon(VaadinIcon.CALENDAR_CLOCK));
+        goToEtatMachineButton.addClickListener(click ->getUI().ifPresent(ui -> ui.navigate("etatmachines")));
         addMachineButton.addClickListener(click -> addMachine());
-        var toolbar = new HorizontalLayout(filterText, addMachineButton);
+        var toolbar = new HorizontalLayout(filterText, addMachineButton, goToEtatMachineButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

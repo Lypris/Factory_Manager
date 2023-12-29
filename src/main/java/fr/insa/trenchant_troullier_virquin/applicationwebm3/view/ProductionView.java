@@ -107,6 +107,7 @@ public class ProductionView extends VerticalLayout {
             configureLayoutDetails();
             if(commande.getStatut().equals("En cours")){
                 launch.setText("Gérer la production");
+                launch.setIcon(new com.vaadin.flow.component.icon.Icon(VaadinIcon.TOOLS));
             }
         }
         public void configureLayoutDetails(){
@@ -117,6 +118,7 @@ public class ProductionView extends VerticalLayout {
             this.expand(text);
             this.addClassNames(LumoUtility.Padding.Vertical.NONE, LumoUtility.Padding.Horizontal.MEDIUM);
             launch.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            launch.setIcon(new com.vaadin.flow.component.icon.Icon(VaadinIcon.PLAY_CIRCLE));
             launch.addClickListener(e -> {
                 //on redirige vers 2 pages différentes selon le statut de la commande
                 if(commande.getStatut().equals("En attente")){

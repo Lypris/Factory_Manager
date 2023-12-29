@@ -2,7 +2,10 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -45,7 +48,10 @@ public class TypeOperationView extends VerticalLayout {
     }
     private HorizontalLayout getToolbar(){
         Button addTypeOperationButton = new Button("Ajouter un type d'opération", click -> addTypeOperation());
-        Button ProductButton = new Button("Produits", click -> getUI().ifPresent(ui -> ui.navigate("produit")));
+        addTypeOperationButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
+        addTypeOperationButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Button ProductButton = new Button("Voir les produits", click -> getUI().ifPresent(ui -> ui.navigate("produits")));
+        ProductButton.setIcon(new Icon(VaadinIcon.PACKAGE));
         HorizontalLayout toolbar = new HorizontalLayout(addTypeOperationButton, ProductButton);
         toolbar.addClassName("toolbar");
         return toolbar;

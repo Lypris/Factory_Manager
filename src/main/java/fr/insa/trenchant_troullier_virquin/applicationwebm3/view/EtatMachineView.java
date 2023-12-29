@@ -3,6 +3,7 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
@@ -136,11 +137,18 @@ public class EtatMachineView extends VerticalLayout {
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e -> updateList());
 
-        Button addEtatButton = new Button("Ajouter EtatMachine");
+        Button addEtatButton = new Button("Ajouter un état");
         addEtatButton.addClickListener(click -> addEtatMachine());
+        addEtatButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
+        addEtatButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         Button addEtatPossibleButton = new Button("Ajouter un état possible");
         addEtatPossibleButton.addClickListener(click -> addEtatPossibleMachine());
-        var toolbar = new HorizontalLayout(filterText, addEtatButton,addEtatPossibleButton);
+        addEtatPossibleButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
+        addEtatPossibleButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        Button goToMachineButton = new Button("Machines");
+        goToMachineButton.setIcon(new Icon(VaadinIcon.COGS));
+        goToMachineButton.addClickListener(click ->getUI().ifPresent(ui -> ui.navigate("machines")));
+        var toolbar = new HorizontalLayout(filterText, addEtatButton,addEtatPossibleButton, goToMachineButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

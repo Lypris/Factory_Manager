@@ -1,15 +1,21 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.Lumo;
@@ -59,18 +65,37 @@ public class MainLayout extends AppLayout {
         getElement().executeJs(js, dark ? Lumo.DARK : Lumo.LIGHT);
     }
 
-    public void createDrawer() {
-        addToDrawer(new VerticalLayout(
-                new RouterLink("Retour à la vue principal", InitialView.class),
-                new RouterLink("Employés", OperatorView.class),
-                new RouterLink("Etat des employés", StatutView.class),
-                new RouterLink("Machines", MachineView.class),
-                new RouterLink("Etat des Machines", EtatMachineView.class),
-                new RouterLink("Produits", ProductView.class),
-                new RouterLink("Commande", CommandView.class),
-                new RouterLink("Stock", StockView.class),
-                new RouterLink("Production", ProductionView.class)
-        ));
+    private void createDrawer() {
+        Tabs tabs = new Tabs(
+                createTab(VaadinIcon.HOME, "Retour à la vue principale", InitialView.class),
+                createTab(VaadinIcon.USERS, "Employés", OperatorView.class),
+                //createTab(VaadinIcon.CALENDAR_USER, "Etat des Employés", StatutView.class),
+                createTab(VaadinIcon.COGS, "Machines", MachineView.class),
+                //createTab(VaadinIcon.CALENDAR_CLOCK, "Etat des Machines", EtatMachineView.class),
+                createTab(VaadinIcon.PACKAGE, "Produits", ProductView.class),
+                createTab(VaadinIcon.CLIPBOARD, "Commandes", CommandView.class),
+                createTab(VaadinIcon.STOCK, "Stock", StockView.class),
+                createTab(VaadinIcon.FACTORY, "Production", ProductionView.class),
+                createTab(VaadinIcon.BAR_CHART, "Statistiques", InitialView.class)
+
+
+        );
+        tabs.setOrientation(Tabs.Orientation.VERTICAL);
+        addToDrawer(tabs);
+    }
+    private Tab createTab(VaadinIcon icon, String title, Class<? extends Component> viewClass) {
+        Icon vaadinIcon = icon.create();
+        vaadinIcon.getStyle().set("box-sizing", "border-box")
+                .set("margin-inline-end", "var(--lumo-space-m)")
+                .set("margin-inline-start", "var(--lumo-space-xs)")
+                .set("padding", "var(--lumo-space-xs)");
+
+        RouterLink link = new RouterLink();
+        link.add(vaadinIcon, new Span(title));
+        link.setRoute(viewClass);
+        link.setTabIndex(-1);
+
+        return new Tab(link);
     }
     public SessionInfo getSessionInfo() {
         return sessionInfo;
