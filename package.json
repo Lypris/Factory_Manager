@@ -3,6 +3,14 @@
   "license": "UNLICENSED",
   "type": "module",
   "dependencies": {
+    "@fullcalendar/core": "6.1.9",
+    "@fullcalendar/daygrid": "6.1.9",
+    "@fullcalendar/interaction": "6.1.9",
+    "@fullcalendar/list": "6.1.9",
+    "@fullcalendar/moment": "6.1.9",
+    "@fullcalendar/moment-timezone": "6.1.9",
+    "@fullcalendar/multimonth": "6.1.9",
+    "@fullcalendar/timegrid": "6.1.9",
     "@polymer/polymer": "3.5.1",
     "@vaadin/a11y-base": "24.2.3",
     "@vaadin/accordion": "24.2.3",
@@ -69,7 +77,9 @@
     "@vaadin/virtual-list": "24.2.3",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
-    "lit": "2.8.0"
+    "lit": "2.8.0",
+    "moment": "2.29.4",
+    "moment-timezone": "0.5.40"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "5.0.2",
@@ -90,6 +100,14 @@
   },
   "vaadin": {
     "dependencies": {
+      "@fullcalendar/core": "6.1.9",
+      "@fullcalendar/daygrid": "6.1.9",
+      "@fullcalendar/interaction": "6.1.9",
+      "@fullcalendar/list": "6.1.9",
+      "@fullcalendar/moment": "6.1.9",
+      "@fullcalendar/moment-timezone": "6.1.9",
+      "@fullcalendar/multimonth": "6.1.9",
+      "@fullcalendar/timegrid": "6.1.9",
       "@polymer/polymer": "3.5.1",
       "@vaadin/a11y-base": "24.2.3",
       "@vaadin/accordion": "24.2.3",
@@ -156,7 +174,9 @@
       "@vaadin/virtual-list": "24.2.3",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
-      "lit": "2.8.0"
+      "lit": "2.8.0",
+      "moment": "2.29.4",
+      "moment-timezone": "0.5.40"
     },
     "devDependencies": {
       "@rollup/plugin-replace": "5.0.2",
@@ -175,7 +195,7 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "a50d8dfb5e84867e684ea8a81c99919f29abac2569faba37f4a68f8094d70e73"
+    "hash": "4ffb4b8409781a76a804d70492646dc17a5b5221d90013966eb501f88e1d72d5"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -244,6 +264,16 @@
     "lit": "$lit",
     "@polymer/polymer": "$@polymer/polymer",
     "@vaadin/vaadin-themable-mixin": "$@vaadin/vaadin-themable-mixin",
-    "date-fns": "$date-fns"
+    "date-fns": "$date-fns",
+    "@fullcalendar/core": "$@fullcalendar/core",
+    "@fullcalendar/list": "$@fullcalendar/list",
+    "@fullcalendar/moment-timezone": "$@fullcalendar/moment-timezone",
+    "@fullcalendar/interaction": "$@fullcalendar/interaction",
+    "@fullcalendar/timegrid": "$@fullcalendar/timegrid",
+    "moment": "$moment",
+    "@fullcalendar/daygrid": "$@fullcalendar/daygrid",
+    "moment-timezone": "$moment-timezone",
+    "@fullcalendar/multimonth": "$@fullcalendar/multimonth",
+    "@fullcalendar/moment": "$@fullcalendar/moment"
   }
 }
