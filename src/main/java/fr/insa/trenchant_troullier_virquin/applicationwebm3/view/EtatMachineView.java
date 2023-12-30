@@ -57,7 +57,7 @@ public class EtatMachineView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new EtatMachineForm(service.findAllMachines(null) , service.findAllEtatPossibleMachines());
+        form = new EtatMachineForm(service.findAllMachines(null) , service.findAllEtatPossibleMachines(), service);
         form.setWidth("25em");
         form.addSaveListener(this::saveEtatMachine);
         form.addDeleteListener(this::deleteEtatMachine);
@@ -120,11 +120,13 @@ public class EtatMachineView extends VerticalLayout {
                     return EtatMachine.getFin().toString();
                 })
                 .setHeader("Date de fin").setSortable(true)
-                .setComparator(Comparator.comparing(EtatMachine::getDebut))
+                .setComparator(Comparator.comparing(EtatMachine::getFin))
                 .setRenderer(new TextRenderer<>(EtatMachine -> {
-                    // Personnalisez le format de date selon vos besoins
+                    if(EtatMachine.getFin() == null){
+                        return "indeterminée";
+                    }
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                    return EtatMachine.getDebut().format(formatter);
+                    return EtatMachine.getFin().format(formatter);
                 }));
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->

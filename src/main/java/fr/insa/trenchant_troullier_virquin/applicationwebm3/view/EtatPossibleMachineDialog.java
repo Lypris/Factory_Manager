@@ -39,7 +39,6 @@ public class EtatPossibleMachineDialog extends Dialog {
     }
     private Button createSaveButton() {
         return new Button("Save", event -> {
-            // TODO : Ajouter la logique pour sauvegarder la description
             validateAndSave();
             close();
         });

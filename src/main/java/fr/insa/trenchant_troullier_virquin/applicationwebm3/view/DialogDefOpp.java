@@ -171,7 +171,6 @@ public class DialogDefOpp extends Dialog {
 
 
     private void save() {
-        //TODO : Enregistrer les opérations définies pour un produit
         service.deleteAllOperationForProduit(produit);
         List<Operation> operations = new ArrayList<>();
         for (TypeOperation typeOperation : typeoperationsDefini) {

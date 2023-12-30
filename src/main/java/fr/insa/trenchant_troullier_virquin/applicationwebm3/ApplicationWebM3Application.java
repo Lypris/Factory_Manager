@@ -1,8 +1,6 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3;
 
-import com.vaadin.flow.spring.annotation.EnableVaadin;
 import com.vaadin.flow.theme.Theme;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.BDD.Gestion;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.vaadin.flow.component.page.AppShellConfigurator;

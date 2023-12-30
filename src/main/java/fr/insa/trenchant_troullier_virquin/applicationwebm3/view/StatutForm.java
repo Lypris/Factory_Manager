@@ -14,10 +14,10 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class StatutForm extends FormLayout {
@@ -30,9 +30,11 @@ public class StatutForm extends FormLayout {
     Button delete = new Button("Delete");
     Button close = new Button("Cancel");
     BeanValidationBinder<StatutOperateur> binder = new BeanValidationBinder<>(StatutOperateur.class);
+    CrmService service;
 
-    public StatutForm(List<Operateur> operateurs,List<Statut> statuts) {
+    public StatutForm(List<Operateur> operateurs,List<Statut> statuts, CrmService service) {
         binder.bindInstanceFields(this);
+        this.service = service;
         addClassName("Statut-form");
         operateurComboBox.setItems(operateurs);
         operateurComboBox.setItemLabelGenerator(operateur -> operateur.getNom() + " " + operateur.getPrenom());
@@ -127,36 +129,49 @@ public class StatutForm extends FormLayout {
     private void validateAndSave() {
         if (binder.isValid()) {
             StatutOperateur statutOperateur = binder.getBean();
-
+            LocalDateTime debutValue = debut.getValue();
+            LocalDateTime finValue = fin.getValue();
             Operateur selectedOperateur = operateurComboBox.getValue();
-            if (selectedOperateur != null) {
-                statutOperateur.setOperateur(selectedOperateur);
-            } else {
-                Notification.show("Aucun opérateur sélectionné", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_ERROR);
-                return; // Arrête la sauvegarde si aucune sélection
+            Statut selectedStatutOperateur = statutComboBox.getValue();
+            if (selectedOperateur == null) {
+                Notification.show("Veuillez sélectionner un opérateur", 3000, Notification.Position.MIDDLE);
+                return;
             }
 
-            Statut selectedStatut = statutComboBox.getValue();
-            if (selectedStatut != null) {
-                statutOperateur.setStatut(selectedStatut);
-            } else {
-                Notification.show("Aucun statut sélectionné", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_ERROR);
-                return; // Arrête la sauvegarde si aucune sélection
+            if (selectedStatutOperateur == null) {
+                Notification.show("Veuillez sélectionner un état à appliquer", 3000, Notification.Position.MIDDLE);
+                return;
             }
 
-            if (debut.getValue() != null && fin.getValue() != null) {
-                if (debut.getValue().isBefore(fin.getValue())) {
-                    statutOperateur.setDebut(debut.getValue());
-                    statutOperateur.setFin(fin.getValue());
-                } else {
-                    Notification.show("La date de début doit être antérieure à la date de fin", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_ERROR);
-                    return; // Arrête la sauvegarde si les dates sont invalides
+            if (debutValue == null) {
+                Notification.show("Veuillez saisir une date de début", 3000, Notification.Position.MIDDLE);
+                return;
+            }
+
+            if (finValue != null && debutValue.isAfter(finValue)) {
+                Notification.show("Veuillez saisir une date de début antérieure à la date de fin", 3000, Notification.Position.MIDDLE);
+                return;
+            }
+            if(service.findAllStatutOperateurByOperateur(selectedOperateur) != null){
+                for(StatutOperateur etatOperateur1 : service.findAllStatutOperateurByOperateur(selectedOperateur)){
+                    if(etatOperateur1.getDebut().isBefore(debutValue) && etatOperateur1.getFin().isAfter(debutValue)){
+                        Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+                        return;
+                    }
+                    if(finValue!=null && etatOperateur1.getDebut().isBefore(finValue) && etatOperateur1.getFin().isAfter(finValue)){
+                        Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+                        return;
+                    }
+                    if(finValue!=null && etatOperateur1.getDebut().isAfter(debutValue) && etatOperateur1.getFin().isBefore(finValue)){
+                        Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+                        return;
+                    }
                 }
-            } else {
-                Notification.show("Les dates de début et de fin doivent être remplies", 3000, Notification.Position.MIDDLE).addThemeVariants(NotificationVariant.LUMO_ERROR);
-                return; // Arrête la sauvegarde si les dates ne sont pas remplies
             }
-
+            statutOperateur.setOperateur(selectedOperateur);
+            statutOperateur.setStatut(selectedStatutOperateur);
+            statutOperateur.setDebut(debutValue);
+            statutOperateur.setFin(finValue);
             fireEvent(new SaveEvent(this, statutOperateur));
         }
     }

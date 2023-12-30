@@ -54,7 +54,7 @@ public class StatutView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new StatutForm(service.findAllOperateurs(null) , service.findAllStatuses());
+        form = new StatutForm(service.findAllOperateurs(null) , service.findAllStatuses(), service);
         form.setWidth("25em");
         form.addSaveListener(this::saveStatut);
         form.addDeleteListener(this::deleteStatut);
@@ -122,11 +122,13 @@ public class StatutView extends VerticalLayout {
                     return statutOperateur.getFin().toString();
                 })
                 .setHeader("Date de fin").setSortable(true)
-                .setComparator(Comparator.comparing(StatutOperateur::getDebut))
+                .setComparator(Comparator.comparing(StatutOperateur::getFin))
                 .setRenderer(new TextRenderer<>(statutOperateur -> {
-                    // Personnalisez le format de date selon vos besoins
+                    if(statutOperateur.getFin() == null){
+                        return "indéterminée";
+                    }
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                    return statutOperateur.getDebut().format(formatter);
+                    return statutOperateur.getFin().format(formatter);
                 }));
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));

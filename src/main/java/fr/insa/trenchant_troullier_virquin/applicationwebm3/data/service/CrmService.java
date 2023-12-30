@@ -129,6 +129,9 @@ public class CrmService {
         }
         statutOperateurRepository.save(statutOperateur);
     }
+    public List<StatutOperateur> findAllStatutOperateurByOperateur(Operateur operateur) {
+        return statutOperateurRepository.findByOperateur(operateur);
+    }
 
     //////////////////////////// MACHINE ////////////////////////////
     public List<Machine> findAllMachines(String stringFilter) {
@@ -189,6 +192,9 @@ public class CrmService {
             return;
         }
         etatMachineRepository.save(etatMachine);
+    }
+    public List<EtatMachine> findAllEtatMachineByMachine(Machine machine) {
+        return etatMachineRepository.findByMachine(machine);
     }
 
 

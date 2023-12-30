@@ -24,7 +24,6 @@ public class GridProduit extends Grid<Produit>{
         this.addColumn(Produit::getRef).setHeader("Référence");
         this.addColumn(Produit::getDes).setHeader("Description");
         this.addColumn(Produit::getPrix).setHeader("Prix");
-        //TODO rajouter image
         this.getColumns().forEach(col -> col.setAutoWidth(true));
     }
     

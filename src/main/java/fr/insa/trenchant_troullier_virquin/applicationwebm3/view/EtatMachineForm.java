@@ -28,10 +28,12 @@ public class EtatMachineForm extends FormLayout {
     Button save = new Button("Save");
     Button delete = new Button("Delete");
     Button close = new Button("Cancel");
+    CrmService service;
     BeanValidationBinder<EtatMachine> binder = new BeanValidationBinder<>(EtatMachine.class);
 
-    public EtatMachineForm(List<Machine> Machines, List<EtatPossibleMachine> etatPossibleMachines) {
+    public EtatMachineForm(List<Machine> Machines, List<EtatPossibleMachine> etatPossibleMachines, CrmService service) {
         binder.bindInstanceFields(this);
+        this.service = service;
         addClassName("etat-machine-form");
         machineComboBox.setItems(Machines);
         machineComboBox.setItemLabelGenerator(Machine -> Machine.getDes() + " " + Machine.getRef());
@@ -150,11 +152,22 @@ public class EtatMachineForm extends FormLayout {
                 Notification.show("Veuillez saisir une date de début antérieure à la date de fin", 3000, Notification.Position.MIDDLE);
                 return;
             }
-
-            // TODO : Vérifier si la machine a déjà un état pour la même période
-
-
-
+            if(service.findAllEtatMachineByMachine(selectedMachine) != null){
+                for(EtatMachine etatMachine1 : service.findAllEtatMachineByMachine(selectedMachine)){
+                    if(etatMachine1.getDebut().isBefore(debutValue) && etatMachine1.getFin().isAfter(debutValue)){
+                        Notification.show("La machine a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+                        return;
+                    }
+                    if(finValue!=null && etatMachine1.getDebut().isBefore(finValue) && etatMachine1.getFin().isAfter(finValue)){
+                        Notification.show("La machine a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+                        return;
+                    }
+                    if(finValue!=null && etatMachine1.getDebut().isAfter(debutValue) && etatMachine1.getFin().isBefore(finValue)){
+                        Notification.show("La machine a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+                        return;
+                    }
+                }
+            }
             etatMachine.setMachine(selectedMachine);
             etatMachine.setEtat(selectedEtatPossibleMachine);
             etatMachine.setDebut(debutValue);

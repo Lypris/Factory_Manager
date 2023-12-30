@@ -20,22 +20,14 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.BDD.Gestion;
 
 import java.sql.SQLException;
 
 @PageTitle("Main")
 public class MainLayout extends AppLayout {
-    private SessionInfo sessionInfo;
     public MainLayout() {
         createHeader();
         createDrawer();
-        this.sessionInfo = new SessionInfo();
-        try {
-            this.sessionInfo.setConBdD(Gestion.connectSurServeur());
-        } catch (SQLException ex) {
-            H1 info = new H1("Problème BdD : " + ex.getLocalizedMessage());
-        }
     }
 
     private void createHeader() {
@@ -96,8 +88,5 @@ public class MainLayout extends AppLayout {
         link.setTabIndex(-1);
 
         return new Tab(link);
-    }
-    public SessionInfo getSessionInfo() {
-        return sessionInfo;
     }
 }
