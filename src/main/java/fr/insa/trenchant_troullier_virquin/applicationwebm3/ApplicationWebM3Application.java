@@ -13,10 +13,6 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 public class ApplicationWebM3Application extends SpringBootServletInitializer implements AppShellConfigurator{
 
     public static void main(String[] args) {
-
-/////// Pour passer du mode console au mode web, il faut inverser les commentaires sur les deux lignes suivantes ///////
-
-        //Gestion.debut();
         SpringApplication.run(ApplicationWebM3Application.class, args);
     }
 
