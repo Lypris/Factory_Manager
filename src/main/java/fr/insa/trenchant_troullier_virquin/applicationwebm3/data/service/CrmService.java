@@ -222,6 +222,14 @@ public class CrmService {
     public List<EtatMachine> findAllEtatMachineByMachine(Machine machine) {
         return etatMachineRepository.findByMachine(machine);
     }
+    
+    public EtatMachine findLastEtatMachineByMachine(Machine machine){
+        return etatMachineRepository.findEtatMachineByMachine(machine);
+    }
+    
+    public void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine){
+        etatMachineRepository.SetFinByEtatMachine(fin, etatmachine);
+    }
 
 
 
@@ -236,6 +244,10 @@ public class CrmService {
             return;
         }
         etatPossibleMachineRepository.save(etatPossibleMachine);
+    }
+    
+    public EtatPossibleMachine findEtatPossibleById (long id){
+        return etatPossibleMachineRepository.findEtatPossibleById(id);
     }
 
 
@@ -439,6 +451,14 @@ public class CrmService {
             return;
         }
         operation_EffectueeRepository.save(ope_effect);
+    }
+    
+    public boolean OperationEffectueeExiste(Exemplaires exemplaire, Operation operation){
+        if (operation_EffectueeRepository.OperationEffectueeExiste(exemplaire, operation) == null){
+            return false;
+        }else {
+            return true;
+        }
     }
     //////////////////////// Exemplaire ////////////////////////////
     public void saveExemplaire(Exemplaires exemplaire) {

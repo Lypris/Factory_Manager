@@ -21,6 +21,17 @@ public class EtatMachine extends AbstractEntity{
     @JoinColumn(name = "etat_possible_machine_id")
     private EtatPossibleMachine etat;
 
+    public EtatMachine(LocalDateTime debut, Machine machine, EtatPossibleMachine etat) {
+        this.debut = debut;
+        this.machine = machine;
+        this.etat = etat;
+    }
+
+    public EtatMachine() {
+    }
+    
+    
+
     public LocalDateTime getDebut() {
         return debut;
     }

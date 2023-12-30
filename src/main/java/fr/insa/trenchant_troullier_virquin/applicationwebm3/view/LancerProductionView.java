@@ -163,7 +163,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
             for (Exemplaires e : ListExemplaires){
                 for (Operation o : Listoperations){
-                    if (service.OperationEffectueExiste(e, o)){
+                    if (service.OperationEffectueeExiste(e, o)){
                         this.ListProduitCommande.remove(prod);
                     }
                 }
@@ -195,7 +195,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         for (Exemplaires e : ListExemplaires){
             i = 0;
             for (Operation o : Listoperations){
-                if (!service.OperationEffectueExiste(e, o)){
+                if (!service.OperationEffectueeExiste(e, o)){
                     Operation_Effectuee ope_eff = new Operation_Effectuee(e, Listmachines.get(i), o);
                     service.saveOpperation_Effectuee(ope_eff);
                 }else {
