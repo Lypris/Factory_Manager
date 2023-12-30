@@ -183,11 +183,15 @@ public class CrmService {
             etatMachineRepository.delete(etatMachine);
         }
     }
+    public List<Machine> findAllMachineByPosteDeTravail(PosteDeTravail posteDeTravail) {
+        return machineRepository.findByPosteDeTravail(posteDeTravail);
+    }
+
     public List<Machine> findAllMachineDisponibles(){
         return machineRepository.findAllMachineDisponibles();
     }
-    public List<Machine> findAllMachineDisponiblesForTypeOperation(Long idTypeOperation){
-        return machineRepository.findAllMachineDisponiblesForTypeOperation(idTypeOperation);
+    public List<Machine> findAllMachineDisponiblesForTypeOperation(TypeOperation typeOperation){
+        return machineRepository.findAllMachineDisponiblesForTypeOperation(typeOperation);
     }
 
     //////////////////////////// ETAT MACHINE ////////////////////////////
@@ -196,6 +200,13 @@ public class CrmService {
             return etatMachineRepository.findAll();
         } else {
             return etatMachineRepository.search(stringFilter);
+        }
+    }
+    public List<EtatMachine> findAllLastEtatMachines(String stringFilter){
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return etatMachineRepository.findAllByFinIsNull();
+        } else {
+            return etatMachineRepository.searchLast(stringFilter);
         }
     }
     public void deleteEtatMachine(EtatMachine etatMachine) {
@@ -498,7 +509,14 @@ public class CrmService {
 
     //////////////////////// HABILITATION ////////////////////////////
     public List<Operateur> findAllOperateursHabilitesByPosteDeTravail(PosteDeTravail posteDeTravail) {
-        return habilitationRepository.findByPosteDeTravail(posteDeTravail);
+        if (posteDeTravail == null) {return null;}
+        return habilitationRepository.findOperateursByPosteDeTravail(posteDeTravail);
+    }
+    public List<Habilitation> findAllHabilitationByPosteDeTravail(PosteDeTravail posteDeTravail) {
+        return habilitationRepository.findAllHabilitationByPosteDeTravail(posteDeTravail);
+    }
+    public void deleteHabilitation(Habilitation habilitation) {
+        habilitationRepository.delete(habilitation);
     }
     public void saveHabilitation(Habilitation habilitation) {
         if (habilitation == null) {

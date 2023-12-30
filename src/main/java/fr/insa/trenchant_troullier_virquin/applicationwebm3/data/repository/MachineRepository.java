@@ -1,6 +1,8 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository;
 
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.PosteDeTravail;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,9 +27,10 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
             "JOIN EtatPossibleMachine epm ON em.etat.id = epm.id " +
             "WHERE epm.des = 'Disponible' " +
             "AND (em.fin IS NULL OR em.fin > CURRENT_TIMESTAMP) " +
-            "AND m.typeOperation.id = :idTypeOperation")
-    List<Machine> findAllMachineDisponiblesForTypeOperation(@Param("idTypeOperation") Long idTypeOperation);
+            "AND m.typeOperation = :typeOperation")
+    List<Machine> findAllMachineDisponiblesForTypeOperation(@Param("typeOperation") TypeOperation typeOperation);
 
-
-
+    @Query("SELECT m FROM Machine m " +
+            "WHERE m.posteDeTravail = :posteDeTravail")
+    List<Machine> findByPosteDeTravail(@Param("posteDeTravail") PosteDeTravail posteDeTravail);
 }

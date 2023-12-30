@@ -177,14 +177,13 @@ public class PosteDeTravailForm extends FormLayout {
         binder.setBean(posteDeTravail);
         if (posteDeTravail != null){
             //TODO: Récupérer les opérateurs du PosteDeTravail et ajouter les badges correspondants
-            /*
+/*
             service.findAllOperateursHabilitesByPosteDeTravail(posteDeTravail).forEach(operateur -> {
                 Span badge = createOperateurBadge(operateur);
                 selectedOperateursLayout.add(badge);
                 selectedOperateurs.add(operateur);  // Ajouter à la liste des opérateurs sélectionnés
             });
-            */
-
+*/
             //TODO: Récupérer les machines du PosteDeTravail et ajouter les badges correspondants
         }
     }

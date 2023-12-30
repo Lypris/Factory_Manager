@@ -14,6 +14,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Habilitation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.PosteDeTravail;
@@ -66,6 +67,13 @@ public class PosteDeTravailView extends VerticalLayout {
     }
 
     private void deletePosteDeTravail(PosteDeTravailForm.DeleteEvent event) {
+        //supprimer les habilitations associées
+        service.findAllHabilitationByPosteDeTravail(event.getPosteDeTravail()).forEach(habilitation -> service.deleteHabilitation(habilitation));
+        //retirer l'identifiant du poste de travail des machines associées
+        service.findAllMachineByPosteDeTravail(event.getPosteDeTravail()).forEach(machine -> {
+            machine.setPosteDeTravail(null);
+            service.saveMachine(machine);
+        });
         service.deletePosteDeTravail(event.getPosteDeTravail());
         updateList();
         closeEditor();

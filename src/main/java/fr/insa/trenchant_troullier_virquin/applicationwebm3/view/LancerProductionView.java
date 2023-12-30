@@ -153,7 +153,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         machineComboBox.setWidth("100%");
 
         // Récupère les machines disponibles et dont le type d'opération correspond à celui de l'étape sélectionnée
-        List<Machine> machinesDisponibles = service.findAllMachineDisponiblesForTypeOperation(operation.getTypeOperation().getId());
+        List<Machine> machinesDisponibles = service.findAllMachineDisponiblesForTypeOperation(operation.getTypeOperation());
         machineComboBox.setItems(machinesDisponibles);
 
         return machineComboBox;

@@ -152,21 +152,26 @@ public class EtatMachineForm extends FormLayout {
                 Notification.show("Veuillez saisir une date de début antérieure à la date de fin", 3000, Notification.Position.MIDDLE);
                 return;
             }
-            if(service.findAllEtatMachineByMachine(selectedMachine) != null){
-                for(EtatMachine etatMachine1 : service.findAllEtatMachineByMachine(selectedMachine)){
-                    if(etatMachine1.getDebut().isBefore(debutValue) && etatMachine1.getFin().isAfter(debutValue)){
-                        Notification.show("La machine a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+            if (service.findAllEtatMachineByMachine(selectedMachine) != null) {
+                List<EtatMachine> etatMachines = service.findAllEtatMachineByMachine(selectedMachine);
+                etatMachines.remove(etatMachine); // on retire l'état machine en cours d'édition
+                for (EtatMachine etatMachine1 : etatMachines) {
+                    LocalDateTime finEtatMachine1 = etatMachine1.getFin() != null ? etatMachine1.getFin() : LocalDateTime.MAX;
+
+                    if (etatMachine1.getDebut().isBefore(debutValue) && finEtatMachine1.isAfter(debutValue)) {
+                        Notification.show("La machine a déjà un état qui commence avant et qui fini après le début choisi", 3000, Notification.Position.MIDDLE);
                         return;
                     }
-                    if(finValue!=null && etatMachine1.getDebut().isBefore(finValue) && etatMachine1.getFin().isAfter(finValue)){
-                        Notification.show("La machine a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+                    if (finValue != null && etatMachine1.getDebut().isBefore(finValue) && finEtatMachine1.isAfter(finValue)) {
+                        Notification.show("La machine a déjà un état qui commence avant et qui fini après la fin choisie", 3000, Notification.Position.MIDDLE);
                         return;
                     }
-                    if(finValue!=null && etatMachine1.getDebut().isAfter(debutValue) && etatMachine1.getFin().isBefore(finValue)){
-                        Notification.show("La machine a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
+                    if (finValue != null && etatMachine1.getDebut().isAfter(debutValue) && (etatMachine1.getFin() == null || etatMachine1.getFin().isBefore(finValue))) {
+                        Notification.show("La machine a déjà un état qui est entièrement dans la période choisie", 3000, Notification.Position.MIDDLE);
                         return;
                     }
                 }
+
             }
             etatMachine.setMachine(selectedMachine);
             etatMachine.setEtat(selectedEtatPossibleMachine);

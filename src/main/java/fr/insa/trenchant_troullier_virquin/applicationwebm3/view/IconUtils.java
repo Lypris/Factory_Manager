@@ -12,9 +12,11 @@ public class IconUtils {
             case "éteinte":
                 return VaadinIcon.CLOCK;
             case "en marche":
-                return VaadinIcon.CHECK;
+                return VaadinIcon.PROGRESSBAR;
             case "en panne":
                 return VaadinIcon.WARNING;
+            case "Dispobible":
+                return VaadinIcon.CHECK;
             // Ajoutez d'autres cas selon vos besoins
             default:
                 return VaadinIcon.QUESTION;
@@ -23,13 +25,16 @@ public class IconUtils {
     public static void applyStyleForEtat(Span element, String etat) {
         switch (etat) {
             case "éteinte":
-                element.getElement().getThemeList().add("badge");
+                element.getElement().getThemeList().add("badge contrast");
                 break;
             case "en marche":
-                element.getElement().getThemeList().add("badge success");
+                element.getElement().getThemeList().add("badge");
                 break;
             case "en panne":
                 element.getElement().getThemeList().add("badge error");
+                break;
+            case "Dispobible":
+                element.getElement().getThemeList().add("badge success");
                 break;
             default:
                 // Style par défaut si l'état n'est pas reconnu

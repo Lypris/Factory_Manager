@@ -78,7 +78,6 @@ public class EtatMachineView extends VerticalLayout {
     private void configureGrid() {
         grid.addClassNames("etat-machine-grid");
         grid.setSizeFull();
-        //on retire les colonnes inutiles
         grid.removeAllColumns();
         grid.addColumn(EtatMachine -> {
                     Machine Machine = EtatMachine.getMachine();
@@ -204,12 +203,8 @@ public class EtatMachineView extends VerticalLayout {
         closeEditor();
     }
 
-
-
-
-
-
     private void updateList() {
-        grid.setItems(service.findAllEtatMachines(filterText.getValue()));
+        //TODO: modifier la méthode updateList pour afficher uniquement les états des machines dont la date de fin est nulle ou supérieure à la date actuelle
+        grid.setItems(service.findAllLastEtatMachines(filterText.getValue()));
     }
 }

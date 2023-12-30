@@ -21,4 +21,12 @@ public interface EtatMachineRepository extends JpaRepository<EtatMachine, Long> 
     List<EtatMachine> findByMachine(Machine machine);
     List<EtatMachine> findAllByMachineAndDebutBeforeAndFinAfter(Machine machine, LocalDateTime debut, LocalDateTime fin);
 
+    @Query("SELECT e FROM EtatMachine e WHERE e.fin is null")
+    List<EtatMachine> findAllByFinIsNull();
+
+    @Query("SELECT e FROM EtatMachine e JOIN e.machine m " +
+            "WHERE lower(m.ref) like lower(concat('%', :searchTerm, '%'))" +
+            "or lower(m.des) like lower(concat('%', :searchTerm, '%'))"
+            + "AND e.fin is null")
+    List<EtatMachine> searchLast(@Param("searchTerm") String searchTerm);
 }
