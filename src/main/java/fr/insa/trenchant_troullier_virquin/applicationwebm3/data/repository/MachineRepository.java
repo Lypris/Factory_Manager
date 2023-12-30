@@ -26,7 +26,7 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
             "JOIN EtatMachine em ON m.id = em.machine.id " +
             "JOIN EtatPossibleMachine epm ON em.etat.id = epm.id " +
             "WHERE epm.des = 'Disponible' " +
-            "AND (em.fin IS NULL OR em.fin > CURRENT_TIMESTAMP) " +
+            "AND em.fin IS NULL " +
             "AND m.typeOperation = :typeOperation")
     List<Machine> findAllMachineDisponiblesForTypeOperation(@Param("typeOperation") TypeOperation typeOperation);
 

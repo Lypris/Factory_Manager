@@ -423,12 +423,12 @@ public class CrmService {
     //méthode pour récupérer les opérations d'un produit
     public List<Operation> findOperationByProduit(Produit produit) {
         if(produit!=null){
-            return operationRepository.findByProduit(produit.getId());
+            return operationRepository.findByProduitId(produit.getId());
         }
         else return null;
     }
     public void deleteAllOperationForProduit(Produit produit) {
-        List<Operation> operations = operationRepository.findByProduit(produit.getId());
+        List<Operation> operations = operationRepository.findByProduitId(produit.getId());
         for (Operation operation : operations) {
             operationRepository.delete(operation);
         }
@@ -454,7 +454,7 @@ public class CrmService {
     }
     
     public boolean OperationEffectueeExiste(Exemplaires exemplaire, Operation operation){
-        if (operation_EffectueeRepository.OperationEffectueeExiste(exemplaire, operation) == null){
+        if (operation_EffectueeRepository.OperationEffectueeExiste(exemplaire, operation).isEmpty()){
             return false;
         }else {
             return true;
@@ -493,7 +493,7 @@ public class CrmService {
         return exemplairesRepository.findAllProdFini();
     } //récupère les exemplaires dont l'étape est null
     public List<Exemplaires> findAllProdFiniByProduitAndCommande(Produit produit, Commande commande) {
-        int nbOperation = operationRepository.findByProduit(produit.getId()).size();
+        int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
         return exemplairesRepository.findAllProdFiniByProduitAndCommande(produit, commande, nbOperation);
     } //récupère les exemplaires dont l'étape est null et qui sont associés à un produit et une commande donnée
     

@@ -156,21 +156,39 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         this.produitComboBox.setItems(this.ListProduitCommande);
     }
     
-    private void updateProduitEnProd(){
+    //Methode pour verifier si un produit de la commande est deja en production ou pas 
+    private void updateProduitEnProd(){ 
         Commande commande = service.findCommandeById(this.commandeId);
-        List<Operation> Listoperations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
-        for(Produit prod : this.ListProduitCommande){
-            List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
+        
+        if(this.ListProduitCommande.size() == 1){
+            Notification.show(String.valueOf(this.ListProduitCommande.size()));
+            List<Operation> Listoperations = service.findOperationByProduit(this.ListProduitCommande.get(0));
+            List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, this.ListProduitCommande.get(0));
             for (Exemplaires e : ListExemplaires){
                 for (Operation o : Listoperations){
-                    if (service.OperationEffectueeExiste(e, o)){
-                        this.ListProduitCommande.remove(prod);
+                    if (service.OperationEffectueeExiste(e, o) && !this.ListProduitCommande.isEmpty()){
+                        this.ListProduitCommande.remove(this.ListProduitCommande.get(0));
                     }
                 }
             }
+        }else if(this.ListProduitCommande.size() > 1){
+            for(Produit prod : this.ListProduitCommande){
+                List<Operation> Listoperations = service.findOperationByProduit(prod);
+                List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
+                for (Exemplaires e : ListExemplaires){
+                    for (Operation o : Listoperations){
+                        if (service.OperationEffectueeExiste(e, o)){
+                            this.ListProduitCommande.remove(prod);
+                        }
+                    }
+                }
+            }
+        }else {
+            Notification.show("Il n'y a pas de produit dans cette commande");
         }
         updateProduitComboBox();
     }
+    
     private ComboBox<Machine> setupMachineComboBox(Operation operation) {
         ComboBox<Machine> machineComboBox = new ComboBox<>("Veuillez choisir une machine disponible et compatible:");
         machineComboBox.setItemLabelGenerator(Machine::getDes);

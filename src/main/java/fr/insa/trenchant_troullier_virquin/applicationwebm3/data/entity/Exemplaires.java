@@ -58,4 +58,11 @@ public class Exemplaires extends AbstractEntity{
     public void setEtape(int etape) {
         this.etape = etape;
     }
+
+    @Override
+    public String toString() {
+        return "Exemplaires{"+"Id"+ this.getId() + "produit=" + produit + ", commande=" + commande + ", etape=" + etape + '}';
+    }
+    
+    
 }
