@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Operation_Effectuee extends AbstractEntity{
     
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "exemplaire_id")
     private Exemplaires exemplaire;
     
@@ -32,12 +32,18 @@ public class Operation_Effectuee extends AbstractEntity{
     @JoinColumn(name = "operation_id")
     private Operation operation;
     
-    @NotNull
     private LocalDateTime debut;
     private LocalDateTime fin;
 
     public Operation_Effectuee() {
     }
+
+    public Operation_Effectuee(Exemplaires exemplaire, Machine machine, Operation operation) {
+        this.exemplaire = exemplaire;
+        this.machine = machine;
+        this.operation = operation;
+    }
+    
 
     public Exemplaires getExemplaire() {
         return exemplaire;

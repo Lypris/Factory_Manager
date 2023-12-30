@@ -47,6 +47,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         lancerProductionButton.addClickListener(event -> {
             //méthode pour lancer la production
             lancerProd();
+            Notification.show("Aie");
         });
 
         // Ajouter le bouton à la vue
@@ -56,20 +57,23 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
 
     private void lancerProd() {
         // Récupérer les machines sélectionnées
-        List<Machine> machines = new ArrayList<>();
+        List<Machine> Listmachines = new ArrayList<>();
         for (ComboBox<Machine> comboBox : machineComboBoxes) {
-            machines.add(comboBox.getValue());
+            Listmachines.add(comboBox.getValue());
         }
         // Afficher une notification
         Notification.show("Machines sélectionnées");
-        Notification.show(machines.toString());
+        Notification.show(Listmachines.toString());
         //Récupérer les opérations
-        List<Operation> operations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
+        List<Operation> Listoperations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
         Notification.show("Opérations récupérées");
-        Notification.show(operations.toString());
+        Notification.show(Listoperations.toString());
+        //Recuperer le porduit
+        Produit prod = produitComboBox.getValue();
         //TODO: Vérifier qu'il y ait suffisamment de matière première
 
         //TODO: créer les OperationEffectuee associées
+        CreerToutesOperationEffectuee(commandeId, prod, Listoperations, Listmachines);
 
         //TODO: Lancer la production
         //service.lancerProduction(commandeId, machines);
@@ -152,6 +156,23 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         machineComboBox.setItems(machinesDisponibles);
 
         return machineComboBox;
+    }
+
+    private void CreerToutesOperationEffectuee(Long commandeId, Produit prod, List<Operation> Listoperations, List<Machine> Listmachines) {
+        //methdoe qui récupere la commande avec l'ID
+        Commande commande = service.findCommandeById(commandeId);
+        //Methode qui récupère tous les exemplaires
+        List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
+        int i = 0;
+        for (Exemplaires e : ListExemplaires){
+            i = 0;
+            for (Operation o : Listoperations){
+                Operation_Effectuee ope_eff = new Operation_Effectuee(e, Listmachines.get(i), o);
+                service.saveOpperation_Effectuee(ope_eff);
+                i++;
+            }
+        }
+        
     }
 
 }

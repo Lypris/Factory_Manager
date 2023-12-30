@@ -76,7 +76,6 @@ public class Commande extends AbstractEntity {
                     Exemplaires exemplaire = new Exemplaires();
                     exemplaire.setProduit(d.getProduit());
                     exemplaire.setCommande(this);
-                    exemplaire.setOperation_effectuee(null);
                     exemplaire.setEtape(0);
                     nouveauxExemplaires.add(exemplaire);
                 }

@@ -34,6 +34,9 @@ public interface ExemplairesRepository extends JpaRepository<Exemplaires, Long>{
     List<Exemplaires> findAllProdFiniByProduitAndCommande(Produit produit, Commande commande, int etapes);
     @Query("SELECT e FROM Exemplaires e WHERE e.commande = :commande")
     List<Exemplaires> findByCommande(Commande commande);
+    
+    @Query("SELECT e FROM Exemplaires e WHERE e.commande = :commande AND e.produit = :produit")
+    List<Exemplaires> findByCommandeAndProduit(Commande commande, Produit produit);
 
     @Transactional
     @Modifying

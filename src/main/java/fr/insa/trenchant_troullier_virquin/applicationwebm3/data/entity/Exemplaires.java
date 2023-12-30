@@ -25,9 +25,9 @@ public class Exemplaires extends AbstractEntity{
     @JoinColumn(name = "commande_id")
     private Commande commande;
     
-    @OneToOne
+    /*@OneToOne
     @JoinColumn(name = "OperationEffectuee_id")
-    private Operation_Effectuee operation_effectuee;
+    private Operation_Effectuee operation_effectuee;*/
     
     private int etape;
     
@@ -49,14 +49,6 @@ public class Exemplaires extends AbstractEntity{
 
     public void setCommande(Commande commande) {
         this.commande = commande;
-    }
-
-    public Operation_Effectuee getOperation_effectuee() {
-        return operation_effectuee;
-    }
-
-    public void setOperation_effectuee(Operation_Effectuee operation_effectuee) {
-        this.operation_effectuee = operation_effectuee;
     }
 
     public int getEtape() {

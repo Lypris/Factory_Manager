@@ -31,6 +31,7 @@ public class CrmService {
     private final PosteDeTravailRepository posteDeTravailRepository;
     private final UtiliseRepository utiliseRepository;
     private final HabilitationRepository habilitationRepository;
+    private final Operation_EffectueeRepository operation_EffectueeRepository;
 
 
     public CrmService(StatusRepository statusRepository,
@@ -48,7 +49,8 @@ public class CrmService {
                       ExemplairesRepository exemplairesRepository,
                       PosteDeTravailRepository posteDeTravailRepository,
                       UtiliseRepository utiliseRepository,
-                      HabilitationRepository habilitationRepository) {
+                      HabilitationRepository habilitationRepository,
+                      Operation_EffectueeRepository operation_EffectueeRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -65,6 +67,7 @@ public class CrmService {
         this.posteDeTravailRepository = posteDeTravailRepository;
         this.utiliseRepository = utiliseRepository;
         this.habilitationRepository = habilitationRepository;
+        this.operation_EffectueeRepository = operation_EffectueeRepository;
     }
 
 
@@ -392,7 +395,15 @@ public class CrmService {
     public void deleteOperation(Operation operation) {
         operationRepository.delete(operation);
     }
-
+    
+    //////////////////////// OPERATION EFFECTUEE ////////////////////////////
+    public void saveOpperation_Effectuee(Operation_Effectuee ope_effect) {
+        if (ope_effect == null) {
+            System.err.println("Machine is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        operation_EffectueeRepository.save(ope_effect);
+    }
     //////////////////////// Exemplaire ////////////////////////////
     public void saveExemplaire(Exemplaires exemplaire) {
         if (exemplaire == null) {
@@ -429,6 +440,14 @@ public class CrmService {
         int nbOperation = operationRepository.findByProduit(produit.getId()).size();
         return exemplairesRepository.findAllProdFiniByProduitAndCommande(produit, commande, nbOperation);
     } //récupère les exemplaires dont l'étape est null et qui sont associés à un produit et une commande donnée
+    
+    public List<Exemplaires> findAllByCommande(Commande commande){
+        return exemplairesRepository.findByCommande(commande);
+    }
+    
+    public List<Exemplaires> findAllByCommandeAndProduit(Commande commande, Produit produit){
+        return exemplairesRepository.findByCommandeAndProduit(commande, produit);
+    }
 
     public void deleteNExemplaireByProduitAndCommande(int n, Produit produit, Commande commande) {
         exemplairesRepository.deleteNExemplaireByProduitAndCommande(n, produit.getId(), commande.getId());
