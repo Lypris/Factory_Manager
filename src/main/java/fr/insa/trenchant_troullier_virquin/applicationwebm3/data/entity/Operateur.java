@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "operateur")
 public class Operateur extends AbstractEntity {
@@ -19,6 +22,8 @@ public class Operateur extends AbstractEntity {
     private String mail = "";
     @NotEmpty
     private String tel = "";
+    @OneToMany(mappedBy = "operateur")
+    private Set<Utilise> utilisations = new HashSet<>();
 
     @Override
     public String toString() {

@@ -18,16 +18,13 @@ public class Machine extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "type_operation_id")
     private TypeOperation typeOperation;
+    @ManyToOne
+    @JoinColumn(name = "poste_de_travail_id")
+    private PosteDeTravail posteDeTravail;
 
     @Override
     public String toString() {
-        return "Machine{" +
-                "ref='" + ref + '\'' +
-                ", des='" + des + '\'' +
-                ", puissance=" + puissance +
-                ", durée=" + durée +
-                ", typeOperation=" + typeOperation +
-                '}';
+        return  ref + " | " + des;
     }
 
     public String getRef() {

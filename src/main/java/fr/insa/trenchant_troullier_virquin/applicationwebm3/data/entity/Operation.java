@@ -23,6 +23,15 @@ public class Operation extends AbstractEntity{
     public Operation() {
     }
 
+    @Override
+    public String toString() {
+        return "Operation{" +
+                "produit=" + produit.getDes() +
+                ", typeOperation=" + typeOperation.getDes() +
+                ", ordre=" + ordre +
+                '}';
+    }
+
     public Produit getProduit() {
         return produit;
     }

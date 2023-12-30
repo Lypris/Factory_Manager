@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -21,6 +22,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Route(value = "lancerproduction/:commandeID", layout = MainLayout.class)
 public class LancerProductionView extends VerticalLayout implements BeforeEnterObserver {
@@ -42,11 +44,36 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         lancerProductionButton = new Button("Valider la production");
         lancerProductionButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         lancerProductionButton.setEnabled(false);
+        lancerProductionButton.addClickListener(event -> {
+            //méthode pour lancer la production
+            lancerProd();
+        });
 
         // Ajouter le bouton à la vue
         add(lancerProductionButton);
 
     }
+
+    private void lancerProd() {
+        // Récupérer les machines sélectionnées
+        List<Machine> machines = new ArrayList<>();
+        for (ComboBox<Machine> comboBox : machineComboBoxes) {
+            machines.add(comboBox.getValue());
+        }
+        // Afficher une notification
+        Notification.show("Machines sélectionnées");
+        Notification.show(machines.toString());
+        //Récupérer les opérations
+        List<Operation> operations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
+        Notification.show("Opérations récupérées");
+        Notification.show(operations.toString());
+
+        //TODO: Lancer la production
+        //service.lancerProduction(commandeId, machines);
+        // Afficher une notification
+        Notification.show("Production lancée");
+    }
+
     //Cette méthode est appelée avant que la vue ne soit affichée afin de récupérer l'ID de la commande
     @Override
     public void beforeEnter(BeforeEnterEvent event) {

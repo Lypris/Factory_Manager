@@ -28,6 +28,9 @@ public class CrmService {
     private final MatPremiereRepository matPremiereRepository;
     private final OperationRepository operationRepository;
     private final ExemplairesRepository exemplairesRepository;
+    private final PosteDeTravailRepository posteDeTravailRepository;
+    private final UtiliseRepository utiliseRepository;
+    private final HabilitationRepository habilitationRepository;
 
 
     public CrmService(StatusRepository statusRepository,
@@ -42,7 +45,10 @@ public class CrmService {
                       TypeOperationRepository typeOperationRepository,
                       MatPremiereRepository matPremiereRepository,
                       OperationRepository operationRepository,
-                      ExemplairesRepository exemplairesRepository) {
+                      ExemplairesRepository exemplairesRepository,
+                      PosteDeTravailRepository posteDeTravailRepository,
+                      UtiliseRepository utiliseRepository,
+                      HabilitationRepository habilitationRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -56,6 +62,9 @@ public class CrmService {
         this.matPremiereRepository = matPremiereRepository;
         this.operationRepository = operationRepository;
         this.exemplairesRepository = exemplairesRepository;
+        this.posteDeTravailRepository = posteDeTravailRepository;
+        this.utiliseRepository = utiliseRepository;
+        this.habilitationRepository = habilitationRepository;
     }
 
 
@@ -423,5 +432,29 @@ public class CrmService {
 
     public void deleteNExemplaireByProduitAndCommande(int n, Produit produit, Commande commande) {
         exemplairesRepository.deleteNExemplaireByProduitAndCommande(n, produit.getId(), commande.getId());
+    }
+    //////////////////////// POSTE DE TRAVAIL ////////////////////////////
+    public List<PosteDeTravail> findAllPosteDeTravail(String stringFilter) {
+        if (stringFilter == null || stringFilter.isEmpty()) {
+            return posteDeTravailRepository.findAll();
+        } else {
+            return posteDeTravailRepository.search(stringFilter);
+        }
+    }
+    public void savePosteDeTravail(PosteDeTravail posteDeTravail) {
+        if (posteDeTravail == null) {
+            System.err.println("PosteDeTravail is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        posteDeTravailRepository.save(posteDeTravail);
+    }
+    public void deletePosteDeTravail(PosteDeTravail posteDeTravail) {
+        posteDeTravailRepository.delete(posteDeTravail);
+    }
+
+    //////////////////////// HABILITATION ////////////////////////////
+    public List<Operateur> findAllOperateursHabilitesByPosteDeTravail(PosteDeTravail posteDeTravail) {
+        return habilitationRepository.findByPosteDeTravail(posteDeTravail);
+
     }
 }
