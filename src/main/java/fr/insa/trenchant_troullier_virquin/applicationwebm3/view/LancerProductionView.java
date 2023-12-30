@@ -19,6 +19,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+import java.time.LocalDateTime;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     private ComboBox<Produit> produitComboBox;
     private Grid<Operation> gridEtapes;
     private Long commandeId;
+    private List<Produit> ListProduitCommande = new ArrayList<>();
     // Ajoutez un champ pour stocker les ComboBox des machines
     private List<ComboBox<Machine>> machineComboBoxes = new ArrayList<>();
 
@@ -47,16 +49,16 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         lancerProductionButton.setEnabled(false);
         lancerProductionButton.addClickListener(event -> {
             //méthode pour lancer la production
-            lancerProd();
-            Notification.show("Aie");
+            lancerProdProduit(produitComboBox.getValue());
         });
+        
 
         // Ajouter le bouton à la vue
         add(lancerProductionButton);
 
     }
 
-    private void lancerProd() {
+    private void lancerProdProduit(Produit produit) {
         // Récupérer les machines sélectionnées
         List<Machine> Listmachines = new ArrayList<>();
         for (ComboBox<Machine> comboBox : machineComboBoxes) {
@@ -69,15 +71,18 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         List<Operation> Listoperations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
         Notification.show("Opérations récupérées");
         Notification.show(Listoperations.toString());
-        //Recuperer le porduit
-        Produit prod = produitComboBox.getValue();
         //TODO: Vérifier qu'il y ait suffisamment de matière première
 
-        //TODO: créer les OperationEffectuee associées
-        CreerToutesOperationEffectuee(commandeId, prod, Listoperations, Listmachines);
-
-        //TODO: Lancer la production
+        //créer toutes les OperationEffectuee associées
+        CreerToutesOperationEffectuee(commandeId, produit, Listoperations, Listmachines);
+        //Change l'etat des machine pour les mettre en production
+        MettreMachinEnProduction(Listmachines);
+        //Supprime le produit qui vient d'etre validé
+        this.ListProduitCommande.remove(produit);
+        updateProduitComboBox();       
+        
         //service.lancerProduction(commandeId, machines);
+        
         // Afficher une notification
         Notification.show("Production lancée");
     }
@@ -86,6 +91,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         commandeId = Long.valueOf(event.getRouteParameters().get("commandeID").orElse("0"));
+        this.ListProduitCommande = this.service.findAllProduitByCommande(this.service.findCommandeById(commandeId));
         if (commandeId > 0) {
             Commande commande = service.findCommandeById(commandeId);
             if (commande != null) {
@@ -141,8 +147,29 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             }
         });
         // Remplir le ComboBox avec les produits disponibles
-        produitComboBox.setItems(service.findAllProduitByCommande(commande));
+        produitComboBox.setItems(this.ListProduitCommande);
         this.add(produitComboBox);
+        updateProduitEnProd();
+    }
+    
+    private void updateProduitComboBox(){
+        this.produitComboBox.setItems(this.ListProduitCommande);
+    }
+    
+    private void updateProduitEnProd(){
+        Commande commande = service.findCommandeById(this.commandeId);
+        List<Operation> Listoperations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
+        for(Produit prod : this.ListProduitCommande){
+            List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
+            for (Exemplaires e : ListExemplaires){
+                for (Operation o : Listoperations){
+                    if (service.OperationEffectueExiste(e, o)){
+                        this.ListProduitCommande.remove(prod);
+                    }
+                }
+            }
+        }
+        updateProduitComboBox();
     }
     private ComboBox<Machine> setupMachineComboBox(Operation operation) {
         ComboBox<Machine> machineComboBox = new ComboBox<>("Veuillez choisir une machine disponible et compatible:");
@@ -168,11 +195,29 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         for (Exemplaires e : ListExemplaires){
             i = 0;
             for (Operation o : Listoperations){
-                Operation_Effectuee ope_eff = new Operation_Effectuee(e, Listmachines.get(i), o);
-                service.saveOpperation_Effectuee(ope_eff);
+                if (!service.OperationEffectueExiste(e, o)){
+                    Operation_Effectuee ope_eff = new Operation_Effectuee(e, Listmachines.get(i), o);
+                    service.saveOpperation_Effectuee(ope_eff);
+                }else {
+                    Notification.show("La production de ce produit est déja lancée");
+                    return;
+                }
                 i++;
             }
         }
+        
+    }
+
+    private void MettreMachinEnProduction(List<Machine> Listmachines) {
+        for (Machine m : Listmachines){
+            //Recuper l'etat actuel et mettre l'heure de fin
+            service.SetFinByEtatMachine(LocalDateTime.now(),service.findLastEtatMachineByMachine(m));
+            Notification.show("fin modifie");
+            //Creer un nouvel etat avec l'heure de début
+            service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatPossibleById(3161)));
+            Notification.show("Nouvel etat machine cree");
+        }
+        
         
     }
 
