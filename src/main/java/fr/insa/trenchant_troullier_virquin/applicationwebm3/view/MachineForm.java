@@ -14,8 +14,12 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatPossibleMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+import java.time.LocalDateTime;
 
 import java.util.List;
 
@@ -29,8 +33,11 @@ public class MachineForm extends FormLayout {
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
     BeanValidationBinder<Machine> binder = new BeanValidationBinder<>(Machine.class);
+    
+    CrmService service;
 
-    public MachineForm(List<TypeOperation> typeOperations) {
+    public MachineForm(List<TypeOperation> typeOperations, CrmService service) {
+        this.service = service;
         binder.bindInstanceFields(this);
         addClassName("Machine-form");
         typeOperationComboBox.setItems(typeOperations);
@@ -123,6 +130,7 @@ public class MachineForm extends FormLayout {
                 return;
             }
             fireEvent(new MachineForm.SaveEvent(this, binder.getBean()));
+            this.service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), machine, service.findEtatPossibleById(7511)));
         }
     }
 }

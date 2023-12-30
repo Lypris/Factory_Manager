@@ -39,4 +39,9 @@ public interface EtatMachineRepository extends JpaRepository<EtatMachine, Long> 
     @Modifying
     @Query("UPDATE EtatMachine e SET e.fin = :fin WHERE e = :etatmachine")
     public void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine);
+    
+    /*@Transactional
+    @Modifying
+    @Query("UPDATE EtatMachine e SET e = :etat WHERE e.machine = :machine")
+    public void SetEtatMachineByMachine(Machine machine, EtatMachine etat);*/
 }

@@ -7,6 +7,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -37,7 +38,10 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     private List<Produit> ListProduitCommande = new ArrayList<>();
     // Ajoutez un champ pour stocker les ComboBox des machines
     private List<ComboBox<Machine>> machineComboBoxes = new ArrayList<>();
-
+    
+    private HorizontalLayout entete = new HorizontalLayout();
+    private Label label = new Label(" ");
+    private Button lancerProdCommande; //Button pour finaliser la commande
     private Button lancerProductionButton; // Bouton pour lancer la production
 
     public LancerProductionView(CrmService service) {
@@ -52,25 +56,28 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             lancerProdProduit(produitComboBox.getValue());
         });
         
+        //Initialise le bouton pour finaliser la commander
+        lancerProdCommande = new Button("Valider la Commande");
+        lancerProdCommande.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        lancerProdCommande.setEnabled(false);
+        lancerProdCommande.addClickListener(event -> {
+            //méthode pour finaliser la commande
+            lancerProdCommande();
+        });
 
         // Ajouter le bouton à la vue
-        add(lancerProductionButton);
-
+        add(lancerProdCommande, entete);
     }
-
+    
+    //Methode pour lancer la production d'un produit
     private void lancerProdProduit(Produit produit) {
         // Récupérer les machines sélectionnées
         List<Machine> Listmachines = new ArrayList<>();
         for (ComboBox<Machine> comboBox : machineComboBoxes) {
             Listmachines.add(comboBox.getValue());
         }
-        // Afficher une notification
-        Notification.show("Machines sélectionnées");
-        Notification.show(Listmachines.toString());
         //Récupérer les opérations
         List<Operation> Listoperations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
-        Notification.show("Opérations récupérées");
-        Notification.show(Listoperations.toString());
         //TODO: Vérifier qu'il y ait suffisamment de matière première
 
         //créer toutes les OperationEffectuee associées
@@ -79,10 +86,8 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         MettreMachinEnProduction(Listmachines);
         //Supprime le produit qui vient d'etre validé
         this.ListProduitCommande.remove(produit);
-        updateProduitComboBox();       
-        
-        //service.lancerProduction(commandeId, machines);
-        
+        //Met à jour l'interface
+        update();
         // Afficher une notification
         Notification.show("Production lancée");
     }
@@ -108,7 +113,8 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             event.rerouteTo(InitialView.class);
         }
     }
-
+    
+    //Initialise le grilles de operations
     private void initGridEtapes() {
         gridEtapes = new Grid<>(Operation.class);
         gridEtapes.removeAllColumns();
@@ -128,7 +134,14 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
                 .allMatch(comboBox -> comboBox.getValue() != null);
         // Activez ou désactivez le bouton en fonction de la sélection
         lancerProductionButton.setEnabled(allSelected);
+        lancerProductionButton.setEnabled(!this.ListProduitCommande.isEmpty());
     }
+    private void updateLancerProdCommande() {
+        // Vérifiez si tous les produits sont en production et active le bouton en fonction
+        lancerProdCommande.setEnabled(this.ListProduitCommande.isEmpty());
+    }
+    
+    //Initialise le Combobox des Produits
     private void setupProduitComboBox(Commande commande) {
         produitComboBox = new ComboBox<>("Choisir un produit");
         produitComboBox.setItemLabelGenerator(Produit::getDes);
@@ -148,24 +161,25 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         });
         // Remplir le ComboBox avec les produits disponibles
         produitComboBox.setItems(this.ListProduitCommande);
-        this.add(produitComboBox);
+        this.entete.add(this.produitComboBox, this.lancerProductionButton, this.label);
         updateProduitEnProd();
     }
     
+    //Met à jour les element du Combobox des produits
     private void updateProduitComboBox(){
         this.produitComboBox.setItems(this.ListProduitCommande);
     }
     
-    //Methode pour verifier si un produit de la commande est deja en production ou pas 
+    //Methode qui met ajours les produit de la commande qui ne sont pas en production 
     private void updateProduitEnProd(){ 
         Commande commande = service.findCommandeById(this.commandeId);
-        
         if(this.ListProduitCommande.size() == 1){
             Notification.show(String.valueOf(this.ListProduitCommande.size()));
             List<Operation> Listoperations = service.findOperationByProduit(this.ListProduitCommande.get(0));
             List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, this.ListProduitCommande.get(0));
             for (Exemplaires e : ListExemplaires){
                 for (Operation o : Listoperations){
+                    //Si il existe déja une opeartion-Effectuee alors on supprime le produit de la liste des produit pas encore en production
                     if (service.OperationEffectueeExiste(e, o) && !this.ListProduitCommande.isEmpty()){
                         this.ListProduitCommande.remove(this.ListProduitCommande.get(0));
                     }
@@ -177,18 +191,18 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
                 List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
                 for (Exemplaires e : ListExemplaires){
                     for (Operation o : Listoperations){
+                        //Si il existe déja une opeartion-Effectuee alors on supprime le produit de la liste des produit pas encore en production
                         if (service.OperationEffectueeExiste(e, o)){
                             this.ListProduitCommande.remove(prod);
                         }
                     }
                 }
             }
-        }else {
-            Notification.show("Il n'y a pas de produit dans cette commande");
         }
         updateProduitComboBox();
     }
     
+    //Initialise les ComboBox des machhines
     private ComboBox<Machine> setupMachineComboBox(Operation operation) {
         ComboBox<Machine> machineComboBox = new ComboBox<>("Veuillez choisir une machine disponible et compatible:");
         machineComboBox.setItemLabelGenerator(Machine::getDes);
@@ -210,9 +224,12 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         //Methode qui récupère tous les exemplaires
         List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
         int i = 0;
+        //Boucles qui crée tous les operation_effectuee nécessaire a la production
         for (Exemplaires e : ListExemplaires){
             i = 0;
             for (Operation o : Listoperations){
+                //Verifie qu'il n'existe pas encore d'operation effectuee <-> production de produit pas lancée
+                //Si la prod du produit n'est pas lancée on crée tous les operation-effectuee
                 if (!service.OperationEffectueeExiste(e, o)){
                     Operation_Effectuee ope_eff = new Operation_Effectuee(e, Listmachines.get(i), o);
                     service.saveOpperation_Effectuee(ope_eff);
@@ -225,18 +242,46 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         }
         
     }
-
+    
+    //Met toutes les machines selectionnée en statut de production
     private void MettreMachinEnProduction(List<Machine> Listmachines) {
         for (Machine m : Listmachines){
             //Recuper l'etat actuel et mettre l'heure de fin
             service.SetFinByEtatMachine(LocalDateTime.now(),service.findLastEtatMachineByMachine(m));
-            Notification.show("fin modifie");
             //Creer un nouvel etat avec l'heure de début
             service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatPossibleById(3161)));
-            Notification.show("Nouvel etat machine cree");
         }
         
         
+    }
+    
+    //Change le statut de la commande est reviens sur la page production avec le update
+    private void lancerProdCommande() {
+        Commande commande = service.findCommandeById(this.commandeId);
+        service.SetStatutCommande(commande, "En cours");
+        update();
+        Notification.show("LA COMMANDE EST EN PRODUCTION");
+    }
+
+    //Met à jour tous les boutons et combobox et aussi la vue si la commande est en production
+    private void update() {
+        updateProduitComboBox();
+        updateLancerProductionButtonState();
+        updateLancerProdCommande();
+        updateLabel();
+        Commande commande = service.findCommandeById(this.commandeId);
+        if (commande.getStatut().equals("En cours")){
+            getUI().ifPresent(ui -> ui.navigate("production"));
+        }
+    }
+    
+    //Met à jour le label en fonction du nombre de produit restant
+    private void updateLabel() {
+        if (this.ListProduitCommande.isEmpty()){
+            this.label.setText("Tous les produits sont en production");
+        }else{
+            this.label.setText(" ");
+        }
     }
 
 }

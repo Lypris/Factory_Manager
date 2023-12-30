@@ -47,7 +47,6 @@ public class ProductionView extends VerticalLayout {
     }
     private void updateList() {
         List<Commande> commandes = service.findAllCommandeEnAttente();
-        commandes.addAll(service.findAllCommandeEnCours());
         grid.setItems(commandes);
     }
     private void configureGrid() {

@@ -298,6 +298,10 @@ public class CrmService {
         deleteAllDefinitionByCommande(commande);//supprime les définitions de commande associées à la commande
         commandeRepository.delete(commande);
     }
+    
+    public void SetStatutCommande (Commande commande, String statut){
+        commandeRepository.setCommandeEnProduction(commande, statut);
+    }
 
 
     public void saveCommande(Commande commande) {

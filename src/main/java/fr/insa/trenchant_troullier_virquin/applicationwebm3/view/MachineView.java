@@ -47,7 +47,7 @@ public class MachineView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new MachineForm(service.findAllTypeOperation());
+        form = new MachineForm(service.findAllTypeOperation(), service);
         form.setWidth("25em");
         form.addSaveListener(this::saveMachine);
         form.addDeleteListener(this::deleteMachine);
