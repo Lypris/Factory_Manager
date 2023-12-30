@@ -67,6 +67,9 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         List<Operation> operations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
         Notification.show("Opérations récupérées");
         Notification.show(operations.toString());
+        //TODO: Vérifier qu'il y ait suffisamment de matière première
+
+        //TODO: créer les OperationEffectuee associées
 
         //TODO: Lancer la production
         //service.lancerProduction(commandeId, machines);
