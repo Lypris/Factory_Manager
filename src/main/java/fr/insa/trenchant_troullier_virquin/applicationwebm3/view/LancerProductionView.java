@@ -20,6 +20,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -159,7 +160,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     }
 
     private void CreerToutesOperationEffectuee(Long commandeId, Produit prod, List<Operation> Listoperations, List<Machine> Listmachines) {
-        //methdoe qui récupere la commande avec l'ID
+        //méthode qui récupère la commande avec l'ID
         Commande commande = service.findCommandeById(commandeId);
         //Methode qui récupère tous les exemplaires
         List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);

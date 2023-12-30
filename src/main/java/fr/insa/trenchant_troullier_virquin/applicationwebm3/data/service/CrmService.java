@@ -26,6 +26,7 @@ public class CrmService {
     private final DefinitionCommandeRepository definitionCommandeRepository;
     private final TypeOperationRepository typeOperationRepository;
     private final MatPremiereRepository matPremiereRepository;
+    private final MatiereProduitRepository matiereProduitRepository;
     private final OperationRepository operationRepository;
     private final ExemplairesRepository exemplairesRepository;
     private final PosteDeTravailRepository posteDeTravailRepository;
@@ -50,7 +51,8 @@ public class CrmService {
                       PosteDeTravailRepository posteDeTravailRepository,
                       UtiliseRepository utiliseRepository,
                       HabilitationRepository habilitationRepository,
-                      Operation_EffectueeRepository operation_EffectueeRepository) {
+                      Operation_EffectueeRepository operation_EffectueeRepository,
+                      MatiereProduitRepository matiereProduitRepository) {
         this.statusRepository = statusRepository;
         this.operateurRepository = operateurRepository;
         this.statutOperateurRepository = statutOperateurRepository;
@@ -68,6 +70,7 @@ public class CrmService {
         this.utiliseRepository = utiliseRepository;
         this.habilitationRepository = habilitationRepository;
         this.operation_EffectueeRepository = operation_EffectueeRepository;
+        this.matiereProduitRepository = matiereProduitRepository;
     }
 
 
@@ -357,15 +360,37 @@ public class CrmService {
     }
 
     public void saveMatPremiere(MatPremiere matPremiere) {
-         if (matPremiere == null) {
+        if (matPremiere == null) {
             System.err.println("MatPremiere is null. Are you sure you have connected your form to the application?");
             return;
         }
         matPremiereRepository.save(matPremiere);
     }
+    public List<MatPremiere> findAllMatPremiereForProduit(Produit produit) {
+        List<MatiereProduit> matiereProduit = this.findMatiereProduitByProduit(produit);
+        List<MatPremiere> matPremiere = new ArrayList<>();
+        for (MatiereProduit matiereProduits : matiereProduit) {
+            matPremiere.add(matiereProduits.getMatPremiere());
+        }
+        return matPremiere;
+    }
 
     public void deleteMatPremiere(MatPremiere matPremiere) {
         matPremiereRepository.delete(matPremiere);
+    }
+    //////////////////////// MATIEREPRODUIT ////////////////////////////
+    public void saveMatiereProduit(MatiereProduit matiereProduit) {
+        if (matiereProduit == null) {
+            System.err.println("MatiereProduit is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        matiereProduitRepository.save(matiereProduit);
+    }
+    public List<MatiereProduit> findMatiereProduitByProduit(Produit produit) {
+        if(produit!=null){
+            return matiereProduitRepository.findByProduit(produit.getId());
+        }
+        else return null;
     }
 
     //////////////////////// OPERATION ////////////////////////////
@@ -474,6 +499,12 @@ public class CrmService {
     //////////////////////// HABILITATION ////////////////////////////
     public List<Operateur> findAllOperateursHabilitesByPosteDeTravail(PosteDeTravail posteDeTravail) {
         return habilitationRepository.findByPosteDeTravail(posteDeTravail);
-
+    }
+    public void saveHabilitation(Habilitation habilitation) {
+        if (habilitation == null) {
+            System.err.println("Habilitation is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        habilitationRepository.save(habilitation);
     }
 }

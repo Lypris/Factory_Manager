@@ -16,11 +16,6 @@ public class PosteDeTravail{
     private String ref;
     private String des;
 
-    @OneToMany(mappedBy = "posteDeTravail")
-    private Set<Machine> machines;
-    @OneToMany(mappedBy = "posteDeTravail")
-    private Set<Utilise> utilisations = new HashSet<>();
-
     public int getId() {
         return id;
     }
@@ -43,21 +38,5 @@ public class PosteDeTravail{
 
     public void setDes(String des) {
         this.des = des;
-    }
-
-    public Set<Machine> getMachines() {
-        return machines;
-    }
-
-    public void setMachines(Set<Machine> machines) {
-        this.machines = machines;
-    }
-
-    public Set<Utilise> getUtilisations() {
-        return utilisations;
-    }
-
-    public void setUtilisations(Set<Utilise> utilisations) {
-        this.utilisations = utilisations;
     }
 }

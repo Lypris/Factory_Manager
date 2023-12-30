@@ -40,6 +40,7 @@ public class ProductView extends VerticalLayout {
 
     CrmService service;
     DialogDefOpp dialogDefOpp;
+    DialogDefMat dialogDefMat;
 
     public ProductView(CrmService service) {
         this.service = service;
@@ -72,6 +73,10 @@ public class ProductView extends VerticalLayout {
     private void configureDialogDefOpp() {
         dialogDefOpp = new DialogDefOpp(service.findAllTypeOperation(), service, grid.asSingleSelect().getValue(), getProduitDetailsForProduit(grid.asSingleSelect().getValue()));
         dialogDefOpp.setWidth("35em");
+    }
+    private void configureDialogDefMat() {
+        dialogDefMat = new DialogDefMat(service.findAllMatPremiere(null), service, grid.asSingleSelect().getValue(), getProduitDetailsForProduit(grid.asSingleSelect().getValue()));
+        dialogDefMat.setWidth("35em");
     }
     private void saveProduct(ProductForm.SaveEvent event) {
         service.saveProduit(event.getProduit());
@@ -156,7 +161,20 @@ public class ProductView extends VerticalLayout {
             }
         });
         defineOperation.setIcon(new Icon(VaadinIcon.COGS));
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, TypeOperationView, defineOperation);
+        Button defineMaterial = new Button("Définir les matières premières", click -> {
+            if(grid.asSingleSelect().getValue() == null) {
+                Notification notification = new Notification();
+                notification.setPosition(Notification.Position.MIDDLE);
+                notification.setText("Veuillez sélectionner un produit");
+                notification.setDuration(1200);
+                notification.open();
+            } else {
+                configureDialogDefMat();
+                defineMaterial(grid.asSingleSelect().getValue());
+            }
+        });
+        defineMaterial.setIcon(new Icon(VaadinIcon.COGS));
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, TypeOperationView, defineOperation, defineMaterial);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
@@ -178,6 +196,22 @@ public class ProductView extends VerticalLayout {
             dialogDefOpp.setVisible(true);
             dialogDefOpp.open();
             dialogDefOpp.addSaveListener(() -> {
+                produitDetails.refreshOperations();
+                refreshSelectedProductDetails();
+            });
+        }
+    }
+    private void defineMaterial(Produit produit) {
+        if (produit == null) {
+            closeDialog();
+            Notification.show("Veuillez sélectionner un produit").setPosition(Notification.Position.MIDDLE);
+        } else {
+            ProduitDetails produitDetails = createProduitDetails(produit);
+            dialogDefMat.setProduit(produit);
+            dialogDefMat.setProduitDetails(produitDetails);
+            dialogDefMat.setVisible(true);
+            dialogDefMat.open();
+            dialogDefMat.addSaveListener(() -> {
                 produitDetails.refreshOperations();
                 refreshSelectedProductDetails();
             });
@@ -211,6 +245,8 @@ public class ProductView extends VerticalLayout {
     private void closeDialog() {
         dialogDefOpp.setProduit(null);
         dialogDefOpp.setVisible(false);
+        dialogDefMat.setProduit(null);
+        dialogDefMat.setVisible(false);
     }
     public void refreshSelectedProductDetails() {
         Produit selectedProduit = grid.asSingleSelect().getValue();

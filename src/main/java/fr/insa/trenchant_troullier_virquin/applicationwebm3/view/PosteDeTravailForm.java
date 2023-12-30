@@ -15,10 +15,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.PosteDeTravail;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.util.HashSet;
@@ -32,8 +29,8 @@ public class PosteDeTravailForm extends FormLayout {
     //elle doit permettre de saisir la référence et la description
     //elle doit permettre de valider ou d'annuler
     //elle doit permettre de modifier un poste de travail existant
-    TextField referenceField = new TextField("Référence");
-    TextField descriptionField = new TextField("Description");
+    TextField ref = new TextField("Référence");
+    TextField des = new TextField("Description");
     private final ComboBox<Operateur> operateurComboBox = new ComboBox<>("Opérateurs abilités");
     private final ComboBox<Machine> machineComboBox = new ComboBox<>("Machines associées");
     private final HorizontalLayout selectedOperateursLayout = new HorizontalLayout();
@@ -46,12 +43,13 @@ public class PosteDeTravailForm extends FormLayout {
     BeanValidationBinder<PosteDeTravail> binder = new BeanValidationBinder<>(PosteDeTravail.class);
     CrmService service;
     public PosteDeTravailForm(CrmService service) {
+        binder.bindInstanceFields(this);
         this.service = service;
         updateOperateurComboBox();
         updateMachineComboBox();
         configureComboBoxes();
         configureBadgesLayout();
-        add(referenceField, descriptionField, operateurComboBox, selectedOperateursLayout, machineComboBox, selectedMachinesLayout,createButtonsLayout());
+        add(ref, des, operateurComboBox, selectedOperateursLayout, machineComboBox, selectedMachinesLayout,createButtonsLayout());
     }
 
     private void configureComboBoxes() {
@@ -179,11 +177,13 @@ public class PosteDeTravailForm extends FormLayout {
         binder.setBean(posteDeTravail);
         if (posteDeTravail != null){
             //TODO: Récupérer les opérateurs du PosteDeTravail et ajouter les badges correspondants
+            /*
             service.findAllOperateursHabilitesByPosteDeTravail(posteDeTravail).forEach(operateur -> {
                 Span badge = createOperateurBadge(operateur);
                 selectedOperateursLayout.add(badge);
                 selectedOperateurs.add(operateur);  // Ajouter à la liste des opérateurs sélectionnés
             });
+            */
 
             //TODO: Récupérer les machines du PosteDeTravail et ajouter les badges correspondants
         }
@@ -234,7 +234,20 @@ public class PosteDeTravailForm extends FormLayout {
 
     private void validateAndSave() {
         if(binder.isValid()) {
-
+            PosteDeTravail posteDeTravail = binder.getBean();
+            service.savePosteDeTravail(posteDeTravail);
+            //on parcourt les opérateurs sélectionnés et on les ajoute au poste de travail en leur créant une habilitation
+            selectedOperateurs.forEach(operateur -> {
+                Habilitation habilitation = new Habilitation();
+                habilitation.setOperateur(operateur);
+                habilitation.setPosteDeTravail(posteDeTravail); // posteDeTravail doit déjà être sauvegardé
+                service.saveHabilitation(habilitation); // Persiste l'habilitation
+            });
+            //on parcourt les machines sélectionnées et on leur ajoute le poste de travail
+            selectedMachines.forEach(machine -> {
+                machine.setPosteDeTravail(posteDeTravail);
+                service.saveMachine(machine);
+            });
             fireEvent(new PosteDeTravailForm.SaveEvent(this, binder.getBean()));
         }
     }

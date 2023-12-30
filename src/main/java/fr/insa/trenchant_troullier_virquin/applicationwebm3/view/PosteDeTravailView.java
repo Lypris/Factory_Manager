@@ -76,6 +76,8 @@ public class PosteDeTravailView extends VerticalLayout {
         grid.removeAllColumns();
         grid.setColumns("ref", "des");
         //TODO: ajouter les colonnes pour les opérateurs et les machines
+
+        grid.asSingleSelect().addValueChangeListener(evt -> editPosteDeTravail(evt.getValue()));
     }
     private HorizontalLayout getToolbar() {
         filterText.setPlaceholder("Filtrer les machines...");

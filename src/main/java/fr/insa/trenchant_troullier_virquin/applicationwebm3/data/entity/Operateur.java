@@ -22,8 +22,6 @@ public class Operateur extends AbstractEntity {
     private String mail = "";
     @NotEmpty
     private String tel = "";
-    @OneToMany(mappedBy = "operateur")
-    private Set<Utilise> utilisations = new HashSet<>();
 
     @Override
     public String toString() {

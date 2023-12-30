@@ -16,6 +16,8 @@ public interface EtatMachineRepository extends JpaRepository<EtatMachine, Long> 
     List<EtatMachine> search(@Param("searchTerm") String searchTerm);
 
 
+
+
     List<EtatMachine> findByMachine(Machine machine);
     List<EtatMachine> findAllByMachineAndDebutBeforeAndFinAfter(Machine machine, LocalDateTime debut, LocalDateTime fin);
 

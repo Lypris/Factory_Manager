@@ -67,4 +67,11 @@ public class Machine extends AbstractEntity {
         this.typeOperation = typeOperation;
     }
 
+    public PosteDeTravail getPosteDeTravail() {
+        return posteDeTravail;
+    }
+
+    public void setPosteDeTravail(PosteDeTravail posteDeTravail) {
+        this.posteDeTravail = posteDeTravail;
+    }
 }
