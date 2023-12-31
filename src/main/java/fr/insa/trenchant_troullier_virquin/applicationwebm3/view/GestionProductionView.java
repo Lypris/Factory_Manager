@@ -6,12 +6,16 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.DefinitionCommande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Exemplaires;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 import java.util.List;
@@ -38,7 +42,6 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
             //Methdode Validation de la commande
         });
         this.add(this.ValidationButton);
-        configureGridProduit();
     }
     
     
@@ -53,7 +56,8 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
             Commande commande = service.findCommandeById(commandeId);
             if (commande != null) {
                 // Utiliser la commande pour initialiser les composants
-                //setupProduitComboBox(commande);
+                configureGridProduit();
+                updateListProduit();
 
                 // ... et ainsi de suite
             } else {
@@ -69,15 +73,16 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
     public void configureGridProduit(){
         gridProduit.removeAllColumns();
         gridProduit.addColumn(Produit->
-                Produit.getDes());
+                Produit.getDes()).setHeader("Produits");
         gridProduit.addColumn(Produit->
-                custominfo(commande, Produit));
+                custominfo(commande, Produit)).setHeader("Exemplaires");
+        gridProduit.addColumn(new ComponentRenderer<>(Produit -> 
+                ExemplaireField(this.commande, Produit))).setHeader("Gestion Exemplaires");
         gridProduit.getColumns().forEach(col -> {
             col.setAutoWidth(true);
         });
         gridProduit.addClassName("my-grid");
-        gridProduit.setItems(this.service.findAllProduitByCommande(commande));
-        this.add(gridProduit);
+        this.add(this.gridProduit);
     }
     
     private String custominfo(Commande commande, Produit produit) {
@@ -87,4 +92,34 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
             int NbrExemplairesCommandes = service.getDefinitionByProduitAndCommandeUnique(produit, commande).getNbr();
             return NbrExemplaires + "/" + NbrExemplairesCommandes +" Exemplaires produits";
         }
+
+    private void updateListProduit() {
+        this.gridProduit.setItems(this.service.findAllProduitByCommande(commande));
+    }
+    
+    private HorizontalLayout ExemplaireField (Commande commande, Produit produit){
+        HorizontalLayout bloc = new HorizontalLayout();
+        IntegerField ExemplaireField = new IntegerField();
+        Button ValiderExemplaire = new Button("Valider");
+        ValiderExemplaire.addClickListener((t) -> {
+            AjouterExemplaires(produit, ExemplaireField.getValue());});
+        updateField(ExemplaireField, commande, produit);
+        bloc.add(ExemplaireField, ValiderExemplaire);
+        return bloc;
+    }
+
+    private void updateField(IntegerField ExemplaireField, Commande commande1, Produit produit) {
+        ExemplaireField.setValue(0);
+        ExemplaireField.setStepButtonsVisible(true);
+        ExemplaireField.setMin(0);
+        ExemplaireField.setMax(service.getDefinitionByProduitAndCommandeUnique(produit, commande).getNbr()-service.findAllProdFiniByProduitAndCommande(produit, commande1).size());
+    }
+
+    private void AjouterExemplaires(Produit produit, Integer value) {
+        int nbOpe = this.service.findOperationByProduit(produit).size();
+        List<Exemplaires> ListExemplaire = this.service.findAllProdEnCoursByProduitAndCommande(produit, this.commande);
+        
+    }
+        
+    
 }

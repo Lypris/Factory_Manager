@@ -67,6 +67,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
 
         // Ajouter le bouton à la vue
         add(lancerProdCommande, entete);
+        updateLancerProdCommande();
     }
     
     //Methode pour lancer la production d'un produit

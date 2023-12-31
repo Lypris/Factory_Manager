@@ -534,7 +534,10 @@ public class CrmService {
         int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
         return exemplairesRepository.findAllProdFiniByProduitAndCommande(produit, commande, nbOperation);
     } //récupère les exemplaires dont l'étape est null et qui sont associés à un produit et une commande donnée
-    
+    public List<Exemplaires> findAllProdEnCoursByProduitAndCommande(Produit produit, Commande commande) {
+        int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
+        return exemplairesRepository.findAllProdEnCoursByProduitAndCommande(produit, commande, nbOperation);
+    }
     public List<Exemplaires> findAllByCommande(Commande commande){
         return exemplairesRepository.findByCommande(commande);
     }
@@ -546,6 +549,8 @@ public class CrmService {
     public void deleteNExemplaireByProduitAndCommande(int n, Produit produit, Commande commande) {
         exemplairesRepository.deleteNExemplaireByProduitAndCommande(n, produit.getId(), commande.getId());
     }
+    
+    
     //////////////////////// POSTE DE TRAVAIL ////////////////////////////
     public List<PosteDeTravail> findAllPosteDeTravail(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {

@@ -32,12 +32,14 @@ public interface ExemplairesRepository extends JpaRepository<Exemplaires, Long>{
     //méthode pour trouver les exemplaires finis d'un produit donné et d'une commande donnée
     @Query("SELECT e FROM Exemplaires e WHERE e.etape > :etapes AND e.produit = :produit AND e.commande = :commande")
     List<Exemplaires> findAllProdFiniByProduitAndCommande(Produit produit, Commande commande, int etapes);
+    @Query("SELECT e FROM Exemplaires e WHERE e.etape <= :etapes AND e.produit = :produit AND e.commande = :commande")
+    List<Exemplaires> findAllProdEnCoursByProduitAndCommande(Produit produit, Commande commande, int etapes);
     @Query("SELECT e FROM Exemplaires e WHERE e.commande = :commande")
     List<Exemplaires> findByCommande(Commande commande);
     
     @Query("SELECT e FROM Exemplaires e WHERE e.commande = :commande AND e.produit = :produit")
     List<Exemplaires> findByCommandeAndProduit(Commande commande, Produit produit);
-
+    
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM Exemplaires e WHERE e.commande = :commande")
