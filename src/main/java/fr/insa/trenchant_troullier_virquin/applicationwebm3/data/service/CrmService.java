@@ -385,6 +385,8 @@ public class CrmService {
     public void deleteDefinitionCommande(DefinitionCommande definitionCommande) {
         definitionCommandeRepository.delete(definitionCommande);
     }
+    
+    
     // type d'opération
     //////////////////////////// TYPE OPERATION ////////////////////////////
     public List<TypeOperation> findAllTypeOperation(){

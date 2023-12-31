@@ -133,8 +133,12 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         boolean allSelected = machineComboBoxes.stream()
                 .allMatch(comboBox -> comboBox.getValue() != null);
         // Activez ou désactivez le bouton en fonction de la sélection
-        lancerProductionButton.setEnabled(allSelected);
-        lancerProductionButton.setEnabled(!this.ListProduitCommande.isEmpty());
+        if (allSelected){
+            lancerProductionButton.setEnabled(allSelected);
+            if (this.ListProduitCommande.isEmpty()){
+                lancerProductionButton.setEnabled(false);
+            } 
+        }
     }
     private void updateLancerProdCommande() {
         // Vérifiez si tous les produits sont en production et active le bouton en fonction
@@ -174,7 +178,6 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     private void updateProduitEnProd(){ 
         Commande commande = service.findCommandeById(this.commandeId);
         if(this.ListProduitCommande.size() == 1){
-            Notification.show(String.valueOf(this.ListProduitCommande.size()));
             List<Operation> Listoperations = service.findOperationByProduit(this.ListProduitCommande.get(0));
             List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, this.ListProduitCommande.get(0));
             for (Exemplaires e : ListExemplaires){

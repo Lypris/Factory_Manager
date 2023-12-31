@@ -47,6 +47,7 @@ public class ProductionView extends VerticalLayout {
     }
     private void updateList() {
         List<Commande> commandes = service.findAllCommandeEnAttente();
+        commandes.addAll(service.findAllCommandeEnCours());
         grid.setItems(commandes);
     }
     private void configureGrid() {
@@ -108,6 +109,7 @@ public class ProductionView extends VerticalLayout {
                 launch.setText("Gérer la production");
                 launch.setIcon(new com.vaadin.flow.component.icon.Icon(VaadinIcon.TOOLS));
             }
+            
         }
         public void configureLayoutDetails(){
             H1 text = new H1(" ");
@@ -131,10 +133,8 @@ public class ProductionView extends VerticalLayout {
                  */
                 }
                 else if(commande.getStatut().equals("En cours")){
-
+                    getUI().ifPresent(ui -> ui.navigate("GestionProduction/" + commande.getId()));
                 }
-
-                Notification.show("Pas encore implémenté");
             });
 
         }

@@ -25,7 +25,7 @@ public interface DefinitionCommandeRepository extends JpaRepository<DefinitionCo
     DefinitionCommande findDefinitionByProduitAndCommande(Produit produit, Commande commande);
     @Query("SELECT d FROM DefinitionCommande d WHERE d.produit = :produit AND d.commande = :commande")
     List<DefinitionCommande> findAllDefinitionByProduitAndCommande(Produit produit, Commande commande);
-
+    
     @Modifying
     @Transactional
     @Query("DELETE FROM DefinitionCommande d WHERE d.commande = :commande")
