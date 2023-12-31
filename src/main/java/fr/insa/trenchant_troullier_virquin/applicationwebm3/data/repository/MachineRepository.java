@@ -18,14 +18,14 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
     @Query("SELECT m FROM Machine m " +
             "JOIN EtatMachine em ON m.id = em.machine.id " +
             "JOIN EtatPossibleMachine epm ON em.etat.id = epm.id " +
-            "WHERE epm.des = 'Disponible' " +
+            "WHERE epm.des = 'disponible'" +
             "AND (em.fin IS NULL OR em.fin > CURRENT_TIMESTAMP)")
     List<Machine> findAllMachineDisponibles();
 
     @Query("SELECT m FROM Machine m " +
             "JOIN EtatMachine em ON m.id = em.machine.id " +
             "JOIN EtatPossibleMachine epm ON em.etat.id = epm.id " +
-            "WHERE epm.des = 'Disponible' " +
+            "WHERE epm.des = 'disponible'" +
             "AND em.fin IS NULL " +
             "AND m.typeOperation = :typeOperation")
     List<Machine> findAllMachineDisponiblesForTypeOperation(@Param("typeOperation") TypeOperation typeOperation);

@@ -255,12 +255,12 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         
     }
     
-    //Change le statut de la commande est reviens sur la page production avec le update
+    //Change le statut de la commande et reviens sur la page production avec le update
     private void lancerProdCommande() {
         Commande commande = service.findCommandeById(this.commandeId);
         service.SetStatutCommande(commande, "En cours");
         update();
-        Notification.show("LA COMMANDE EST EN PRODUCTION");
+        Notification.show("La commande est en production");
     }
 
     //Met à jour tous les boutons et combobox et aussi la vue si la commande est en production

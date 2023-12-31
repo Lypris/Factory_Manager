@@ -15,7 +15,7 @@ public class IconUtils {
                 return VaadinIcon.PROGRESSBAR;
             case "en panne":
                 return VaadinIcon.WARNING;
-            case "Dispobible":
+            case "disponible":
                 return VaadinIcon.CHECK;
             // Ajoutez d'autres cas selon vos besoins
             default:
@@ -34,7 +34,7 @@ public class IconUtils {
             case "en panne":
                 element.getElement().getThemeList().add("badge error");
                 break;
-            case "Dispobible":
+            case "disponible":
                 element.getElement().getThemeList().add("badge success");
                 break;
             default:

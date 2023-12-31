@@ -28,6 +28,8 @@ public class MachineForm extends FormLayout {
     TextField des = new TextField("Description");
     TextField puissance = new TextField("Puissance (kW)");
     ComboBox<TypeOperation> typeOperationComboBox = new ComboBox<>("Type d'opération");
+    ComboBox<EtatPossibleMachine> etatComboBox = new ComboBox<>("État actuel");
+
 
     Button save = new Button("Enregistrer");
     Button delete = new Button("Supprimer");
@@ -36,14 +38,16 @@ public class MachineForm extends FormLayout {
     
     CrmService service;
 
-    public MachineForm(List<TypeOperation> typeOperations, CrmService service) {
+    public MachineForm(List<TypeOperation> typeOperations, List<EtatPossibleMachine> etatsPossibles, CrmService service) {
         this.service = service;
         binder.bindInstanceFields(this);
         addClassName("Machine-form");
         typeOperationComboBox.setItems(typeOperations);
         typeOperationComboBox.setItemLabelGenerator(TypeOperation::getDes);
+        etatComboBox.setItems(etatsPossibles);
+        etatComboBox.setItemLabelGenerator(EtatPossibleMachine::getDes);
 
-        add(ref, des, puissance, typeOperationComboBox,
+        add(ref, des, puissance, typeOperationComboBox, etatComboBox,
                 createButtonsLayout());
     }
     public void setMachine(Machine Machine) {
@@ -122,6 +126,7 @@ public class MachineForm extends FormLayout {
     private void validateAndSave() {
         if(binder.isValid()) {
             Machine machine = binder.getBean();
+            boolean isNewMachine = machine.getId() == null;
             TypeOperation selectedTypeOperation = typeOperationComboBox.getValue();
             if (selectedTypeOperation != null) {
                 machine.setTypeOperation(selectedTypeOperation);
@@ -130,7 +135,29 @@ public class MachineForm extends FormLayout {
                 return;
             }
             fireEvent(new MachineForm.SaveEvent(this, binder.getBean()));
-            this.service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), machine, service.findEtatDisponible()));
+            if (isNewMachine) {
+                // Création d'un nouvel état machine
+                this.service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), machine, service.findEtatDisponible()));
+            } else {
+                // Mise à jour de l'état de la machine existante
+                EtatPossibleMachine selectedEtat = etatComboBox.getValue();
+                if (selectedEtat != null) {
+                    // Trouver et mettre à jour l'état actuel ou créer un nouvel état si nécessaire
+                    EtatMachine currentEtatMachine = service.findLastEtatMachineByMachine(machine);
+                    if (currentEtatMachine != null) {
+                        currentEtatMachine.setFin(LocalDateTime.now()); // Met fin à l'état actuel
+                        service.saveEtatMachine(currentEtatMachine);
+                    }
+
+                    // Créer un nouvel état avec la date de début actuelle et l'état sélectionné
+                    EtatMachine newEtatMachine = new EtatMachine();
+                    newEtatMachine.setDebut(LocalDateTime.now());
+                    newEtatMachine.setMachine(machine);
+                    newEtatMachine.setEtat(selectedEtat);
+                    service.saveEtatMachine(newEtatMachine);
+
+                }
+            }
         }
     }
 }

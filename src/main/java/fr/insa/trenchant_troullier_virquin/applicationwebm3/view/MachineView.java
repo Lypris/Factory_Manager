@@ -4,17 +4,25 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.Optional;
 
 @Route(value = "machines", layout = MainLayout.class)
 @PageTitle("Machines | M3 Application")
@@ -47,7 +55,7 @@ public class MachineView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new MachineForm(service.findAllTypeOperation(), service);
+        form = new MachineForm(service.findAllTypeOperation(), service.findAllEtatPossibleMachines(),service);
         form.setWidth("25em");
         form.addSaveListener(this::saveMachine);
         form.addDeleteListener(this::deleteMachine);
@@ -77,6 +85,53 @@ public class MachineView extends VerticalLayout {
                 .setHeader("Puissance (kW)").setSortable(true);
         grid.addColumn(Machine->Machine.getTypeOperation().getDes())
                 .setHeader("Type d'opération").setSortable(true);
+        // Ajoute une colonne pour l'état actuel de la machine
+        grid.addColumn(new ComponentRenderer<>(Machine -> {
+            EtatMachine etatActuelOpt = service.findLastEtatMachineByMachine(Machine);
+            if(etatActuelOpt != null){
+                    VaadinIcon icon = IconUtils.determineIcon(etatActuelOpt.getEtat().getDes());
+                    Span badge = new Span(IconUtils.createIcon(icon),
+                            new Span(etatActuelOpt.getEtat().getDes()));
+                    IconUtils.applyStyleForEtat(badge, etatActuelOpt.getEtat().getDes());
+                    return badge;
+            } else {
+                return new Span("Aucun état");
+            }
+                }))
+                .setHeader("État actuel")
+                .setSortable(true)
+                .setKey("etat")
+                .setComparator(Comparator.comparing(Machine -> {
+                    EtatMachine etatActuelOpt = service.findLastEtatMachineByMachine(Machine);
+                    return etatActuelOpt.getEtat().getDes();
+                }))
+                .setFlexGrow(0);
+        grid.addColumn(Machine -> {
+                    return service.findLastEtatMachineByMachine(Machine).getDebut().toString();
+                })
+                .setHeader("Date de début").setSortable(true)
+                .setComparator(Comparator.comparing(Machine -> {
+                    return service.findLastEtatMachineByMachine(Machine).getDebut();
+                }))
+                .setRenderer(new TextRenderer<>(Machine -> {
+                    // Personnalisez le format de date selon vos besoins
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                    return service.findLastEtatMachineByMachine(Machine).getDebut().format(formatter);
+                }));
+        grid.addColumn(Machine -> {
+                    return service.findLastEtatMachineByMachine(Machine).getFin().toString();
+                })
+                .setHeader("Date de fin").setSortable(true)
+                .setComparator(Comparator.comparing(Machine -> {
+                    return service.findLastEtatMachineByMachine(Machine).getFin();
+                }))
+                .setRenderer(new TextRenderer<>(Machine -> {
+                    if(service.findLastEtatMachineByMachine(Machine).getFin() == null){
+                        return "indeterminée";
+                    }
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                    return service.findLastEtatMachineByMachine(Machine).getFin().format(formatter);
+                }));
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editMachine(event.getValue()));

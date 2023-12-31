@@ -77,9 +77,9 @@ public class CrmService {
 
     private void verifierEtatPossibleMachineIntiaux() {
         //vérifier que les etats possibles de machines existent déjà
-        if (etatPossibleMachineRepository.findEtatPossibleByDes("Disponible") == null) {
+        if (etatPossibleMachineRepository.findEtatPossibleByDes("disponible") == null) {
             EtatPossibleMachine etatPossibleMachine = new EtatPossibleMachine();
-            etatPossibleMachine.setDes("Disponible");
+            etatPossibleMachine.setDes("disponible");
             etatPossibleMachineRepository.save(etatPossibleMachine);
         }
         if (etatPossibleMachineRepository.findEtatPossibleByDes("en panne") == null) {
@@ -99,7 +99,6 @@ public class CrmService {
         }
 
     }
-
 
     //////////////////////////// STATUT POSSIBLE OPERATEUR////////////////////////////
     public List<Statut> findAllStatuses(){
@@ -250,7 +249,7 @@ public class CrmService {
     }
     
     public EtatMachine findLastEtatMachineByMachine(Machine machine){
-        return etatMachineRepository.findEtatMachineByMachine(machine);
+        return etatMachineRepository.findCurrentEtatMachineByMachine(machine);
     }
     
     public void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine){

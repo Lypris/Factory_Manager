@@ -31,14 +31,15 @@ public interface EtatMachineRepository extends JpaRepository<EtatMachine, Long> 
             "or lower(m.des) like lower(concat('%', :searchTerm, '%'))"
             + "AND e.fin is null")
     List<EtatMachine> searchLast(@Param("searchTerm") String searchTerm);
-    
-    @Query("SELECT e FROM EtatMachine e WHERE e.machine = :machine AND e.fin = null")
-    public EtatMachine findEtatMachineByMachine(Machine machine);
-    
+
     @Transactional
     @Modifying
     @Query("UPDATE EtatMachine e SET e.fin = :fin WHERE e = :etatmachine")
     public void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine);
+
+
+    @Query("SELECT e FROM EtatMachine e WHERE e.machine = :machine AND e.fin = null")
+    EtatMachine findCurrentEtatMachineByMachine(Machine machine);
     
     /*@Transactional
     @Modifying
