@@ -71,8 +71,34 @@ public class CrmService {
         this.habilitationRepository = habilitationRepository;
         this.operation_EffectueeRepository = operation_EffectueeRepository;
         this.matiereProduitRepository = matiereProduitRepository;
+
+        verifierEtatPossibleMachineIntiaux();
     }
 
+    private void verifierEtatPossibleMachineIntiaux() {
+        //vérifier que les etats possibles de machines existent déjà
+        if (etatPossibleMachineRepository.findEtatPossibleByDes("Disponible") == null) {
+            EtatPossibleMachine etatPossibleMachine = new EtatPossibleMachine();
+            etatPossibleMachine.setDes("Disponible");
+            etatPossibleMachineRepository.save(etatPossibleMachine);
+        }
+        if (etatPossibleMachineRepository.findEtatPossibleByDes("en panne") == null) {
+            EtatPossibleMachine etatPossibleMachine = new EtatPossibleMachine();
+            etatPossibleMachine.setDes("en panne");
+            etatPossibleMachineRepository.save(etatPossibleMachine);
+        }
+        if (etatPossibleMachineRepository.findEtatPossibleByDes("éteinte") == null) {
+            EtatPossibleMachine etatPossibleMachine = new EtatPossibleMachine();
+            etatPossibleMachine.setDes("éteinte");
+            etatPossibleMachineRepository.save(etatPossibleMachine);
+        }
+        if (etatPossibleMachineRepository.findEtatPossibleByDes("en marche") == null) {
+            EtatPossibleMachine etatPossibleMachine = new EtatPossibleMachine();
+            etatPossibleMachine.setDes("en marche");
+            etatPossibleMachineRepository.save(etatPossibleMachine);
+        }
+
+    }
 
 
     //////////////////////////// STATUT POSSIBLE OPERATEUR////////////////////////////
@@ -252,6 +278,9 @@ public class CrmService {
     
     public EtatPossibleMachine findEtatDisponible (){
         return etatPossibleMachineRepository.findEtatDisponible();
+    }
+    public EtatPossibleMachine findEtatPossibleByDes(String des){
+        return etatPossibleMachineRepository.findEtatPossibleByDes(des);
     }
 
 

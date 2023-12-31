@@ -29,6 +29,7 @@ public class IconUtils {
                 break;
             case "en marche":
                 element.getElement().getThemeList().add("badge");
+
                 break;
             case "en panne":
                 element.getElement().getThemeList().add("badge error");
