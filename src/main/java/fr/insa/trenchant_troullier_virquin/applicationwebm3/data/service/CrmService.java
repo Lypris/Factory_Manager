@@ -252,7 +252,7 @@ public class CrmService {
     public void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine){
         etatMachineRepository.SetFinByEtatMachine(fin, etatmachine);
     }
-    public EtatMachine findMJMXGintK85oYNuXvvRDfVsrieqidchsTF(Machine machine) {
+    public EtatMachine findMostRecentEtatMachineByMachine(Machine machine) {
         List<EtatMachine> previousEtatMachines = etatMachineRepository.findPreviousEtatMachineByMachine(machine);
 
         // Retourne l'état le plus récent, ou null si aucun état n'est trouvé
@@ -387,7 +387,7 @@ public class CrmService {
         return definitionCommandeRepository.findAllDefinitionByProduitAndCommande(produit, commande);
     }
 
-    public DefinitionCommande getDGaFLbjxppp2U9QHNHPZFqdJ6bN6pniMuG(Produit produit, Commande commande) {
+    public DefinitionCommande getDefinitionByProduitAndCommandeUnique(Produit produit, Commande commande) {
         return definitionCommandeRepository.findDefinitionByProduitAndCommande(produit, commande);
     }
     public void deleteAllDefinitionByCommande(Commande commande) {
