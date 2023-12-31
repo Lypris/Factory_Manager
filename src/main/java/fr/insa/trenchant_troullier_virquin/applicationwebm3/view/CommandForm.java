@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -22,19 +23,19 @@ public class CommandForm extends FormLayout {
 
     static TextField ref = new TextField("Référence");
     static TextField des = new TextField("Description");
-    Button addProduct = new Button("Add product");
-    static ComboBox<String> etats = new ComboBox<>("Etat");
+    Button addProduct = new Button("Définir les produits");
 
     Button save = new Button("Enregistrer");
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
+    CrmService service;
     BeanValidationBinder<Commande> binder = new BeanValidationBinder<>(Commande.class);
 
     public CommandForm(List<Produit> produits, CrmService service) {
+        this.service = service;
         binder.bindInstanceFields(this);
         addClassName("Commande-form");
-        etats.setItems("En cours", "En attente", "Terminée", "Annulée");
-        add(ref, des, addProduct, etats,
+        add(ref, des, addProduct,
                 createButtonsLayout());
         addProduct.addClickListener(e ->{
             DialogDefCommande dialogAddProduct = new DialogDefCommande(binder.getBean(), produits, service);
@@ -47,14 +48,19 @@ public class CommandForm extends FormLayout {
 
     public void setCommande(Commande commande) {
         binder.setBean(commande);
-        if (commande != null){
-            String etat = commande.getStatut();
-            if (etat != null) {
-                etats.setValue(etat);
-            }
-        }else {
-
-            etats.setValue("En cours");
+        // Vérifier le statut de la commande et cacher le bouton si nécessaire
+        if (commande != null && ("En cours".equalsIgnoreCase(commande.getStatut()) || "Terminée".equalsIgnoreCase(commande.getStatut()))) {
+            addProduct.setVisible(false);
+        } else {
+            addProduct.setVisible(true);
+        }
+        // renommer le bouton en "Modifier les produits" si la commande a déjà des produits
+        if (commande != null && !service.findAllProduitByCommande(commande).isEmpty()) {
+            addProduct.setText("Modifier les produits");
+            addProduct.setIcon(VaadinIcon.EDIT.create());
+        } else {
+            addProduct.setText("Définir les produits");
+            addProduct.setIcon(VaadinIcon.PLUS.create());
         }
     }
 
@@ -126,10 +132,9 @@ public class CommandForm extends FormLayout {
     }
 
     private void validateAndSave() {
-        if(!etats.isEmpty() && !des.isEmpty() && !ref.isEmpty()){
+        if(binder.isValid()) {
             Commande commande = binder.getBean();
-            String etatSelectionne = etats.getValue();
-            commande.setStatut(etatSelectionne);
+            commande.setStatut("En attente");
             fireEvent(new CommandForm.SaveEvent(this, commande));
         }
     }

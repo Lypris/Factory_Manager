@@ -50,15 +50,46 @@ public class MachineForm extends FormLayout {
         add(ref, des, puissance, typeOperationComboBox, etatComboBox,
                 createButtonsLayout());
     }
-    public void setMachine(Machine Machine) {
+    public void setMachine(Machine machine) {
 
-        binder.setBean(Machine);
-        if (Machine != null){
-            // Récupérer le type d'opération de la Machine et le sélectionner dans le ComboBox
-            TypeOperation typeOperation = Machine.getTypeOperation();
+        binder.setBean(machine);
+        if (machine != null) {
+            // Récupérer le type d'opération de la machine et le sélectionner dans le ComboBox
+            TypeOperation typeOperation = machine.getTypeOperation();
             if (typeOperation != null) {
                 this.typeOperationComboBox.setValue(typeOperation);
             }
+            if (machine.getId() != null) {
+                // Récupérer l'état actuel de la machine
+                EtatMachine currentEtatMachine = service.findLastEtatMachineByMachine(machine);
+                // Déterminer les états possibles suivants en fonction de l'état actuel
+                if (currentEtatMachine != null) {
+                    EtatPossibleMachine etatActuel = currentEtatMachine.getEtat();
+                    if ("en marche".equals(etatActuel.getDes())) {
+                        etatComboBox.setItems(service.findEtatPossibleByDes("en panne"));
+                    } else if ("disponible".equals(etatActuel.getDes())) {
+                        etatComboBox.setItems(service.findEtatPossibleByDes("en panne"));
+                    }
+                    else if ("en panne".equals(etatActuel.getDes())) {
+                        // Si la machine est en panne, on peut la remettre en marche si elle était en marche avant
+                        //on récupère l'état précédent
+                        EtatMachine previousEtatMachine = service.findMostRecentEtatMachineByMachine(machine);
+                        if (previousEtatMachine.getEtat().getDes().equals("en marche")) {
+                            etatComboBox.setItems(service.findEtatPossibleByDes("en marche"));
+                        } else {
+                            etatComboBox.setItems(service.findEtatPossibleByDes("disponible"));
+                        }
+                    }
+                    else {
+                        etatComboBox.setItems(service.findAllEtatPossibleMachines());
+                    }
+                } else {
+                    etatComboBox.setItems(service.findAllEtatPossibleMachines());
+                }
+            } else {
+                etatComboBox.setItems(service.findAllEtatPossibleMachines());
+            }
+            etatComboBox.setItemLabelGenerator(EtatPossibleMachine::getDes);
         }
     }
 

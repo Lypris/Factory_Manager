@@ -18,4 +18,9 @@ import org.springframework.data.jpa.repository.Query;
 public interface Operation_EffectueeRepository extends JpaRepository<Operation_Effectuee, Long>{
     @Query("SELECT opf FROM Operation_Effectuee opf WHERE opf.exemplaire = :exemplaire AND opf.operation = :operation")
     List<Operation_Effectuee> OperationEffectueeExiste(Exemplaires exemplaire, Operation operation);
+
+    void deleteAllOperationEffectueeByExemplaire(Exemplaires exemplaire);
+
+    @Query("SELECT opf FROM Operation_Effectuee opf WHERE opf.exemplaire = :exemplaire")
+    List<Operation_Effectuee> findByExemplaire(Exemplaires exemplaire);
 }

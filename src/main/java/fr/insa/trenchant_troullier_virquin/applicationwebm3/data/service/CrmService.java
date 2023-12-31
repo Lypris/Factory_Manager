@@ -7,10 +7,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CrmService {
@@ -255,7 +252,18 @@ public class CrmService {
     public void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine){
         etatMachineRepository.SetFinByEtatMachine(fin, etatmachine);
     }
+    public EtatMachine findMostRecentEtatMachineByMachine(Machine machine) {
+        List<EtatMachine> previousEtatMachines = etatMachineRepository.findPreviousEtatMachineByMachine(machine);
 
+        // Retourne l'état le plus récent, ou null si aucun état n'est trouvé
+        return previousEtatMachines.stream()
+                .max(Comparator.comparing(EtatMachine::getDebut))
+                .orElse(null);
+    }
+
+    public List<EtatMachine> findPreviousEtatsMachinesByMachine(Machine machine) {
+        return etatMachineRepository.findPreviousEtatMachineByMachine(machine);
+    }
 
 
     //////////////////////////// ETAT POSSIBLE MACHINE ////////////////////////////
@@ -325,12 +333,18 @@ public class CrmService {
         return commandeRepository.count();
     }
 
-    public void deleteCommande(Commande commande) {//normalement appelé que si la commande est en attente
-        deleteExemplaireEnAttenteByCommande(commande);//supprime les exemplaires associés à la commande
+    public void deleteCommande(Commande commande) {
+        //supprimer les opérations effectuées associées aux exemplaires associés à la commande
+        List<Exemplaires> exemplaires = exemplairesRepository.findByCommande(commande);
+        for (Exemplaires exemplaire : exemplaires) {
+            deleteAllOperationEffectueesByExemplaire(exemplaire);
+        }
+
+        deleteExemplairesByCommande(commande);//supprime les exemplaires associés à la commande
         deleteAllDefinitionByCommande(commande);//supprime les définitions de commande associées à la commande
         commandeRepository.delete(commande);
     }
-    
+
     public void SetStatutCommande (Commande commande, String statut){
         commandeRepository.setCommandeEnProduction(commande, statut);
     }
@@ -385,8 +399,8 @@ public class CrmService {
     public void deleteDefinitionCommande(DefinitionCommande definitionCommande) {
         definitionCommandeRepository.delete(definitionCommande);
     }
-    
-    
+
+
     // type d'opération
     //////////////////////////// TYPE OPERATION ////////////////////////////
     public List<TypeOperation> findAllTypeOperation(){
@@ -490,12 +504,23 @@ public class CrmService {
         }
         operation_EffectueeRepository.save(ope_effect);
     }
-    
+    public void deleteOperationEffectuee(Operation_Effectuee operation_effectuee) {
+        operation_EffectueeRepository.delete(operation_effectuee);
+    }
+
     public boolean OperationEffectueeExiste(Exemplaires exemplaire, Operation operation){
         if (operation_EffectueeRepository.OperationEffectueeExiste(exemplaire, operation).isEmpty()){
             return false;
         }else {
             return true;
+        }
+    }
+    public List<Operation_Effectuee> findAllOperationEffectueeByExemplaire(Exemplaires exemplaire) {
+        return operation_EffectueeRepository.findByExemplaire(exemplaire);
+    }
+    public void deleteAllOperationEffectueesByExemplaire(Exemplaires exemplaire) {
+        for (Operation_Effectuee operation_effectuee : findAllOperationEffectueeByExemplaire(exemplaire)) {
+            operation_EffectueeRepository.delete(operation_effectuee);
         }
     }
     //////////////////////// Exemplaire ////////////////////////////
@@ -521,23 +546,40 @@ public class CrmService {
     public List<Exemplaires> findAllProdEnCours() {
         return exemplairesRepository.findAllProdEnCours();
     }
-    public void deleteExemplaireEnAttenteByCommande(Commande commande) {
+    public void deleteExemplairesByCommande(Commande commande) {
         exemplairesRepository.deleteAllExemplaireByCommande(commande);//supprime les exemplaires associés à la commande
     }
     public void deleteAllExemplaireEnAttenteByProduit(Produit produit) {
         exemplairesRepository.deleteAllExemplaireEnAttenteByProduit(produit);//supprime les exemplaires associés au produit dont etape = 0
     }
     public List<Exemplaires> findAllProdFini() {
-        return exemplairesRepository.findAllProdFini();
-    } //récupère les exemplaires dont l'étape est null
+        //récupère les exemplaires dont l'étape est supérieure au nombre d'opérations associé au produit
+        List<Exemplaires> exemplaires = exemplairesRepository.findAll();
+        List<Exemplaires> exemplairesFini = new ArrayList<>();
+        for (Exemplaires exemplaire : exemplaires) {
+            if (exemplaire.getEtape() > operationRepository.findByProduitId(exemplaire.getProduit().getId()).size()) {
+                exemplairesFini.add(exemplaire);
+            }
+        }
+        return exemplairesFini;
+    }
     public List<Exemplaires> findAllProdFiniByProduitAndCommande(Produit produit, Commande commande) {
-        int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
-        return exemplairesRepository.findAllProdFiniByProduitAndCommande(produit, commande, nbOperation);
-    } //récupère les exemplaires dont l'étape est null et qui sont associés à un produit et une commande donnée
+        //récupère les exemplaires dont l'étape est supérieure au nombre d'opérations associé au produit
+        // et qui sont associés à un produit et une commande donnée
+        List<Exemplaires> exemplaires = exemplairesRepository.findAll();
+        List<Exemplaires> exemplairesFini = new ArrayList<>();
+        for (Exemplaires exemplaire : exemplaires) {
+            if (exemplaire.getEtape() > operationRepository.findByProduitId(exemplaire.getProduit().getId()).size() && exemplaire.getProduit().equals(produit) && exemplaire.getCommande().equals(commande)) {
+                exemplairesFini.add(exemplaire);
+            }
+        }
+        return exemplairesFini;
+    }
     public List<Exemplaires> findAllProdEnCoursByProduitAndCommande(Produit produit, Commande commande) {
         int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
         return exemplairesRepository.findAllProdEnCoursByProduitAndCommande(produit, commande, nbOperation);
     }
+    
     public List<Exemplaires> findAllByCommande(Commande commande){
         return exemplairesRepository.findByCommande(commande);
     }
@@ -549,8 +591,8 @@ public class CrmService {
     public void deleteNExemplaireByProduitAndCommande(int n, Produit produit, Commande commande) {
         exemplairesRepository.deleteNExemplaireByProduitAndCommande(n, produit.getId(), commande.getId());
     }
-    
-    
+
+
     //////////////////////// POSTE DE TRAVAIL ////////////////////////////
     public List<PosteDeTravail> findAllPosteDeTravail(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
@@ -588,4 +630,6 @@ public class CrmService {
         }
         habilitationRepository.save(habilitation);
     }
+
+
 }

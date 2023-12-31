@@ -27,6 +27,7 @@ public class DialogDefCommande extends Dialog{
 
     public DialogDefCommande(Commande commandes, List<Produit> produits, CrmService service) {
         this.service = service;
+        this.setCloseOnEsc(true);
         addClassName("DefCommande-dialog");
         ArrayList<Produit> produit = (ArrayList<Produit>) produits;
         HorizontalLayout toolBar = setupToolBar(produit, commandes);
