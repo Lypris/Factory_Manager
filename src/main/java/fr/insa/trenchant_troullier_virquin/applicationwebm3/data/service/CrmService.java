@@ -246,8 +246,12 @@ public class CrmService {
         etatPossibleMachineRepository.save(etatPossibleMachine);
     }
     
-    public EtatPossibleMachine findEtatPossibleById (long id){
-        return etatPossibleMachineRepository.findEtatPossibleById(id);
+    public EtatPossibleMachine findEtatEnMarche (){
+        return etatPossibleMachineRepository.findEtatEnMarche();
+    }
+    
+    public EtatPossibleMachine findEtatDisponible (){
+        return etatPossibleMachineRepository.findEtatDisponible();
     }
 
 

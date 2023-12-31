@@ -130,7 +130,7 @@ public class MachineForm extends FormLayout {
                 return;
             }
             fireEvent(new MachineForm.SaveEvent(this, binder.getBean()));
-            this.service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), machine, service.findEtatPossibleById(7511)));
+            this.service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), machine, service.findEtatDisponible()));
         }
     }
 }

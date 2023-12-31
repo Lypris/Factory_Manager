@@ -9,5 +9,11 @@ public interface EtatPossibleMachineRepository extends JpaRepository<EtatPossibl
 
     @Query("SELECT e FROM EtatPossibleMachine e WHERE e.id = :id")
     public EtatPossibleMachine findEtatPossibleById(long id);
+    
+    @Query("SELECT ep FROM EtatPossibleMachine ep WHERE ep.des = 'en marche'")
+    public EtatPossibleMachine findEtatEnMarche ();
+    
+    @Query("SELECT ep FROM EtatPossibleMachine ep WHERE ep.des = 'Disponible'")
+    public EtatPossibleMachine findEtatDisponible ();
    
 }

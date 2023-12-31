@@ -249,7 +249,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             //Recuper l'etat actuel et mettre l'heure de fin
             service.SetFinByEtatMachine(LocalDateTime.now(),service.findLastEtatMachineByMachine(m));
             //Creer un nouvel etat avec l'heure de début
-            service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatPossibleById(3161)));
+            service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatEnMarche()));
         }
         
         
