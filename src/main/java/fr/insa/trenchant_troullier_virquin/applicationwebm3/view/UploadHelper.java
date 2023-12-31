@@ -117,5 +117,11 @@ public class UploadHelper extends Div {
             setImageData(null);
         }
     }
+    public void resetUpload() {
+        currentImageData = null;
+        imageUploaded = false;
+        // Réinitialiser l'upload lui-même si nécessaire
+    }
+
 }
 

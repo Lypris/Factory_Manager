@@ -56,13 +56,17 @@ public class ProductForm extends FormLayout {
     }
 
     public void setProduit(Produit produit) {
+        resetUploadAndImage(); // Réinitialiser l'état avant de définir un nouveau produit
         binder.setBean(produit);
         if (produit != null && produit.getImage() != null) {
-            originalImageData = produit.getImage(); // Sauvegarder l'image originale
+            originalImageData = produit.getImage();
             updateImage(produit.getImage());
-        } else {
-            originalImageData = null;
         }
+    }
+    public void resetUploadAndImage() {
+        upload.resetUpload(); // Réinitialise l'état de l'upload
+        produitImage.setSrc(""); // Réinitialise l'image affichée
+        originalImageData = null;
     }
 
     private void updateImage(byte[] imageData) {

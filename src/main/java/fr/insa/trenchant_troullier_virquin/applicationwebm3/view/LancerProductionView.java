@@ -8,6 +8,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -40,7 +41,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     private List<ComboBox<Machine>> machineComboBoxes = new ArrayList<>();
     
     private HorizontalLayout entete = new HorizontalLayout();
-    private Label label = new Label(" ");
+    private Span label = new Span(" ");
     private Button lancerProdCommande; //Button pour finaliser la commande
     private Button lancerProductionButton; // Bouton pour lancer la production
 
@@ -136,9 +137,6 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         // Activez ou désactivez le bouton en fonction de la sélection
         if (allSelected){
             lancerProductionButton.setEnabled(allSelected);
-            if (this.ListProduitCommande.isEmpty()){
-                lancerProductionButton.setEnabled(false);
-            } 
         }
     }
     private void updateLancerProdCommande() {
@@ -166,13 +164,31 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         });
         // Remplir le ComboBox avec les produits disponibles
         produitComboBox.setItems(this.ListProduitCommande);
-        this.entete.add(this.produitComboBox, this.lancerProductionButton, this.label);
+        configureEntete();
         updateProduitEnProd();
+    }
+    //méthode pour configurer l'entête de la vue
+    private void configureEntete() {
+        // Ajouter le ComboBox des produits à l'entête
+        entete.add(produitComboBox);
+        // Ajouter le bouton pour lancer la production à l'entête
+        entete.add(lancerProductionButton);
+        // Ajouter le label à l'entête
+        entete.add(label);
+        // Aligner les composants à gauche
+        entete.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
+
     }
     
     //Met à jour les element du Combobox des produits
     private void updateProduitComboBox(){
+
         this.produitComboBox.setItems(this.ListProduitCommande);
+        if (this.ListProduitCommande.isEmpty()){
+            lancerProdCommande.setEnabled(true);
+        } else {
+            lancerProdCommande.setEnabled(false);
+        }
     }
     
     //Methode qui met ajours les produit de la commande qui ne sont pas en production 

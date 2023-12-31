@@ -10,6 +10,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 
@@ -23,7 +24,9 @@ public class TypeOperationForm extends FormLayout {
     public TypeOperationForm() {
         binder.bindInstanceFields(this);
         addClassName("TypeOperation-form");
-
+        des.setValueChangeMode(ValueChangeMode.EAGER);
+        des.addValueChangeListener(e ->
+                save.setEnabled(!e.getValue().isEmpty()));
         add(des,
                 createButtonsLayout());
     }

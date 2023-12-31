@@ -14,6 +14,7 @@
   "@vaadin/app-layout": "24.2.3",
   "@vaadin/avatar": "24.2.3",
   "@vaadin/avatar-group": "24.2.3",
+  "@vaadin/board": "24.2.3",
   "@vaadin/bundles": "24.2.3",
   "@vaadin/button": "24.2.3",
   "@vaadin/checkbox": "24.2.3",
@@ -95,6 +96,7 @@
   "@vaadin/app-layout": "24.2.3",
   "@vaadin/avatar": "24.2.3",
   "@vaadin/avatar-group": "24.2.3",
+  "@vaadin/board": "24.2.3",
   "@vaadin/button": "24.2.3",
   "@vaadin/checkbox": "24.2.3",
   "@vaadin/checkbox-group": "24.2.3",
@@ -168,6 +170,8 @@
   "@vaadin/app-layout/theme/lumo/vaadin-drawer-toggle.js",
   "@vaadin/avatar-group/theme/lumo/vaadin-avatar-group.js",
   "@vaadin/avatar/theme/lumo/vaadin-avatar.js",
+  "@vaadin/board/theme/lumo/vaadin-board-row.js",
+  "@vaadin/board/theme/lumo/vaadin-board.js",
   "@vaadin/button/theme/lumo/vaadin-button.js",
   "@vaadin/checkbox-group/theme/lumo/vaadin-checkbox-group.js",
   "@vaadin/checkbox/theme/lumo/vaadin-checkbox.js",
@@ -277,12 +281,17 @@
   "applicationwebm3": "{\n  \"lumoImports\" : [ \"typography\", \"color\", \"spacing\", \"badge\", \"utility\" ]\n}"
  },
  "entryScripts": [
-  "VAADIN/build/indexhtml-4a1805dc.js"
+  "VAADIN/build/indexhtml-52273684.js"
  ],
  "webComponents": [],
- "cvdlModules": {},
- "packageJsonHash": "4ffb4b8409781a76a804d70492646dc17a5b5221d90013966eb501f88e1d72d5",
+ "cvdlModules": {
+  "@vaadin/board": {
+   "name": "vaadin-board",
+   "version": "24.2.3"
+  }
+ },
+ "packageJsonHash": "2bcff82bb77589ffddfc2fd2a9294270e382d7071acfce8f28c2d2fb93f485c3",
  "indexHtmlGenerated": [
-  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-4a1805dc.js\"></script>"
+  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-52273684.js\"></script>"
  ]
 }

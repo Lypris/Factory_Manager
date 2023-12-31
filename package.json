@@ -17,6 +17,7 @@
     "@vaadin/app-layout": "24.2.3",
     "@vaadin/avatar": "24.2.3",
     "@vaadin/avatar-group": "24.2.3",
+    "@vaadin/board": "24.2.3",
     "@vaadin/bundles": "24.2.3",
     "@vaadin/button": "24.2.3",
     "@vaadin/checkbox": "24.2.3",
@@ -114,6 +115,7 @@
       "@vaadin/app-layout": "24.2.3",
       "@vaadin/avatar": "24.2.3",
       "@vaadin/avatar-group": "24.2.3",
+      "@vaadin/board": "24.2.3",
       "@vaadin/bundles": "24.2.3",
       "@vaadin/button": "24.2.3",
       "@vaadin/checkbox": "24.2.3",
@@ -195,7 +197,7 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "4ffb4b8409781a76a804d70492646dc17a5b5221d90013966eb501f88e1d72d5"
+    "hash": "2bcff82bb77589ffddfc2fd2a9294270e382d7071acfce8f28c2d2fb93f485c3"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -274,6 +276,7 @@
     "@fullcalendar/daygrid": "$@fullcalendar/daygrid",
     "moment-timezone": "$moment-timezone",
     "@fullcalendar/multimonth": "$@fullcalendar/multimonth",
-    "@fullcalendar/moment": "$@fullcalendar/moment"
+    "@fullcalendar/moment": "$@fullcalendar/moment",
+    "@vaadin/board": "$@vaadin/board"
   }
 }
