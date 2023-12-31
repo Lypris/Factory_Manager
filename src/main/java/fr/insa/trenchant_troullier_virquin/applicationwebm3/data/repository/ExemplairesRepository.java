@@ -44,6 +44,10 @@ public interface ExemplairesRepository extends JpaRepository<Exemplaires, Long>{
     @Modifying
     @Query(value = "DELETE FROM Exemplaires e WHERE e.commande = :commande")
     void deleteAllExemplaireByCommande(Commande commande);
+    @Transactional
+    @Modifying
+    @Query("UPDATE Exemplaires e SET e.etape = :nbOpe WHERE e = :exemplaire")
+    void ExemplaireFini (int nbOpe, Exemplaires exemplaire);
 
     @Transactional
     @Modifying

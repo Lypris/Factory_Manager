@@ -244,15 +244,15 @@ public class CrmService {
     public List<EtatMachine> findAllEtatMachineByMachine(Machine machine) {
         return etatMachineRepository.findByMachine(machine);
     }
-    
+
     public EtatMachine findLastEtatMachineByMachine(Machine machine){
         return etatMachineRepository.findCurrentEtatMachineByMachine(machine);
     }
-    
+
     public void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine){
         etatMachineRepository.SetFinByEtatMachine(fin, etatmachine);
     }
-    public EtatMachine findMostRecentEtatMachineByMachine(Machine machine) {
+    public EtatMachine findMJMXGintK85oYNuXvvRDfVsrieqidchsTF(Machine machine) {
         List<EtatMachine> previousEtatMachines = etatMachineRepository.findPreviousEtatMachineByMachine(machine);
 
         // Retourne l'état le plus récent, ou null si aucun état n'est trouvé
@@ -278,11 +278,11 @@ public class CrmService {
         }
         etatPossibleMachineRepository.save(etatPossibleMachine);
     }
-    
+
     public EtatPossibleMachine findEtatEnMarche (){
         return etatPossibleMachineRepository.findEtatEnMarche();
     }
-    
+
     public EtatPossibleMachine findEtatDisponible (){
         return etatPossibleMachineRepository.findEtatDisponible();
     }
@@ -387,7 +387,7 @@ public class CrmService {
         return definitionCommandeRepository.findAllDefinitionByProduitAndCommande(produit, commande);
     }
 
-    public DefinitionCommande getDefinitionByProduitAndCommandeUnique(Produit produit, Commande commande) {
+    public DefinitionCommande getDGaFLbjxppp2U9QHNHPZFqdJ6bN6pniMuG(Produit produit, Commande commande) {
         return definitionCommandeRepository.findDefinitionByProduitAndCommande(produit, commande);
     }
     public void deleteAllDefinitionByCommande(Commande commande) {
@@ -495,7 +495,7 @@ public class CrmService {
     public void deleteOperation(Operation operation) {
         operationRepository.delete(operation);
     }
-    
+
     //////////////////////// OPERATION EFFECTUEE ////////////////////////////
     public void saveOpperation_Effectuee(Operation_Effectuee ope_effect) {
         if (ope_effect == null) {
@@ -515,14 +515,21 @@ public class CrmService {
             return true;
         }
     }
+
     public List<Operation_Effectuee> findAllOperationEffectueeByExemplaire(Exemplaires exemplaire) {
         return operation_EffectueeRepository.findByExemplaire(exemplaire);
     }
+
+    public void SetFinOperationEffectuee(LocalDateTime time, Operation_Effectuee opf){
+        operation_EffectueeRepository.SetFinOperationEffectuee(time, opf);
+    }
+
     public void deleteAllOperationEffectueesByExemplaire(Exemplaires exemplaire) {
         for (Operation_Effectuee operation_effectuee : findAllOperationEffectueeByExemplaire(exemplaire)) {
             operation_EffectueeRepository.delete(operation_effectuee);
         }
     }
+
     //////////////////////// Exemplaire ////////////////////////////
     public void saveExemplaire(Exemplaires exemplaire) {
         if (exemplaire == null) {
@@ -579,11 +586,11 @@ public class CrmService {
         int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
         return exemplairesRepository.findAllProdEnCoursByProduitAndCommande(produit, commande, nbOperation);
     }
-    
+
     public List<Exemplaires> findAllByCommande(Commande commande){
         return exemplairesRepository.findByCommande(commande);
     }
-    
+
     public List<Exemplaires> findAllByCommandeAndProduit(Commande commande, Produit produit){
         return exemplairesRepository.findByCommandeAndProduit(commande, produit);
     }
@@ -591,8 +598,9 @@ public class CrmService {
     public void deleteNExemplaireByProduitAndCommande(int n, Produit produit, Commande commande) {
         exemplairesRepository.deleteNExemplaireByProduitAndCommande(n, produit.getId(), commande.getId());
     }
-
-
+    public void ExemplaireFini (int nbOpe, Exemplaires exemplaire){
+        exemplairesRepository.ExemplaireFini(nbOpe, exemplaire);
+    }
     //////////////////////// POSTE DE TRAVAIL ////////////////////////////
     public List<PosteDeTravail> findAllPosteDeTravail(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
