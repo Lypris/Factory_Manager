@@ -7,20 +7,17 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.NotEmpty;
 
 /**
- *
  * @author laelt
  */
 @Entity
-public class Exemplaires extends AbstractEntity{
-    
+public class Exemplaires extends AbstractEntity {
+
     @ManyToOne
     @JoinColumn(name = "produit_id")
     private Produit produit;
-    
+
     @ManyToOne
     @JoinColumn(name = "commande_id")
     private Commande commande;
@@ -28,11 +25,11 @@ public class Exemplaires extends AbstractEntity{
     /*@OneToOne
     @JoinColumn(name = "OperationEffectuee_id")
     private Operation_Effectuee operation_effectuee;*/
-    
+
     private int etape;
-    
-    public Exemplaires(){
-        
+
+    public Exemplaires() {
+
     }
 
     public Produit getProduit() {
@@ -42,7 +39,7 @@ public class Exemplaires extends AbstractEntity{
     public void setProduit(Produit produit) {
         this.produit = produit;
     }
-    
+
     public Commande getCommande() {
         return commande;
     }
@@ -61,8 +58,8 @@ public class Exemplaires extends AbstractEntity{
 
     @Override
     public String toString() {
-        return "Exemplaires{"+"Id"+ this.getId() + "produit=" + produit + ", commande=" + commande + ", etape=" + etape + '}';
+        return "Exemplaires{" + "Id" + this.getId() + "produit=" + produit + ", commande=" + commande + ", etape=" + etape + '}';
     }
-    
-    
+
+
 }

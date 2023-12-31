@@ -37,6 +37,7 @@ public class EtatPossibleMachineDialog extends Dialog {
         cancelButton.addClickShortcut(Key.ESCAPE);
         getFooter().add(cancelButton);
     }
+
     private Button createSaveButton() {
         return new Button("Save", event -> {
             validateAndSave();
@@ -48,10 +49,28 @@ public class EtatPossibleMachineDialog extends Dialog {
         open();
     }
 
+    public Registration addSaveListener(ComponentEventListener<EtatPossibleMachineDialog.SaveEvent> listener) {
+        return addListener(EtatPossibleMachineDialog.SaveEvent.class, listener);
+    }
+
+    public Registration addCloseListener(ComponentEventListener<EtatPossibleMachineDialog.CloseEvent> listener) {
+        return addListener(EtatPossibleMachineDialog.CloseEvent.class, listener);
+    }
+
+    private void validateAndSave() {
+        if (binder.isValid()) {
+            EtatPossibleMachine etatPossibleMachine = new EtatPossibleMachine(); // Initialisez l'objet si nécessaire
+            binder.writeBeanIfValid(etatPossibleMachine);
+            fireEvent(new EtatPossibleMachineDialog.SaveEvent(this, etatPossibleMachine));
+        } else {
+            // Afficher les erreurs de validation
+            Notification.show("Veuillez remplir tous les champs correctement", 3000, Notification.Position.MIDDLE);
+        }
+    }
 
     // Events
     public static abstract class EtatPossibleMachineDialogEvent extends ComponentEvent<EtatPossibleMachineDialog> {
-        private EtatPossibleMachine etat;
+        private final EtatPossibleMachine etat;
 
         protected EtatPossibleMachineDialogEvent(EtatPossibleMachineDialog source, EtatPossibleMachine etat) {
             super(source, false);
@@ -68,26 +87,10 @@ public class EtatPossibleMachineDialog extends Dialog {
             super(source, etat);
         }
     }
+
     public static class CloseEvent extends EtatPossibleMachineDialog.EtatPossibleMachineDialogEvent {
         CloseEvent(EtatPossibleMachineDialog source) {
             super(source, null);
-        }
-    }
-
-    public Registration addSaveListener(ComponentEventListener<EtatPossibleMachineDialog.SaveEvent> listener) {
-        return addListener(EtatPossibleMachineDialog.SaveEvent.class, listener);
-    }
-    public Registration addCloseListener(ComponentEventListener<EtatPossibleMachineDialog.CloseEvent> listener) {
-        return addListener(EtatPossibleMachineDialog.CloseEvent.class, listener);
-    }
-    private void validateAndSave() {
-        if (binder.isValid()) {
-            EtatPossibleMachine etatPossibleMachine = new EtatPossibleMachine(); // Initialisez l'objet si nécessaire
-            binder.writeBeanIfValid(etatPossibleMachine);
-            fireEvent(new EtatPossibleMachineDialog.SaveEvent(this, etatPossibleMachine));
-        } else {
-            // Afficher les erreurs de validation
-            Notification.show("Veuillez remplir tous les champs correctement", 3000, Notification.Position.MIDDLE);
         }
     }
 

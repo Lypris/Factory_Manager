@@ -1,10 +1,6 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.*;
 
 @MappedSuperclass
 public abstract class AbstractEntity {
@@ -14,7 +10,6 @@ public abstract class AbstractEntity {
     // The initial value is to account for data.sql demo data ids
     @SequenceGenerator(name = "idgenerator", initialValue = 1)
     private Long id;
-
 
 
     public Long getId() {

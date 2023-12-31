@@ -7,31 +7,28 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 /**
- *
  * @author laelt
  */
 
 @Entity
-public class Operation_Effectuee extends AbstractEntity{
-    
+public class Operation_Effectuee extends AbstractEntity {
+
     @ManyToOne
     @JoinColumn(name = "exemplaire_id")
     private Exemplaires exemplaire;
-    
+
     @ManyToOne
     @JoinColumn(name = "machine_id")
     private Machine machine;
-    
+
     @ManyToOne
     @JoinColumn(name = "operation_id")
     private Operation operation;
-    
+
     private LocalDateTime debut;
     private LocalDateTime fin;
 
@@ -43,7 +40,7 @@ public class Operation_Effectuee extends AbstractEntity{
         this.machine = machine;
         this.operation = operation;
     }
-    
+
 
     public Exemplaires getExemplaire() {
         return exemplaire;

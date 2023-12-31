@@ -1,7 +1,6 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 
-
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -14,7 +13,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
@@ -55,6 +53,7 @@ public class OperatorView extends VerticalLayout {
         form.addDeleteListener(this::deleteOperateur);
         form.addCloseListener(e -> closeEditor());
     }
+
     private void saveOperateur(OperateurForm.SaveEvent event) {
         service.saveOperateur(event.getOperateur());
         updateList();
@@ -101,6 +100,7 @@ public class OperatorView extends VerticalLayout {
         toolbar.addClassName("toolbar");
         return toolbar;
     }
+
     public void editOperateur(Operateur Operateur) {
         if (Operateur == null) {
             closeEditor();

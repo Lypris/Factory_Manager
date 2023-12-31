@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotEmpty;
 
 @Entity
-public class TypeOperation extends AbstractEntity{
+public class TypeOperation extends AbstractEntity {
     @NotEmpty
     private String des = "";
 
@@ -15,6 +15,7 @@ public class TypeOperation extends AbstractEntity{
     public void setDes(String des) {
         this.des = des;
     }
+
     @Override
     public String toString() {
         return "TypeOperation{" +

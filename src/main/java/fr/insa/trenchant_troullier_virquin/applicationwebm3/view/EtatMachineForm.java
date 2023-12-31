@@ -13,7 +13,9 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatPossibleMachine;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.time.LocalDateTime;
@@ -46,9 +48,10 @@ public class EtatMachineForm extends FormLayout {
                 etats,
                 createButtonsLayout());
     }
+
     public void setEtatMachine(EtatMachine etatMachine) {
         binder.setBean(etatMachine);
-        if (etatMachine != null){
+        if (etatMachine != null) {
             Machine machine = etatMachine.getMachine();
             if (machine != null) {
                 machineComboBox.setValue(machine);
@@ -77,40 +80,6 @@ public class EtatMachineForm extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
-
-    // Events
-    public static abstract class EtatMachineFormEvent extends ComponentEvent<EtatMachineForm> {
-        private EtatMachine EtatMachine;
-
-        protected EtatMachineFormEvent(EtatMachineForm source, EtatMachine EtatMachine) {
-            super(source, false);
-            this.EtatMachine = EtatMachine;
-        }
-
-        public EtatMachine getEtatMachine() {
-            return EtatMachine;
-        }
-    }
-
-    public static class SaveEvent extends EtatMachineFormEvent {
-        SaveEvent(EtatMachineForm source, EtatMachine EtatMachine) {
-            super(source, EtatMachine);
-        }
-    }
-
-    public static class DeleteEvent extends EtatMachineFormEvent {
-        DeleteEvent(EtatMachineForm source, EtatMachine EtatMachine) {
-            super(source, EtatMachine);
-        }
-
-    }
-
-    public static class CloseEvent extends EtatMachineFormEvent {
-        CloseEvent(EtatMachineForm source) {
-            super(source, null);
-        }
-    }
-
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         return addListener(DeleteEvent.class, listener);
     }
@@ -118,12 +87,15 @@ public class EtatMachineForm extends FormLayout {
     public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
         return addListener(SaveEvent.class, listener);
     }
+
     public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
         return addListener(CloseEvent.class, listener);
     }
+
     public void updateEtatsPossibles(List<EtatPossibleMachine> etatsPossibles) {
         etats.setItems(etatsPossibles);
     }
+
     private void validateAndSave() {
         if (binder.isValid()) {
             EtatMachine etatMachine = binder.getBean();
@@ -179,6 +151,39 @@ public class EtatMachineForm extends FormLayout {
             etatMachine.setFin(finValue);
 
             fireEvent(new SaveEvent(this, etatMachine));
+        }
+    }
+
+    // Events
+    public static abstract class EtatMachineFormEvent extends ComponentEvent<EtatMachineForm> {
+        private final EtatMachine EtatMachine;
+
+        protected EtatMachineFormEvent(EtatMachineForm source, EtatMachine EtatMachine) {
+            super(source, false);
+            this.EtatMachine = EtatMachine;
+        }
+
+        public EtatMachine getEtatMachine() {
+            return EtatMachine;
+        }
+    }
+
+    public static class SaveEvent extends EtatMachineFormEvent {
+        SaveEvent(EtatMachineForm source, EtatMachine EtatMachine) {
+            super(source, EtatMachine);
+        }
+    }
+
+    public static class DeleteEvent extends EtatMachineFormEvent {
+        DeleteEvent(EtatMachineForm source, EtatMachine EtatMachine) {
+            super(source, EtatMachine);
+        }
+
+    }
+
+    public static class CloseEvent extends EtatMachineFormEvent {
+        CloseEvent(EtatMachineForm source) {
+            super(source, null);
         }
     }
 

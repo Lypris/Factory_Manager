@@ -15,9 +15,9 @@ import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.time.format.DateTimeFormatter;
@@ -54,12 +54,13 @@ public class StatutView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new StatutForm(service.findAllOperateurs(null) , service.findAllStatuses(), service);
+        form = new StatutForm(service.findAllOperateurs(null), service.findAllStatuses(), service);
         form.setWidth("25em");
         form.addSaveListener(this::saveStatut);
         form.addDeleteListener(this::deleteStatut);
         form.addCloseListener(e -> closeEditor());
     }
+
     private void saveStatut(StatutForm.SaveEvent event) {
         service.saveStatutOperateur(event.getStatutOperateur());
         updateList();
@@ -124,7 +125,7 @@ public class StatutView extends VerticalLayout {
                 .setHeader("Date de fin").setSortable(true)
                 .setComparator(Comparator.comparing(StatutOperateur::getFin))
                 .setRenderer(new TextRenderer<>(statutOperateur -> {
-                    if(statutOperateur.getFin() == null){
+                    if (statutOperateur.getFin() == null) {
                         return "indéterminée";
                     }
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -148,11 +149,12 @@ public class StatutView extends VerticalLayout {
         addContactButton.addClickListener(click -> addStatutOperateur());
         Button goToOperateurButton = new Button("Liste des Opérateurs");
         goToOperateurButton.setIcon(new Icon(VaadinIcon.USERS));
-        goToOperateurButton.addClickListener(click ->getUI().ifPresent(ui -> ui.navigate("operateurs")));
+        goToOperateurButton.addClickListener(click -> getUI().ifPresent(ui -> ui.navigate("operateurs")));
         var toolbar = new HorizontalLayout(filterText, addContactButton, goToOperateurButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
+
     public void editStatutOperateur(StatutOperateur statutOperateur) {
         if (statutOperateur == null) {
             closeEditor();

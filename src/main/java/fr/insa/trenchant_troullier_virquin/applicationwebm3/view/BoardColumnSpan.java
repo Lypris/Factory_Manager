@@ -1,4 +1,5 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
+
 import com.vaadin.flow.component.board.Board;
 import com.vaadin.flow.component.board.Row;
 import com.vaadin.flow.component.html.Div;

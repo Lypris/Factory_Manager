@@ -18,11 +18,7 @@
  */
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.utils.exceptions;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
- *
  * @author francois
  */
 public class TestExceptionsUtils {

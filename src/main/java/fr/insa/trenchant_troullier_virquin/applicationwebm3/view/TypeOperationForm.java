@@ -30,6 +30,7 @@ public class TypeOperationForm extends FormLayout {
         add(des,
                 createButtonsLayout());
     }
+
     public void setTypeOperation(TypeOperation TypeOperation) {
         binder.setBean(TypeOperation);
     }
@@ -50,10 +51,27 @@ public class TypeOperationForm extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
+    public Registration addDeleteListener(ComponentEventListener<TypeOperationForm.DeleteEvent> listener) {
+        return addListener(TypeOperationForm.DeleteEvent.class, listener);
+    }
+
+    public Registration addSaveListener(ComponentEventListener<TypeOperationForm.SaveEvent> listener) {
+        return addListener(TypeOperationForm.SaveEvent.class, listener);
+    }
+
+    public Registration addCloseListener(ComponentEventListener<TypeOperationForm.CloseEvent> listener) {
+        return addListener(TypeOperationForm.CloseEvent.class, listener);
+    }
+
+    private void validateAndSave() {
+        if (binder.isValid()) {
+            fireEvent(new TypeOperationForm.SaveEvent(this, binder.getBean()));
+        }
+    }
 
     // Events
     public static abstract class TypeOperationFormEvent extends ComponentEvent<TypeOperationForm> {
-        private TypeOperation TypeOperation;
+        private final TypeOperation TypeOperation;
 
         protected TypeOperationFormEvent(TypeOperationForm source, TypeOperation TypeOperation) {
             super(source, false);
@@ -81,23 +99,6 @@ public class TypeOperationForm extends FormLayout {
     public static class CloseEvent extends TypeOperationForm.TypeOperationFormEvent {
         CloseEvent(TypeOperationForm source) {
             super(source, null);
-        }
-    }
-
-    public Registration addDeleteListener(ComponentEventListener<TypeOperationForm.DeleteEvent> listener) {
-        return addListener(TypeOperationForm.DeleteEvent.class, listener);
-    }
-
-    public Registration addSaveListener(ComponentEventListener<TypeOperationForm.SaveEvent> listener) {
-        return addListener(TypeOperationForm.SaveEvent.class, listener);
-    }
-    public Registration addCloseListener(ComponentEventListener<TypeOperationForm.CloseEvent> listener) {
-        return addListener(TypeOperationForm.CloseEvent.class, listener);
-    }
-
-    private void validateAndSave() {
-        if(binder.isValid()) {
-            fireEvent(new TypeOperationForm.SaveEvent(this, binder.getBean()));
         }
     }
 }

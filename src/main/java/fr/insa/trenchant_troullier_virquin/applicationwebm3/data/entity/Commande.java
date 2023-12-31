@@ -2,11 +2,8 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 

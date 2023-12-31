@@ -5,16 +5,13 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 /**
- *
  * @author laelt
  */
 @Entity
-public class MatPremiere extends AbstractEntity{
+public class MatPremiere extends AbstractEntity {
     @NotEmpty
     private String ref = "";
 
@@ -26,7 +23,7 @@ public class MatPremiere extends AbstractEntity{
     public String toString() {
         return "Produit{" +
                 "ref='" + ref + '\'' +
-                ", des='" + des + '\''+
+                ", des='" + des + '\'' +
                 '}';
     }
 

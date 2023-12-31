@@ -6,7 +6,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class MatiereProduit extends AbstractEntity{
+public class MatiereProduit extends AbstractEntity {
 
     //@NotNull
     private float quantite;

@@ -7,16 +7,16 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.DefinitionCommande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.time.LocalDateTime;
@@ -45,11 +45,13 @@ public class ProductionView extends VerticalLayout {
         content.setSizeFull();
         return content;
     }
+
     private void updateList() {
         List<Commande> commandes = service.findAllCommandeEnAttente();
         commandes.addAll(service.findAllCommandeEnCours());
         grid.setItems(commandes);
     }
+
     private void configureGrid() {
         grid.addClassNames("production-grid");
         grid.setSizeFull();
@@ -90,10 +92,10 @@ public class ProductionView extends VerticalLayout {
     }
 
     public class CommandeDetailsLayout extends HorizontalLayout {
-        private Grid<DefinitionCommande> grid = new Grid<>(DefinitionCommande.class);
-        private Commande commande;
-        private CrmService service;
-        private Button launch = new Button("Lancer la production");
+        private final Grid<DefinitionCommande> grid = new Grid<>(DefinitionCommande.class);
+        private final Commande commande;
+        private final CrmService service;
+        private final Button launch = new Button("Lancer la production");
 
 
         public CommandeDetailsLayout(CrmService service, Commande commande) {
@@ -105,13 +107,14 @@ public class ProductionView extends VerticalLayout {
             configureGridDetails();
             setCommande(service, commande);
             configureLayoutDetails();
-            if(commande.getStatut().equals("En cours")){
+            if (commande.getStatut().equals("En cours")) {
                 launch.setText("Gérer la production");
                 launch.setIcon(new com.vaadin.flow.component.icon.Icon(VaadinIcon.TOOLS));
             }
-            
+
         }
-        public void configureLayoutDetails(){
+
+        public void configureLayoutDetails() {
             H1 text = new H1(" ");
             this.setWidthFull();
             this.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
@@ -122,7 +125,7 @@ public class ProductionView extends VerticalLayout {
             launch.setIcon(new com.vaadin.flow.component.icon.Icon(VaadinIcon.PLAY_CIRCLE));
             launch.addClickListener(e -> {
                 //on redirige vers 2 pages différentes selon le statut de la commande
-                if(commande.getStatut().equals("En attente")){
+                if (commande.getStatut().equals("En attente")) {
                     //on redirige vers la page de lancement de la production
                     getUI().ifPresent(ui -> ui.navigate("lancerproduction/" + commande.getId()));
                     /*
@@ -131,18 +134,18 @@ public class ProductionView extends VerticalLayout {
                 service.saveCommande(commande);
                 updateList();
                  */
-                }
-                else if(commande.getStatut().equals("En cours")){
+                } else if (commande.getStatut().equals("En cours")) {
                     getUI().ifPresent(ui -> ui.navigate("GestionProduction/" + commande.getId()));
                 }
             });
 
         }
-        public void configureGridDetails(){
+
+        public void configureGridDetails() {
             grid.removeAllColumns();
-            grid.addColumn(DefinitionCommande->
+            grid.addColumn(DefinitionCommande ->
                     DefinitionCommande.getProduit().getDes());
-            grid.addColumn(DefinitionCommande->
+            grid.addColumn(DefinitionCommande ->
                     custominfo(commande, DefinitionCommande.getProduit()));
             grid.getColumns().forEach(col -> {
                 col.setAutoWidth(true);
@@ -150,12 +153,13 @@ public class ProductionView extends VerticalLayout {
             grid.addClassName("my-grid");
             add(grid);
         }
+
         private String custominfo(Commande commande, Produit produit) {
             //méthode qui permet d'afficher le nombre d'exemplaires finis pour un produit et une commande donnés
             // par rapport au nombre d'exemplaires commandés
             int NbrExemplaires = service.findAllProdFiniByProduitAndCommande(produit, commande).size();
             int NbrExemplairesCommandes = service.getDefinitionByProduitAndCommandeUnique(produit, commande).getNbr();
-            return NbrExemplaires + "/" + NbrExemplairesCommandes +" Exemplaires produits";
+            return NbrExemplaires + "/" + NbrExemplairesCommandes + " Exemplaires produits";
         }
 
         public void setCommande(CrmService service, Commande commande) {

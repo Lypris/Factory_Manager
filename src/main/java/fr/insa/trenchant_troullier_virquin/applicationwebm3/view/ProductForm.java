@@ -5,24 +5,18 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
-import java.awt.*;
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,16 +25,13 @@ public class ProductForm extends FormLayout {
     TextField des = new TextField("Description");
     TextField prix = new TextField("Prix");
     Image produitImage = new Image();
-    private byte[] originalImageData;
-
     Button save = new Button("Enregistrer");
-
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
     UploadHelper upload = new UploadHelper();
     CrmService service;
-
     BeanValidationBinder<Produit> binder = new BeanValidationBinder<>(Produit.class);
+    private byte[] originalImageData;
 
     public ProductForm(List<TypeOperation> typeoperations, CrmService service) {
         binder.bindInstanceFields(this);
@@ -63,6 +54,7 @@ public class ProductForm extends FormLayout {
             updateImage(produit.getImage());
         }
     }
+
     public void resetUploadAndImage() {
         upload.resetUpload(); // Réinitialise l'état de l'upload
         produitImage.setSrc(""); // Réinitialise l'image affichée
@@ -88,6 +80,7 @@ public class ProductForm extends FormLayout {
             }
         }
     }
+
     private Component createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -101,40 +94,14 @@ public class ProductForm extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
-    //Gestion des évènements
-    public static abstract class ProductFormEvent extends ComponentEvent<ProductForm> {
-        private Produit produit;
-
-        protected ProductFormEvent(ProductForm source, Produit produit) {
-            super(source, false);
-            this.produit = produit;
-        }
-
-        public Produit getProduit() {
-            return produit;
-        }
-    }
-    public static class SaveEvent extends ProductFormEvent {
-        SaveEvent(ProductForm source, Produit produit) {
-            super(source, produit);
-        }
-    }
-    public static class DeleteEvent extends ProductFormEvent {
-        DeleteEvent(ProductForm source, Produit produit) {
-            super(source, produit);
-        }
-    }
-    public static class CloseEvent extends ProductFormEvent {
-        CloseEvent(ProductForm source) {
-            super(source, null);
-        }
-    }
     public Registration addSaveListener(ComponentEventListener<ProductForm.SaveEvent> listener) {
         return addListener(ProductForm.SaveEvent.class, listener);
     }
+
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         return addListener(ProductForm.DeleteEvent.class, listener);
     }
+
     public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
         return addListener(ProductForm.CloseEvent.class, listener);
     }
@@ -149,6 +116,38 @@ public class ProductForm extends FormLayout {
                 produit.setImage(originalImageData); // Restaurer l'image originale
             }
             fireEvent(new ProductForm.SaveEvent(this, produit));
+        }
+    }
+
+    //Gestion des évènements
+    public static abstract class ProductFormEvent extends ComponentEvent<ProductForm> {
+        private final Produit produit;
+
+        protected ProductFormEvent(ProductForm source, Produit produit) {
+            super(source, false);
+            this.produit = produit;
+        }
+
+        public Produit getProduit() {
+            return produit;
+        }
+    }
+
+    public static class SaveEvent extends ProductFormEvent {
+        SaveEvent(ProductForm source, Produit produit) {
+            super(source, produit);
+        }
+    }
+
+    public static class DeleteEvent extends ProductFormEvent {
+        DeleteEvent(ProductForm source, Produit produit) {
+            super(source, produit);
+        }
+    }
+
+    public static class CloseEvent extends ProductFormEvent {
+        CloseEvent(ProductForm source) {
+            super(source, null);
         }
     }
 }

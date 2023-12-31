@@ -6,7 +6,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class Operation extends AbstractEntity{
+public class Operation extends AbstractEntity {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "produit_id")
@@ -35,18 +35,23 @@ public class Operation extends AbstractEntity{
     public Produit getProduit() {
         return produit;
     }
+
     public void setProduit(Produit produit) {
         this.produit = produit;
     }
+
     public TypeOperation getTypeOperation() {
         return typeOperation;
     }
+
     public void setTypeOperation(TypeOperation typeOperation) {
         this.typeOperation = typeOperation;
     }
+
     public int getOrdre() {
         return ordre;
     }
+
     public void setOrdre(int ordre) {
         this.ordre = ordre;
     }

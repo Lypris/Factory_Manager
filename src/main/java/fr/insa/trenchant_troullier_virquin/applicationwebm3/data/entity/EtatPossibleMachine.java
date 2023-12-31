@@ -11,8 +11,7 @@ public class EtatPossibleMachine extends AbstractEntity {
     public EtatPossibleMachine() {
 
     }
-    
-    
+
 
     public EtatPossibleMachine(String des) {
         this.des = des;

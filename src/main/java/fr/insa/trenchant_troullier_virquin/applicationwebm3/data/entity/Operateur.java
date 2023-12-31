@@ -1,11 +1,9 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "operateur")
@@ -51,9 +49,11 @@ public class Operateur extends AbstractEntity {
     public void setMail(String mail) {
         this.mail = mail;
     }
+
     public String getTel() {
         return tel;
     }
+
     public void setTel(String tel) {
         this.tel = tel;
     }

@@ -1,6 +1,5 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository;
 
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.PosteDeTravail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

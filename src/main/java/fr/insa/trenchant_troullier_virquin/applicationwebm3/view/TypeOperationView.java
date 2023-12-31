@@ -19,6 +19,7 @@ public class TypeOperationView extends VerticalLayout {
     Grid<TypeOperation> grid = new Grid<>(TypeOperation.class);
     TypeOperationForm formTypeOperation;
     CrmService service;
+
     public TypeOperationView(CrmService service) {
         this.service = service;
         addClassName("product-view");
@@ -30,7 +31,8 @@ public class TypeOperationView extends VerticalLayout {
         updateList();
         closeEditor();
     }
-    private Component getContent(){
+
+    private Component getContent() {
         VerticalLayout content = new VerticalLayout(grid, formTypeOperation);
         content.setFlexGrow(2, grid);
         content.setFlexGrow(1, formTypeOperation);
@@ -38,7 +40,8 @@ public class TypeOperationView extends VerticalLayout {
         content.setSizeFull();
         return content;
     }
-    private void configureGrid(){
+
+    private void configureGrid() {
         grid.addClassName("typeoperation-grid");
         grid.setSizeFull();
         grid.removeAllColumns();
@@ -46,7 +49,8 @@ public class TypeOperationView extends VerticalLayout {
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(evt -> editTypeOperation(evt.getValue()));
     }
-    private HorizontalLayout getToolbar(){
+
+    private HorizontalLayout getToolbar() {
         Button addTypeOperationButton = new Button("Ajouter un type d'opération", click -> addTypeOperation());
         addTypeOperationButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
         addTypeOperationButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -57,18 +61,20 @@ public class TypeOperationView extends VerticalLayout {
         return toolbar;
     }
 
-    public void configureForm(){
+    public void configureForm() {
         formTypeOperation = new TypeOperationForm();
         formTypeOperation.setWidth("35em");
         formTypeOperation.addSaveListener(this::saveTypeOperation);
         formTypeOperation.addDeleteListener(this::deleteTypeOperation);
         formTypeOperation.addCloseListener(e -> closeEditor());
     }
+
     private void saveTypeOperation(TypeOperationForm.SaveEvent event) {
         service.saveTypeOperation(event.getTypeOperation());
         updateList();
         closeEditor();
     }
+
     private void deleteTypeOperation(TypeOperationForm.DeleteEvent event) {
         service.deleteTypeOperation(event.getTypeOperation());
         updateList();
@@ -79,6 +85,7 @@ public class TypeOperationView extends VerticalLayout {
         editTypeOperation(new TypeOperation());
 
     }
+
     private void editTypeOperation(TypeOperation typeOperation) {
         if (typeOperation == null) {
             closeEditor();
@@ -88,11 +95,13 @@ public class TypeOperationView extends VerticalLayout {
             addClassName("editing");
         }
     }
+
     private void closeEditor() {
         formTypeOperation.setTypeOperation(null);
         formTypeOperation.setVisible(false);
         removeClassName("editing");
     }
+
     private void updateList() {
         grid.setItems(service.findAllTypeOperation());
     }

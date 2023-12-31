@@ -1,13 +1,10 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "poste_de_travail")
-public class PosteDeTravail{
+public class PosteDeTravail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

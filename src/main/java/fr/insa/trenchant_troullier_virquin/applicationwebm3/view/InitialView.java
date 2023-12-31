@@ -4,18 +4,18 @@
  */
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
-import com.vaadin.flow.component.board.Board;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.component.html.H3;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Intial | Appli TP Info")
 public class InitialView extends VerticalLayout {
-    private CrmService service;
-    private BoardColumnSpan boardColumnSpan;
+    private final CrmService service;
+    private final BoardColumnSpan boardColumnSpan;
+
     public InitialView(CrmService service) {
         this.service = service;
         this.boardColumnSpan = new BoardColumnSpan();

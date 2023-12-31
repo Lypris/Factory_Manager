@@ -5,9 +5,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
-import org.vaadin.stefan.fullcalendar.*;
+import org.vaadin.stefan.fullcalendar.Entry;
+import org.vaadin.stefan.fullcalendar.FullCalendar;
+import org.vaadin.stefan.fullcalendar.FullCalendarBuilder;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Route(value = "test", layout = MainLayout.class)

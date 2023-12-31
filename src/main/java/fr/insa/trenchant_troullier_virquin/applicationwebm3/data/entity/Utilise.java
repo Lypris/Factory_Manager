@@ -1,6 +1,7 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 @Entity

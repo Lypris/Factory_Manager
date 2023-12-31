@@ -18,13 +18,12 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatPremi
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 /**
- *
  * @author laelt
  */
 public class MatPremiereForm extends FormLayout {
     TextField ref = new TextField("Référence");
     TextField des = new TextField("Description");
-    
+
     Button save = new Button("Enregistrer");
 
     Button delete = new Button("Supprimer");
@@ -33,7 +32,7 @@ public class MatPremiereForm extends FormLayout {
     CrmService service;
 
     BeanValidationBinder<MatPremiere> binder = new BeanValidationBinder<>(MatPremiere.class);
-    
+
     public MatPremiereForm(CrmService service) {
         binder.bindInstanceFields(this);
         addClassName("MatPremiere-form");
@@ -42,7 +41,7 @@ public class MatPremiereForm extends FormLayout {
                 des,
                 createButtonsLayout());
     }
-    
+
     private Component createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -54,38 +53,53 @@ public class MatPremiereForm extends FormLayout {
 
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
         return new HorizontalLayout(save, delete, close);
-    
+
     }
-    
+
     public void setMatPremiere(MatPremiere matPre) {
         binder.setBean(matPre);
     }
+
     private void validateAndSave() {
         if (binder.isValid()) {
             MatPremiere matPre = binder.getBean();
             fireEvent(new MatPremiereForm.SaveEvent(this, matPre));
         }
     }
-    
+
+    public Registration addSaveListener(ComponentEventListener<MatPremiereForm.SaveEvent> listener) {
+        return addListener(MatPremiereForm.SaveEvent.class, listener);
+    }
+
+    public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
+        return addListener(MatPremiereForm.DeleteEvent.class, listener);
+    }
+
+    public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
+        return addListener(MatPremiereForm.CloseEvent.class, listener);
+    }
+
     public static class SaveEvent extends MatPremiereFormEvent {
         SaveEvent(MatPremiereForm source, MatPremiere matPre) {
             super(source, matPre);
         }
     }
+
     public static class DeleteEvent extends MatPremiereFormEvent {
         DeleteEvent(MatPremiereForm source, MatPremiere matPre) {
             super(source, matPre);
         }
     }
+
     public static class CloseEvent extends MatPremiereFormEvent {
         CloseEvent(MatPremiereForm source) {
             super(source, null);
         }
     }
-    
+
     //Gestion Evenement
     public static abstract class MatPremiereFormEvent extends ComponentEvent<MatPremiereForm> {
-        private MatPremiere matPre;
+        private final MatPremiere matPre;
 
         protected MatPremiereFormEvent(MatPremiereForm source, MatPremiere matPre) {
             super(source, false);
@@ -95,15 +109,5 @@ public class MatPremiereForm extends FormLayout {
         public MatPremiere getMatPremiere() {
             return matPre;
         }
-    }
-    
-    public Registration addSaveListener(ComponentEventListener<MatPremiereForm.SaveEvent> listener) {
-        return addListener(MatPremiereForm.SaveEvent.class, listener);
-    }
-    public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
-        return addListener(MatPremiereForm.DeleteEvent.class, listener);
-    }
-    public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
-        return addListener(MatPremiereForm.CloseEvent.class, listener);
     }
 }

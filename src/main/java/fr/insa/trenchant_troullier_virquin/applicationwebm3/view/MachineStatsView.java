@@ -16,7 +16,7 @@ import java.util.List;
 @PageTitle("Statistiques des Machines | M3 Application")
 public class MachineStatsView extends VerticalLayout {
 
-    private CrmService service;
+    private final CrmService service;
     private ComboBox<Machine> machineComboBox;
     private Chart chart;
 

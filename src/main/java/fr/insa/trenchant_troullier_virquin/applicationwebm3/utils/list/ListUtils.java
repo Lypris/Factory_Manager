@@ -19,28 +19,22 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.utils.list;
 
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.utils.StringUtil;
+
 import java.util.List;
 
 /**
- *
  * @author francois
  */
 public class ListUtils {
 
-    @FunctionalInterface
-    public interface ElemFormatter<E> {
-
-        public String format(E elem);
-    }
-
     public static String formatList(List<? extends Object> list,
-            String debut, String fin, String separateur) {
+                                    String debut, String fin, String separateur) {
         return formatList(list, debut, fin, separateur, Object::toString);
     }
 
     public static <E> String formatList(List<? extends E> list,
-            String debut, String fin, String separateur,
-            ElemFormatter<E> formatter) {
+                                        String debut, String fin, String separateur,
+                                        ElemFormatter<E> formatter) {
         StringBuilder res = new StringBuilder();
         res.append(debut);
         for (int i = 0; i < list.size(); i++) {
@@ -54,8 +48,8 @@ public class ListUtils {
     }
 
     public static <E> String enumerateList(List<? extends E> list,
-            String beforeNum, int debutNumerotation, String betweenNumAndVal, String afterVal,
-            ElemFormatter<E> formatter) {
+                                           String beforeNum, int debutNumerotation, String betweenNumAndVal, String afterVal,
+                                           ElemFormatter<E> formatter) {
         StringBuilder res = new StringBuilder();
         if (list.size() != 0) {
             int nbrDigit = (int) Math.floor(Math.log10(list.size())) + 1;
@@ -74,11 +68,17 @@ public class ListUtils {
     public static String enumerateList(List<? extends Object> list) {
         return enumerateList(list, "", 1, " : ", "\n", Object::toString);
     }
-    
-    public static <E> String enumerateList(List<? extends E> list,ElemFormatter<E> formatter) {
+
+    public static <E> String enumerateList(List<? extends E> list, ElemFormatter<E> formatter) {
         return enumerateList(list, "", 1, " : ", "\n", formatter);
     }
-    
+
+    @FunctionalInterface
+    public interface ElemFormatter<E> {
+
+        String format(E elem);
+    }
+
 //    public static <E> E selectOne(List<E> list,ElemFormatter<F super E> formatter) {
 //        int rep = -1;
 //        while (rep < 0 || rep > semestres.size()) {

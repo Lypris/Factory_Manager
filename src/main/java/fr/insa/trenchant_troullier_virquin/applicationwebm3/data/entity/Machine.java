@@ -1,6 +1,8 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
@@ -24,7 +26,7 @@ public class Machine extends AbstractEntity {
 
     @Override
     public String toString() {
-        return  ref + " | " + des;
+        return ref + " | " + des;
     }
 
     public String getRef() {

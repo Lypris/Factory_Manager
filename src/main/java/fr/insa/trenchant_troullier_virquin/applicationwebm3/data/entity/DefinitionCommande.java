@@ -6,7 +6,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class DefinitionCommande extends AbstractEntity{
+public class DefinitionCommande extends AbstractEntity {
     @NotNull
     private int nbr;
     @NotNull
@@ -29,14 +29,17 @@ public class DefinitionCommande extends AbstractEntity{
     public Produit getProduit() {
         return produit;
     }
+
+    public void setProduit(Produit produit) {
+        this.produit = produit;
+    }
+
     public String getProduitName() {
         return produit.getDes();
     }
+
     public void setProduitName(String produitName) {
         this.produit.setDes(produitName);
-    }
-    public void setProduit(Produit produit) {
-        this.produit = produit;
     }
 
     public Commande getCommande() {

@@ -15,8 +15,6 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.time.LocalDateTime;
@@ -59,9 +57,10 @@ public class CommandView extends VerticalLayout {
         form.addDeleteListener(this::deleteCommande);
         form.addCloseListener(e -> closeEditor());
     }
+
     private void saveCommande(CommandForm.SaveEvent event) {
         service.saveCommande(event.getCommande());
-        if(event.getCommande().getStatut().equals("En attente")){
+        if (event.getCommande().getStatut().equals("En attente")) {
             event.getCommande().creatExemplairesAssociate(service);
         }
         updateList();
@@ -81,6 +80,7 @@ public class CommandView extends VerticalLayout {
             }
         }
     }
+
     private void configureGrid() {
         grid.addClassNames("Command-grid");
         grid.setSizeFull();
@@ -127,6 +127,7 @@ public class CommandView extends VerticalLayout {
         toolbar.addClassName("toolbar");
         return toolbar;
     }
+
     public void editCommande(Commande commande) {
         if (commande == null) {
             closeEditor();

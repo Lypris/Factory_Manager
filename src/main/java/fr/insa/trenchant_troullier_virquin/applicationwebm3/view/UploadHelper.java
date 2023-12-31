@@ -10,17 +10,16 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.function.Consumer;
 
 public class UploadHelper extends Div {
 
-    private MemoryBuffer buffer;
+    private final MemoryBuffer buffer;
     private Consumer<byte[]> imageUploadListener;
     private byte[] currentImageData;
     private boolean imageUploaded = false;
+
     public UploadHelper() {
         buffer = new MemoryBuffer();
         H4 title = new H4("Téléverser une image");
@@ -73,9 +72,11 @@ public class UploadHelper extends Div {
                 "this.addEventListener('file-remove', (e) => $0.$server.fileRemove(e.detail.file.name));",
                 getElement());
     }
+
     public MemoryBuffer getBuffer() {
         return buffer;
     }
+
     public byte[] getImageData() {
         try {
             return buffer.getInputStream().readAllBytes();
@@ -86,12 +87,14 @@ public class UploadHelper extends Div {
             return null;
         }
     }
+
     public void setImageData(byte[] imageData) {
         this.currentImageData = imageData;
         if (imageUploadListener != null) {
             imageUploadListener.accept(imageData);
         }
     }
+
     public void setImageUploadListener(Consumer<byte[]> listener) {
         this.imageUploadListener = image -> {
             if (image != null) {
@@ -104,6 +107,7 @@ public class UploadHelper extends Div {
             listener.accept(image);
         };
     }
+
     // Méthode pour vérifier si une image a été téléversée
     public boolean isImageUploaded() {
         return imageUploaded;
@@ -117,6 +121,7 @@ public class UploadHelper extends Div {
             setImageData(null);
         }
     }
+
     public void resetUpload() {
         currentImageData = null;
         imageUploaded = false;

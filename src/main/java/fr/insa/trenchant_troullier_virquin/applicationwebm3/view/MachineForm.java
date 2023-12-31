@@ -10,7 +10,6 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
@@ -19,8 +18,8 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatPoss
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
-import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MachineForm extends FormLayout {
@@ -35,7 +34,7 @@ public class MachineForm extends FormLayout {
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
     BeanValidationBinder<Machine> binder = new BeanValidationBinder<>(Machine.class);
-    
+
     CrmService service;
 
     public MachineForm(List<TypeOperation> typeOperations, List<EtatPossibleMachine> etatsPossibles, CrmService service) {
@@ -50,6 +49,7 @@ public class MachineForm extends FormLayout {
         add(ref, des, puissance, typeOperationComboBox, etatComboBox,
                 createButtonsLayout());
     }
+
     public void setMachine(Machine machine) {
 
         binder.setBean(machine);
@@ -69,8 +69,7 @@ public class MachineForm extends FormLayout {
                         etatComboBox.setItems(service.findEtatPossibleByDes("en panne"));
                     } else if ("disponible".equals(etatActuel.getDes())) {
                         etatComboBox.setItems(service.findEtatPossibleByDes("en panne"));
-                    }
-                    else if ("en panne".equals(etatActuel.getDes())) {
+                    } else if ("en panne".equals(etatActuel.getDes())) {
                         // Si la machine est en panne, on peut la remettre en marche si elle était en marche avant
                         //on récupère l'état précédent
                         EtatMachine previousEtatMachine = service.findMostRecentEtatMachineByMachine(machine);
@@ -79,8 +78,7 @@ public class MachineForm extends FormLayout {
                         } else {
                             etatComboBox.setItems(service.findEtatPossibleByDes("disponible"));
                         }
-                    }
-                    else {
+                    } else {
                         etatComboBox.setItems(service.findAllEtatPossibleMachines());
                     }
                 } else {
@@ -109,40 +107,6 @@ public class MachineForm extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
-
-    // Events
-    public static abstract class MachineFormEvent extends ComponentEvent<MachineForm> {
-        private Machine Machine;
-
-        protected MachineFormEvent(MachineForm source, Machine Machine) {
-            super(source, false);
-            this.Machine = Machine;
-        }
-
-        public Machine getMachine() {
-            return Machine;
-        }
-    }
-
-    public static class SaveEvent extends MachineForm.MachineFormEvent {
-        SaveEvent(MachineForm source, Machine Machine) {
-            super(source, Machine);
-        }
-    }
-
-    public static class DeleteEvent extends MachineForm.MachineFormEvent {
-        DeleteEvent(MachineForm source, Machine Machine) {
-            super(source, Machine);
-        }
-
-    }
-
-    public static class CloseEvent extends MachineForm.MachineFormEvent {
-        CloseEvent(MachineForm source) {
-            super(source, null);
-        }
-    }
-
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         return addListener(MachineForm.DeleteEvent.class, listener);
     }
@@ -150,12 +114,13 @@ public class MachineForm extends FormLayout {
     public Registration addSaveListener(ComponentEventListener<MachineForm.SaveEvent> listener) {
         return addListener(MachineForm.SaveEvent.class, listener);
     }
+
     public Registration addCloseListener(ComponentEventListener<MachineForm.CloseEvent> listener) {
         return addListener(MachineForm.CloseEvent.class, listener);
     }
 
     private void validateAndSave() {
-        if(binder.isValid()) {
+        if (binder.isValid()) {
             Machine machine = binder.getBean();
             boolean isNewMachine = machine.getId() == null;
             TypeOperation selectedTypeOperation = typeOperationComboBox.getValue();
@@ -189,6 +154,39 @@ public class MachineForm extends FormLayout {
 
                 }
             }
+        }
+    }
+
+    // Events
+    public static abstract class MachineFormEvent extends ComponentEvent<MachineForm> {
+        private final Machine Machine;
+
+        protected MachineFormEvent(MachineForm source, Machine Machine) {
+            super(source, false);
+            this.Machine = Machine;
+        }
+
+        public Machine getMachine() {
+            return Machine;
+        }
+    }
+
+    public static class SaveEvent extends MachineForm.MachineFormEvent {
+        SaveEvent(MachineForm source, Machine Machine) {
+            super(source, Machine);
+        }
+    }
+
+    public static class DeleteEvent extends MachineForm.MachineFormEvent {
+        DeleteEvent(MachineForm source, Machine Machine) {
+            super(source, Machine);
+        }
+
+    }
+
+    public static class CloseEvent extends MachineForm.MachineFormEvent {
+        CloseEvent(MachineForm source) {
+            super(source, null);
         }
     }
 }

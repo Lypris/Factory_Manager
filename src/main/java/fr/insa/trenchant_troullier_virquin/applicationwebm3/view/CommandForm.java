@@ -6,7 +6,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -37,7 +36,7 @@ public class CommandForm extends FormLayout {
         addClassName("Commande-form");
         add(ref, des, addProduct,
                 createButtonsLayout());
-        addProduct.addClickListener(e ->{
+        addProduct.addClickListener(e -> {
             DialogDefCommande dialogAddProduct = new DialogDefCommande(binder.getBean(), produits, service);
             dialogAddProduct.open();
             configureDialog(dialogAddProduct);
@@ -45,15 +44,10 @@ public class CommandForm extends FormLayout {
     }
 
 
-
     public void setCommande(Commande commande) {
         binder.setBean(commande);
         // Vérifier le statut de la commande et cacher le bouton si nécessaire
-        if (commande != null && ("En cours".equalsIgnoreCase(commande.getStatut()) || "Terminée".equalsIgnoreCase(commande.getStatut()))) {
-            addProduct.setVisible(false);
-        } else {
-            addProduct.setVisible(true);
-        }
+        addProduct.setVisible(commande == null || (!"En cours".equalsIgnoreCase(commande.getStatut()) && !"Terminée".equalsIgnoreCase(commande.getStatut())));
         // renommer le bouton en "Modifier les produits" si la commande a déjà des produits
         if (commande != null && !service.findAllProduitByCommande(commande).isEmpty()) {
             addProduct.setText("Modifier les produits");
@@ -82,10 +76,38 @@ public class CommandForm extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
+    public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
+        return addListener(CommandForm.DeleteEvent.class, listener);
+    }
+
+    public Registration addSaveListener(ComponentEventListener<CommandForm.SaveEvent> listener) {
+        return addListener(CommandForm.SaveEvent.class, listener);
+    }
+
+    public Registration addCloseListener(ComponentEventListener<CommandForm.CloseEvent> listener) {
+        return addListener(CommandForm.CloseEvent.class, listener);
+    }
+
+    private void configureDialog(DialogDefCommande dialogAddProduct) {
+        dialogAddProduct.setSizeFull();
+    }
+
+    private void validateAndSave() {
+        if (binder.isValid()) {
+            Commande commande = binder.getBean();
+            commande.setStatut("En attente");
+            fireEvent(new CommandForm.SaveEvent(this, commande));
+        }
+    }
+
+    public void suppCommande() {
+
+        fireEvent(new CommandForm.DeleteEvent(this, binder.getBean()));
+    }
 
     // Events
     public static abstract class CommandFormEvent extends ComponentEvent<CommandForm> {
-        private Commande commande;
+        private final Commande commande;
 
         protected CommandFormEvent(CommandForm source, Commande commande) {
             super(source, false);
@@ -114,33 +136,6 @@ public class CommandForm extends FormLayout {
         CloseEvent(CommandForm source) {
             super(source, null);
         }
-    }
-
-    public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
-        return addListener(CommandForm.DeleteEvent.class, listener);
-    }
-
-    public Registration addSaveListener(ComponentEventListener<CommandForm.SaveEvent> listener) {
-        return addListener(CommandForm.SaveEvent.class, listener);
-    }
-    public Registration addCloseListener(ComponentEventListener<CommandForm.CloseEvent> listener) {
-        return addListener(CommandForm.CloseEvent.class, listener);
-    }
-
-    private void configureDialog(DialogDefCommande dialogAddProduct) {
-        dialogAddProduct.setSizeFull();
-    }
-
-    private void validateAndSave() {
-        if(binder.isValid()) {
-            Commande commande = binder.getBean();
-            commande.setStatut("En attente");
-            fireEvent(new CommandForm.SaveEvent(this, commande));
-        }
-    }
-    public void suppCommande(){
-
-        fireEvent(new CommandForm.DeleteEvent(this, binder.getBean()));
     }
 
 }

@@ -22,6 +22,7 @@ public class IconUtils {
                 return VaadinIcon.QUESTION;
         }
     }
+
     public static void applyStyleForEtat(Span element, String etat) {
         switch (etat) {
             case "éteinte":
@@ -43,6 +44,7 @@ public class IconUtils {
                 break;
         }
     }
+
     public static VaadinIcon determineIconCommande(String statut) {
         // Exemple : associer différentes descriptions à différentes icônes
         switch (statut.toLowerCase()) {
@@ -59,6 +61,7 @@ public class IconUtils {
                 return VaadinIcon.QUESTION;
         }
     }
+
     public static void applyStyleForStatutCommande(Span element, String statut) {
         switch (statut) {
             case "En cours":
@@ -79,6 +82,7 @@ public class IconUtils {
                 break;
         }
     }
+
     public static VaadinIcon determineIconOperateur(String description) {
         // Exemple : associer différentes descriptions à différentes icônes
         switch (description.toLowerCase()) {
@@ -93,6 +97,7 @@ public class IconUtils {
                 return VaadinIcon.QUESTION;
         }
     }
+
     public static void applyStyleForStatut(Span element, String name) {
         switch (name) {
             case "en congé":
@@ -110,6 +115,7 @@ public class IconUtils {
                 break;
         }
     }
+
     public static Icon createIcon(VaadinIcon vaadinIcon) {
         Icon icon = vaadinIcon.create();
         icon.getStyle().set("padding", "var(--lumo-space-xs");

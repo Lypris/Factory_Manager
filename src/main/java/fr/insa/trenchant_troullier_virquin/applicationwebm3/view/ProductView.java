@@ -3,14 +3,11 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -22,12 +19,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
-import java.util.stream.Stream;
 
 @Route(value = "produits", layout = MainLayout.class)
 @PageTitle("Produits | M3 Application")
@@ -63,6 +57,7 @@ public class ProductView extends VerticalLayout {
         content.setSizeFull();
         return content;
     }
+
     private void configureForm() {
         form = new ProductForm(service.findAllTypeOperation(), service);
         form.setWidth("35em");
@@ -70,19 +65,23 @@ public class ProductView extends VerticalLayout {
         form.addDeleteListener(this::deleteProduct);
         form.addCloseListener(e -> closeEditor());
     }
+
     private void configureDialogDefOpp() {
         dialogDefOpp = new DialogDefOpp(service.findAllTypeOperation(), service, grid.asSingleSelect().getValue(), getProduitDetailsForProduit(grid.asSingleSelect().getValue()));
         dialogDefOpp.setWidth("35em");
     }
+
     private void configureDialogDefMat() {
         dialogDefMat = new DialogDefMat(service.findAllMatPremiere(null), service, grid.asSingleSelect().getValue(), getProduitDetailsForProduit(grid.asSingleSelect().getValue()));
         dialogDefMat.setWidth("35em");
     }
+
     private void saveProduct(ProductForm.SaveEvent event) {
         service.saveProduit(event.getProduit());
         updateList();
         closeEditor();
     }
+
     private void deleteProduct(ProductForm.DeleteEvent event) {
         service.deleteProduit(event.getProduit());
         updateList();
@@ -131,6 +130,7 @@ public class ProductView extends VerticalLayout {
             addClassName("editing");
         }
     }
+
     private void closeEditor() {
         form.setProduit(null);
         form.setVisible(false);
@@ -149,7 +149,7 @@ public class ProductView extends VerticalLayout {
         Button TypeOperationView = new Button("Voir les types d'opérations", click -> getUI().get().navigate("typeoperation"));
         TypeOperationView.setIcon(new Icon(VaadinIcon.COGS));
         Button defineOperation = new Button("Définir les opérations", click -> {
-            if(grid.asSingleSelect().getValue() == null) {
+            if (grid.asSingleSelect().getValue() == null) {
                 Notification notification = new Notification();
                 notification.setPosition(Notification.Position.MIDDLE);
                 notification.setText("Veuillez sélectionner un produit");
@@ -162,7 +162,7 @@ public class ProductView extends VerticalLayout {
         });
         defineOperation.setIcon(new Icon(VaadinIcon.COGS));
         Button defineMaterial = new Button("Définir les matières premières", click -> {
-            if(grid.asSingleSelect().getValue() == null) {
+            if (grid.asSingleSelect().getValue() == null) {
                 Notification notification = new Notification();
                 notification.setPosition(Notification.Position.MIDDLE);
                 notification.setText("Veuillez sélectionner un produit");
@@ -178,13 +178,16 @@ public class ProductView extends VerticalLayout {
         toolbar.addClassName("toolbar");
         return toolbar;
     }
+
     private void updateList() {
         grid.setItems(service.findAllProduits(filterText.getValue()));
     }
+
     private void addProduct() {
         grid.asSingleSelect().clear();
         editProduit(new Produit());
     }
+
     private void defineOperation(Produit produit) {
         if (produit == null) {
             closeDialog();
@@ -201,6 +204,7 @@ public class ProductView extends VerticalLayout {
             });
         }
     }
+
     private void defineMaterial(Produit produit) {
         if (produit == null) {
             closeDialog();
@@ -220,16 +224,15 @@ public class ProductView extends VerticalLayout {
 
 
     private ProduitDetails createProduitDetails(Produit produit) {
-        if(produit == null) {
+        if (produit == null) {
             Notification.show("Veuillez sélectionner un produit").setPosition(Notification.Position.MIDDLE);
             return null;
-        } else{
+        } else {
             ProduitDetails details = new ProduitDetails(service, produit);
             details.addClassName("product-details");
             return details;
         }
     }
-
 
 
     private ProduitDetails getProduitDetailsForProduit(Produit produit) {
@@ -248,6 +251,7 @@ public class ProductView extends VerticalLayout {
         dialogDefMat.setProduit(null);
         dialogDefMat.setVisible(false);
     }
+
     public void refreshSelectedProductDetails() {
         Produit selectedProduit = grid.asSingleSelect().getValue();
         if (selectedProduit != null) {
@@ -257,8 +261,8 @@ public class ProductView extends VerticalLayout {
 
     public static class ProduitDetails extends VerticalLayout {
         private final Grid<Operation> grid = new Grid<>(Operation.class);
-        private Produit produit;
-        private CrmService service;
+        private final Produit produit;
+        private final CrmService service;
 
 
         public ProduitDetails(CrmService service, Produit produit) {
@@ -274,9 +278,11 @@ public class ProductView extends VerticalLayout {
             add(grid);
             setProduit(service, produit);
         }
+
         public void setProduit(CrmService service, Produit produit) {
             grid.setItems(service.findOperationByProduit(produit));
         }
+
         public void refreshOperations() {
             grid.setItems(service.findOperationByProduit(produit));
         }

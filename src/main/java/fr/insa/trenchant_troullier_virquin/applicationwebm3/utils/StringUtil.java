@@ -22,7 +22,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +44,6 @@ public class StringUtil implements java.io.Serializable {
     }
 
     /**
-     *
      * @return true iff the string is a standard java identifier : ie begin
      * whith a {@link java.lang.Character#isJavaIdentifierStart(char ch)} and
      * continue whith {@link java.lang.Character#isJavaIdentifierPart(char ch)}
@@ -87,7 +85,7 @@ public class StringUtil implements java.io.Serializable {
                 } else if (cur == '"') {
                     res.append("\\\"");
                 } else if (cur == '\'') {
-                    res.append("\\\'");
+                    res.append("\\'");
                 } else if (cur == '\\') {
                     res.append("\\\\");
                 } else if (cur == ' ') {
@@ -96,7 +94,7 @@ public class StringUtil implements java.io.Serializable {
                     res.append(cur);
                 } else {
                     res.append("\\u");
-                    String code = "0000" + Integer.toHexString((int) cur);
+                    String code = "0000" + Integer.toHexString(cur);
                     code = code.substring(code.length() - 4);
                     res.append(code);
                 }
@@ -141,7 +139,7 @@ public class StringUtil implements java.io.Serializable {
                 } else if (cur == '"') {
                     res.append("\"");
                 } else if (cur == '\'') {
-                    res.append("\'");
+                    res.append("'");
                 } else if (cur == '\\') {
                     res.append("\\");
                 } else if (cur == 'u') {
@@ -160,7 +158,7 @@ public class StringUtil implements java.io.Serializable {
                     i = i + 3;
                     res.append((char) hexVal);
                 } else if (cur >= '0' && cur <= '3') {
-                    int octalVal = (int) cur;
+                    int octalVal = cur;
                     i++;
                     if (i < s.length() && s.charAt(i) >= '0' && s.charAt(i) <= '7') {
                         octalVal = octalVal * 8 + ((int) s.charAt(i));
@@ -171,7 +169,7 @@ public class StringUtil implements java.io.Serializable {
                     }
                     res.append((char) octalVal);
                 } else if (cur >= '4' && cur <= '7') {
-                    int octalVal = (int) cur;
+                    int octalVal = cur;
                     i++;
                     if (i < s.length() && s.charAt(i) >= '0' && s.charAt(i) <= '7') {
                         octalVal = octalVal * 8 + ((int) s.charAt(i));
@@ -240,9 +238,9 @@ public class StringUtil implements java.io.Serializable {
     /**
      * add spaces before each line in s
      *
-     * @param s the original string
+     * @param s        the original string
      * @param nbrSpace the number of space to insert at the begining of each
-     * line in s
+     *                 line in s
      * @return indented s
      */
     public static String indent(String s, int nbrSpace) {
@@ -257,7 +255,7 @@ public class StringUtil implements java.io.Serializable {
             String line;
             while ((line = bin.readLine()) != null) {
                 while (line.length() > maxCharParLigne) {
-                    res.append(line.substring(0, maxCharParLigne));
+                    res.append(line, 0, maxCharParLigne);
                     res.append('\n');
                     line = line.substring(maxCharParLigne);
                 }
@@ -271,6 +269,7 @@ public class StringUtil implements java.io.Serializable {
     }
 
     //==================================== some utilities
+
     /**
      * replace <return> ("\n") with " <BR>\n" in string (to produce HTML)
      */
@@ -325,17 +324,17 @@ public class StringUtil implements java.io.Serializable {
      * "coucou,toto".split(",") --> ["coucou","toto"]  OK (en transformant le tableau en liste)
      * Le problème apparait si un des items contient le séparateur :
      * exemple items = ["pi","3,14"]
-     * je risque d'avoir 
+     * je risque d'avoir
      * ["pi","3,14"] --encode--> "pi,3,14" --decode--> ["pi","3","14"]  BAD
      * Pour éviter cela on va utiliser le caractère esc pour précéder les séparateurs dans les items :
-     * ["pi","3,14"] --encode--> "pi,3/,14" --decode--> ["pi","3,14"] 
+     * ["pi","3,14"] --encode--> "pi,3/,14" --decode--> ["pi","3,14"]
      * cas particulier du cas particulier : j'ai / en fin d'item :
      * ["bi,zarre"] --encode--> "bi/,zarre"     |
      * ["bi/","zarre"] --encode--> "bi/,zarre"  | AMBIGU
      * il faut donc également faire un "escape" du / : / --> //
      * ["bi,zarre"] --encode--> "bi/,zarre"      |
      * ["bi/","zarre"] --encode--> "bi//,zarre"  | NON AMBIGU
-     * 
+     *
      * Le codage consiste donc à remplacer d'abord tous les / par // puis
      * toutes les , par /,
      * </pre>
@@ -381,11 +380,12 @@ public class StringUtil implements java.io.Serializable {
      * . res.add(curItem)   // ne pas oublier le dernier non fini par le séparateur
      * . return res
      * </pre>
+     *
      * @param line
      * @param sep
      * @param esc
      * @return
-     * @throws StringFormatException 
+     * @throws StringFormatException
      */
     public static List<String> decodeEscapedCSV(String line, char sep, char esc) throws StringFormatException {
         List<String> res = new ArrayList<>();

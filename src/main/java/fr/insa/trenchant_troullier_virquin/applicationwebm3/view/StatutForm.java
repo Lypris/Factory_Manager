@@ -10,11 +10,12 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class StatutForm extends FormLayout {
     BeanValidationBinder<StatutOperateur> binder = new BeanValidationBinder<>(StatutOperateur.class);
     CrmService service;
 
-    public StatutForm(List<Operateur> operateurs,List<Statut> statuts, CrmService service) {
+    public StatutForm(List<Operateur> operateurs, List<Statut> statuts, CrmService service) {
         binder.bindInstanceFields(this);
         this.service = service;
         addClassName("Statut-form");
@@ -47,9 +48,10 @@ public class StatutForm extends FormLayout {
                 statutComboBox,
                 createButtonsLayout());
     }
+
     public void setStatut(StatutOperateur statutOperateur) {
         binder.setBean(statutOperateur);
-        if (statutOperateur != null){
+        if (statutOperateur != null) {
             // Récupérer l'opérateur du statutOperateur et le sélectionner dans le ComboBox
             Operateur operateur = statutOperateur.getOperateur();
             if (operateur != null) {
@@ -81,40 +83,6 @@ public class StatutForm extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
-
-    // Events
-    public static abstract class StatutFormEvent extends ComponentEvent<StatutForm> {
-        private StatutOperateur statutOperateur;
-
-        protected StatutFormEvent(StatutForm source, StatutOperateur statutOperateur) {
-            super(source, false);
-            this.statutOperateur = statutOperateur;
-        }
-
-        public StatutOperateur getStatutOperateur() {
-            return statutOperateur;
-        }
-    }
-
-    public static class SaveEvent extends StatutFormEvent {
-        SaveEvent(StatutForm source, StatutOperateur statutOperateur) {
-            super(source, statutOperateur);
-        }
-    }
-
-    public static class DeleteEvent extends StatutFormEvent {
-        DeleteEvent(StatutForm source, StatutOperateur statutOperateur) {
-            super(source, statutOperateur);
-        }
-
-    }
-
-    public static class CloseEvent extends StatutFormEvent {
-        CloseEvent(StatutForm source) {
-            super(source, null);
-        }
-    }
-
     public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
         return addListener(DeleteEvent.class, listener);
     }
@@ -122,6 +90,7 @@ public class StatutForm extends FormLayout {
     public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
         return addListener(SaveEvent.class, listener);
     }
+
     public Registration addCloseListener(ComponentEventListener<CloseEvent> listener) {
         return addListener(CloseEvent.class, listener);
     }
@@ -152,17 +121,17 @@ public class StatutForm extends FormLayout {
                 Notification.show("Veuillez saisir une date de début antérieure à la date de fin", 3000, Notification.Position.MIDDLE);
                 return;
             }
-            if(service.findAllStatutOperateurByOperateur(selectedOperateur) != null){
-                for(StatutOperateur etatOperateur1 : service.findAllStatutOperateurByOperateur(selectedOperateur)){
-                    if(etatOperateur1.getDebut().isBefore(debutValue) && etatOperateur1.getFin().isAfter(debutValue)){
+            if (service.findAllStatutOperateurByOperateur(selectedOperateur) != null) {
+                for (StatutOperateur etatOperateur1 : service.findAllStatutOperateurByOperateur(selectedOperateur)) {
+                    if (etatOperateur1.getDebut().isBefore(debutValue) && etatOperateur1.getFin().isAfter(debutValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }
-                    if(finValue!=null && etatOperateur1.getDebut().isBefore(finValue) && etatOperateur1.getFin().isAfter(finValue)){
+                    if (finValue != null && etatOperateur1.getDebut().isBefore(finValue) && etatOperateur1.getFin().isAfter(finValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }
-                    if(finValue!=null && etatOperateur1.getDebut().isAfter(debutValue) && etatOperateur1.getFin().isBefore(finValue)){
+                    if (finValue != null && etatOperateur1.getDebut().isAfter(debutValue) && etatOperateur1.getFin().isBefore(finValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }
@@ -173,6 +142,39 @@ public class StatutForm extends FormLayout {
             statutOperateur.setDebut(debutValue);
             statutOperateur.setFin(finValue);
             fireEvent(new SaveEvent(this, statutOperateur));
+        }
+    }
+
+    // Events
+    public static abstract class StatutFormEvent extends ComponentEvent<StatutForm> {
+        private final StatutOperateur statutOperateur;
+
+        protected StatutFormEvent(StatutForm source, StatutOperateur statutOperateur) {
+            super(source, false);
+            this.statutOperateur = statutOperateur;
+        }
+
+        public StatutOperateur getStatutOperateur() {
+            return statutOperateur;
+        }
+    }
+
+    public static class SaveEvent extends StatutFormEvent {
+        SaveEvent(StatutForm source, StatutOperateur statutOperateur) {
+            super(source, statutOperateur);
+        }
+    }
+
+    public static class DeleteEvent extends StatutFormEvent {
+        DeleteEvent(StatutForm source, StatutOperateur statutOperateur) {
+            super(source, statutOperateur);
+        }
+
+    }
+
+    public static class CloseEvent extends StatutFormEvent {
+        CloseEvent(StatutForm source) {
+            super(source, null);
         }
     }
 

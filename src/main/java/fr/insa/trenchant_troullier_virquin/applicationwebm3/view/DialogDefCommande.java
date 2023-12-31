@@ -19,7 +19,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 import java.util.ArrayList;
 import java.util.List;
 
-public class DialogDefCommande extends Dialog{
+public class DialogDefCommande extends Dialog {
 
     ArrayList<DefinitionCommande> produitsDefini = new ArrayList<>();
     Grid<DefinitionCommande> grid1 = null;
@@ -39,6 +39,11 @@ public class DialogDefCommande extends Dialog{
         configureFooter();
     }
 
+    private static void setGridStyles(Grid<DefinitionCommande> grid) {
+        grid.getStyle().set("width", "300px").set("height", "300px")
+                .set("margin-left", "0.5rem").set("margin-top", "0.5rem")
+                .set("align-self", "unset");
+    }
 
     private void configureFooter() {
         Button save = new Button("Enregistrer", (e) -> this.close());
@@ -46,6 +51,7 @@ public class DialogDefCommande extends Dialog{
         save.getStyle().set("margin-right", "auto");
         this.getFooter().add(save);
     }
+
     private HorizontalLayout setupToolBar(ArrayList<Produit> produits, Commande commande) {
         HorizontalLayout toolBar = new HorizontalLayout();
         toolBar.setWidthFull();
@@ -64,12 +70,13 @@ public class DialogDefCommande extends Dialog{
             Produit produit1 = produit.getValue();
             boolean dejacommande = false;
             DefinitionCommande produit2 = new DefinitionCommande();
-            for (DefinitionCommande prod : produitsDefini){
-                if(prod.getProduit().equals(produit1)){
+            for (DefinitionCommande prod : produitsDefini) {
+                if (prod.getProduit().equals(produit1)) {
                     dejacommande = true;
+                    break;
                 }
             }
-            if (!dejacommande){
+            if (!dejacommande) {
                 int number = NumberField.getValue();
                 produit2.setProduit(produit1);
                 produit2.setNbr(number);
@@ -77,12 +84,13 @@ public class DialogDefCommande extends Dialog{
                 produitsDefini.add(produit2);
                 grid1.setItems(produitsDefini);
                 service.saveDefinitionCommande(produit2);
-            }else Notification.show("Vous avez déjà commandé ce produit");
+            } else Notification.show("Vous avez déjà commandé ce produit");
         });
         toolBar.add(produit, NumberField, addButton);
         toolBar.setAlignSelf(FlexComponent.Alignment.END, produit, NumberField, addButton);
         return toolBar;
     }
+
     private Grid<DefinitionCommande> setupGrid1(Commande commande) {
         Grid<DefinitionCommande> grid = new Grid<>(DefinitionCommande.class);
         grid.removeAllColumns();
@@ -103,13 +111,6 @@ public class DialogDefCommande extends Dialog{
         grid.setSizeFull();
         return grid;
     }
-
-    private static void setGridStyles(Grid<DefinitionCommande> grid) {
-        grid.getStyle().set("width", "300px").set("height", "300px")
-                .set("margin-left", "0.5rem").set("margin-top", "0.5rem")
-                .set("align-self", "unset");
-    }
-
 
 
 }

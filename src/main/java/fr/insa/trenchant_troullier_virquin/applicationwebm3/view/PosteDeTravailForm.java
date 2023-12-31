@@ -10,12 +10,14 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Habilitation;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.PosteDeTravail;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.util.HashSet;
@@ -24,6 +26,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PosteDeTravailForm extends FormLayout {
+    private final ComboBox<Operateur> operateurComboBox = new ComboBox<>("Opérateurs abilités");
+    private final ComboBox<Machine> machineComboBox = new ComboBox<>("Machines associées");
+    private final HorizontalLayout selectedOperateursLayout = new HorizontalLayout();
+    private final HorizontalLayout selectedMachinesLayout = new HorizontalLayout();
+    private final Set<Operateur> selectedOperateurs = new HashSet<>();
+    private final Set<Machine> selectedMachines = new HashSet<>();
     //cette classe doit permettre de créer un nouveau poste de travail
     //elle doit permettre de choisir les machines et les opérateurs
     //elle doit permettre de saisir la référence et la description
@@ -31,17 +39,12 @@ public class PosteDeTravailForm extends FormLayout {
     //elle doit permettre de modifier un poste de travail existant
     TextField ref = new TextField("Référence");
     TextField des = new TextField("Description");
-    private final ComboBox<Operateur> operateurComboBox = new ComboBox<>("Opérateurs abilités");
-    private final ComboBox<Machine> machineComboBox = new ComboBox<>("Machines associées");
-    private final HorizontalLayout selectedOperateursLayout = new HorizontalLayout();
-    private final HorizontalLayout selectedMachinesLayout = new HorizontalLayout();
     Button save = new Button("Valider");
     Button delete = new Button("Supprimer");
     Button close = new Button("Annuler");
-    private Set<Operateur> selectedOperateurs = new HashSet<>();
-    private Set<Machine> selectedMachines = new HashSet<>();
     BeanValidationBinder<PosteDeTravail> binder = new BeanValidationBinder<>(PosteDeTravail.class);
     CrmService service;
+
     public PosteDeTravailForm(CrmService service) {
         binder.bindInstanceFields(this);
         this.service = service;
@@ -49,7 +52,7 @@ public class PosteDeTravailForm extends FormLayout {
         updateMachineComboBox();
         configureComboBoxes();
         configureBadgesLayout();
-        add(ref, des, operateurComboBox, selectedOperateursLayout, machineComboBox, selectedMachinesLayout,createButtonsLayout());
+        add(ref, des, operateurComboBox, selectedOperateursLayout, machineComboBox, selectedMachinesLayout, createButtonsLayout());
     }
 
     private void configureComboBoxes() {
@@ -58,10 +61,9 @@ public class PosteDeTravailForm extends FormLayout {
         operateurComboBox.setAllowedCharPattern("[]");
         //Si on crée un nouveau poste de travail, on peut choisir tous les opérateurs
         //Si on modifie un poste de travail, on ne peut choisir que les opérateurs habilités
-        if (binder.getBean() == null){
+        if (binder.getBean() == null) {
             operateurComboBox.setItems(service.findAllOperateurs(null));
-        }
-        else{
+        } else {
             operateurComboBox.setItems(service.findAllOperateursHabilitesByPosteDeTravail(binder.getBean()));
         }
         operateurComboBox.addValueChangeListener(e -> {
@@ -102,6 +104,7 @@ public class PosteDeTravailForm extends FormLayout {
                 .collect(Collectors.toList());
         operateurComboBox.setItems(availableOperateurs);
     }
+
     private void updateMachineComboBox() {
         List<Machine> allMachines = service.findAllMachines(null);
         List<Machine> availableMachines = allMachines.stream()
@@ -109,6 +112,7 @@ public class PosteDeTravailForm extends FormLayout {
                 .collect(Collectors.toList());
         machineComboBox.setItems(availableMachines);
     }
+
     private Component createButtonsLayout() {
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -144,13 +148,15 @@ public class PosteDeTravailForm extends FormLayout {
         badge.getElement().getThemeList().add("badge contrast pill");
         return badge;
     }
-    private void configureBadgesLayout(){
+
+    private void configureBadgesLayout() {
         selectedOperateursLayout.getStyle().set("flex-wrap", "wrap");
         selectedOperateursLayout.setSpacing(true);
         selectedMachinesLayout.getStyle().set("flex-wrap", "wrap");
         selectedMachinesLayout.setSpacing(true);
 
     }
+
     private Span createMachineBadge(Machine machine) {
         selectedMachines.add(machine);
         machineComboBox.setItems(service.findAllMachines(null)); // Mettre à jour pour exclure les machines sélectionnées
@@ -171,11 +177,11 @@ public class PosteDeTravailForm extends FormLayout {
         return badge;
     }
 
-    
+
     public void setPosteDeTravail(PosteDeTravail posteDeTravail) {
 
         binder.setBean(posteDeTravail);
-        if (posteDeTravail != null){
+        if (posteDeTravail != null) {
             //TODO: Récupérer les opérateurs du PosteDeTravail et ajouter les badges correspondants
 /*
             service.findAllOperateursHabilitesByPosteDeTravail(posteDeTravail).forEach(operateur -> {
@@ -187,9 +193,42 @@ public class PosteDeTravailForm extends FormLayout {
             //TODO: Récupérer les machines du PosteDeTravail et ajouter les badges correspondants
         }
     }
+
+    public Registration addDeleteListener(ComponentEventListener<PosteDeTravailForm.DeleteEvent> listener) {
+        return addListener(PosteDeTravailForm.DeleteEvent.class, listener);
+    }
+
+    public Registration addSaveListener(ComponentEventListener<PosteDeTravailForm.SaveEvent> listener) {
+        return addListener(PosteDeTravailForm.SaveEvent.class, listener);
+    }
+
+    public Registration addCloseListener(ComponentEventListener<PosteDeTravailForm.CloseEvent> listener) {
+        return addListener(PosteDeTravailForm.CloseEvent.class, listener);
+    }
+
+    private void validateAndSave() {
+        if (binder.isValid()) {
+            PosteDeTravail posteDeTravail = binder.getBean();
+            service.savePosteDeTravail(posteDeTravail);
+            //on parcourt les opérateurs sélectionnés et on les ajoute au poste de travail en leur créant une habilitation
+            selectedOperateurs.forEach(operateur -> {
+                Habilitation habilitation = new Habilitation();
+                habilitation.setOperateur(operateur);
+                habilitation.setPosteDeTravail(posteDeTravail); // posteDeTravail doit déjà être sauvegardé
+                service.saveHabilitation(habilitation); // Persiste l'habilitation
+            });
+            //on parcourt les machines sélectionnées et on leur ajoute le poste de travail
+            selectedMachines.forEach(machine -> {
+                machine.setPosteDeTravail(posteDeTravail);
+                service.saveMachine(machine);
+            });
+            fireEvent(new PosteDeTravailForm.SaveEvent(this, binder.getBean()));
+        }
+    }
+
     // Events
     public static abstract class PosteDeTravailFormEvent extends ComponentEvent<PosteDeTravailForm> {
-        private PosteDeTravail PosteDeTravail;
+        private final PosteDeTravail PosteDeTravail;
 
         protected PosteDeTravailFormEvent(PosteDeTravailForm source, PosteDeTravail PosteDeTravail) {
             super(source, false);
@@ -217,37 +256,6 @@ public class PosteDeTravailForm extends FormLayout {
     public static class CloseEvent extends PosteDeTravailForm.PosteDeTravailFormEvent {
         CloseEvent(PosteDeTravailForm source) {
             super(source, null);
-        }
-    }
-
-    public Registration addDeleteListener(ComponentEventListener<PosteDeTravailForm.DeleteEvent> listener) {
-        return addListener(PosteDeTravailForm.DeleteEvent.class, listener);
-    }
-
-    public Registration addSaveListener(ComponentEventListener<PosteDeTravailForm.SaveEvent> listener) {
-        return addListener(PosteDeTravailForm.SaveEvent.class, listener);
-    }
-    public Registration addCloseListener(ComponentEventListener<PosteDeTravailForm.CloseEvent> listener) {
-        return addListener(PosteDeTravailForm.CloseEvent.class, listener);
-    }
-
-    private void validateAndSave() {
-        if(binder.isValid()) {
-            PosteDeTravail posteDeTravail = binder.getBean();
-            service.savePosteDeTravail(posteDeTravail);
-            //on parcourt les opérateurs sélectionnés et on les ajoute au poste de travail en leur créant une habilitation
-            selectedOperateurs.forEach(operateur -> {
-                Habilitation habilitation = new Habilitation();
-                habilitation.setOperateur(operateur);
-                habilitation.setPosteDeTravail(posteDeTravail); // posteDeTravail doit déjà être sauvegardé
-                service.saveHabilitation(habilitation); // Persiste l'habilitation
-            });
-            //on parcourt les machines sélectionnées et on leur ajoute le poste de travail
-            selectedMachines.forEach(machine -> {
-                machine.setPosteDeTravail(posteDeTravail);
-                service.saveMachine(machine);
-            });
-            fireEvent(new PosteDeTravailForm.SaveEvent(this, binder.getBean()));
         }
     }
 }

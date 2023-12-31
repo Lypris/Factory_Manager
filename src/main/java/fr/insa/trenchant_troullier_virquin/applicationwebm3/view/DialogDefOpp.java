@@ -4,36 +4,41 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.grid.dnd.GridDropLocation;
-import com.vaadin.flow.component.html.*;
-import com.vaadin.flow.data.provider.ListDataProvider;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operation;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.grid.dnd.GridDragEndEvent;
 import com.vaadin.flow.component.grid.dnd.GridDragStartEvent;
+import com.vaadin.flow.component.grid.dnd.GridDropLocation;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H6;
+import com.vaadin.flow.data.provider.ListDataProvider;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operation;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+interface SaveListener {
+    void onSave();
+}
+
 public class DialogDefOpp extends Dialog {
 
-    private TypeOperation draggedItem;
-    private CrmService service;
-    private Grid<TypeOperation> grid1 = setupGrid("Opérations disponibles", false);
-    private Grid<TypeOperation> grid2 = setupGrid("Opérations définies", true);
-    private ArrayList<TypeOperation> typeoperations = new ArrayList<>();
+    private final CrmService service;
+    private final Grid<TypeOperation> grid1 = setupGrid("Opérations disponibles", false);
+    private final Grid<TypeOperation> grid2 = setupGrid("Opérations définies", true);
+    private final ArrayList<TypeOperation> typeoperations = new ArrayList<>();
+    private final GridListDataView<TypeOperation> dataView1 = grid1.setItems(typeoperations);
+    private final List<SaveListener> saveListeners = new ArrayList<>();
     public ArrayList<TypeOperation> typeoperationsDefini = new ArrayList<>();
-    private GridListDataView<TypeOperation> dataView1 = grid1.setItems(typeoperations);
-    private GridListDataView<TypeOperation> dataView2 = grid2.setItems(typeoperationsDefini);
+    private final GridListDataView<TypeOperation> dataView2 = grid2.setItems(typeoperationsDefini);
+    private TypeOperation draggedItem;
     private Produit produit;
     private Grid<TypeOperation> dragSourceGrid;
     private ProductView.ProduitDetails produitDetails;
-    private List<SaveListener> saveListeners = new ArrayList<>();
 
     public DialogDefOpp(List<TypeOperation> typeOperations, CrmService service, Produit produit, ProductView.ProduitDetails produitDetails) {
         this.produitDetails = produitDetails;
@@ -97,21 +102,6 @@ public class DialogDefOpp extends Dialog {
         configureFooter();
     }
 
-    private void configureFooter() {
-        Button saveButton = new Button("Enregistrer", e -> {
-            save();
-            notifySaveListeners();
-        });
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        saveButton.getStyle().set("margin-right", "auto");
-        this.getFooter().add(saveButton);
-
-        Button cancelButton = new Button("Cancel", (e) -> this.close());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        this.getFooter().add(cancelButton);
-    }
-
     private static Grid<TypeOperation> setupGrid(String header, boolean addOrderColumn) {
         Grid<TypeOperation> grid = new Grid<>(TypeOperation.class);
         grid.removeAllColumns();
@@ -133,7 +123,6 @@ public class DialogDefOpp extends Dialog {
                 .set("align-self", "unset");
     }
 
-
     private static Component createOrderLabel(Grid<TypeOperation> grid, TypeOperation item) {
         ListDataProvider<TypeOperation> dataProvider = (ListDataProvider<TypeOperation>) grid.getDataProvider();
         List<TypeOperation> items = new ArrayList<>(dataProvider.getItems());
@@ -142,6 +131,26 @@ public class DialogDefOpp extends Dialog {
         H6 label = new H6(String.valueOf(order));
         label.getStyle().set("margin", "auto");
         return label;
+    }
+
+    private static void setContainerStyles(Div container) {
+        container.getStyle().set("display", "flex").set("flex-direction", "row")
+                .set("flex-wrap", "wrap");
+    }
+
+    private void configureFooter() {
+        Button saveButton = new Button("Enregistrer", e -> {
+            save();
+            notifySaveListeners();
+        });
+        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        saveButton.getStyle().set("margin-right", "auto");
+        this.getFooter().add(saveButton);
+
+        Button cancelButton = new Button("Cancel", (e) -> this.close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        this.getFooter().add(cancelButton);
     }
 
     private void notifySaveListeners() {
@@ -156,19 +165,12 @@ public class DialogDefOpp extends Dialog {
 
     private void handleDragStart(GridDragStartEvent<TypeOperation> e) {
         draggedItem = e.getDraggedItems().get(0);
-        dragSourceGrid = (Grid<TypeOperation>) e.getSource();
+        dragSourceGrid = e.getSource();
     }
 
     private void handleDragEnd(GridDragEndEvent<TypeOperation> e) {
         draggedItem = null;
     }
-
-
-    private static void setContainerStyles(Div container) {
-        container.getStyle().set("display", "flex").set("flex-direction", "row")
-                .set("flex-wrap", "wrap");
-    }
-
 
     private void save() {
         service.deleteAllOperationForProduit(produit);
@@ -177,7 +179,7 @@ public class DialogDefOpp extends Dialog {
             Operation operation = new Operation();
             operation.setProduit(produit);
             operation.setTypeOperation(typeOperation);
-            operation.setOrdre(typeoperationsDefini.indexOf(typeOperation)+1);
+            operation.setOrdre(typeoperationsDefini.indexOf(typeOperation) + 1);
             operations.add(operation);
             service.saveOperation(operation);
         }
@@ -191,14 +193,12 @@ public class DialogDefOpp extends Dialog {
     public void setProduit(Produit produit) {
         this.produit = produit;
     }
-    public void setProduitDetails(ProductView.ProduitDetails produitDetails) {
-        this.produitDetails = produitDetails;
-    }
 
     public ProductView.ProduitDetails getProduitDetails() {
         return produitDetails;
     }
-}
-interface SaveListener {
-    void onSave();
+
+    public void setProduitDetails(ProductView.ProduitDetails produitDetails) {
+        this.produitDetails = produitDetails;
+    }
 }

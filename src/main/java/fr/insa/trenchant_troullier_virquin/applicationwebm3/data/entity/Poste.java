@@ -2,7 +2,7 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public class Poste extends AbstractEntity{
+public class Poste extends AbstractEntity {
     @NotEmpty
     private String reference = "";
 

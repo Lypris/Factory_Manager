@@ -1,10 +1,13 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class Realise extends AbstractEntity{
+public class Realise extends AbstractEntity {
     //durée de l'opération
     private float duree;
     //clé étrangère vers le type d'opération

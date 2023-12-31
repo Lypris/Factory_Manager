@@ -17,12 +17,10 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
-import java.util.Optional;
 
 @Route(value = "machines", layout = MainLayout.class)
 @PageTitle("Machines | M3 Application")
@@ -55,12 +53,13 @@ public class MachineView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new MachineForm(service.findAllTypeOperation(), service.findAllEtatPossibleMachines(),service);
+        form = new MachineForm(service.findAllTypeOperation(), service.findAllEtatPossibleMachines(), service);
         form.setWidth("25em");
         form.addSaveListener(this::saveMachine);
         form.addDeleteListener(this::deleteMachine);
         form.addCloseListener(e -> closeEditor());
     }
+
     private void saveMachine(MachineForm.SaveEvent event) {
         service.saveMachine(event.getMachine());
         updateList();
@@ -83,20 +82,20 @@ public class MachineView extends VerticalLayout {
                 .setHeader("Description").setSortable(true);
         grid.addColumn(Machine::getPuissance)
                 .setHeader("Puissance (kW)").setSortable(true);
-        grid.addColumn(Machine->Machine.getTypeOperation().getDes())
+        grid.addColumn(Machine -> Machine.getTypeOperation().getDes())
                 .setHeader("Type d'opération").setSortable(true);
         // Ajoute une colonne pour l'état actuel de la machine
         grid.addColumn(new ComponentRenderer<>(Machine -> {
-            EtatMachine etatActuelOpt = service.findLastEtatMachineByMachine(Machine);
-            if(etatActuelOpt != null){
-                    VaadinIcon icon = IconUtils.determineIcon(etatActuelOpt.getEtat().getDes());
-                    Span badge = new Span(IconUtils.createIcon(icon),
-                            new Span(etatActuelOpt.getEtat().getDes()));
-                    IconUtils.applyStyleForEtat(badge, etatActuelOpt.getEtat().getDes());
-                    return badge;
-            } else {
-                return new Span("Aucun état");
-            }
+                    EtatMachine etatActuelOpt = service.findLastEtatMachineByMachine(Machine);
+                    if (etatActuelOpt != null) {
+                        VaadinIcon icon = IconUtils.determineIcon(etatActuelOpt.getEtat().getDes());
+                        Span badge = new Span(IconUtils.createIcon(icon),
+                                new Span(etatActuelOpt.getEtat().getDes()));
+                        IconUtils.applyStyleForEtat(badge, etatActuelOpt.getEtat().getDes());
+                        return badge;
+                    } else {
+                        return new Span("Aucun état");
+                    }
                 }))
                 .setHeader("État actuel")
                 .setSortable(true)
@@ -126,7 +125,7 @@ public class MachineView extends VerticalLayout {
                     return service.findLastEtatMachineByMachine(Machine).getFin();
                 }))
                 .setRenderer(new TextRenderer<>(Machine -> {
-                    if(service.findLastEtatMachineByMachine(Machine).getFin() == null){
+                    if (service.findLastEtatMachineByMachine(Machine).getFin() == null) {
                         return "indeterminée";
                     }
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -148,12 +147,13 @@ public class MachineView extends VerticalLayout {
         addMachineButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         Button goToEtatMachineButton = new Button("Etat des machines");
         goToEtatMachineButton.setIcon(new Icon(VaadinIcon.CALENDAR_CLOCK));
-        goToEtatMachineButton.addClickListener(click ->getUI().ifPresent(ui -> ui.navigate("etatmachines")));
+        goToEtatMachineButton.addClickListener(click -> getUI().ifPresent(ui -> ui.navigate("etatmachines")));
         addMachineButton.addClickListener(click -> addMachine());
         var toolbar = new HorizontalLayout(filterText, addMachineButton, goToEtatMachineButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
+
     public void editMachine(Machine Machine) {
         if (Machine == null) {
             closeEditor();

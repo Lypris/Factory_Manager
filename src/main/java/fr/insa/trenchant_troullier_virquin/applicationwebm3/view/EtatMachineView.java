@@ -1,11 +1,9 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -57,12 +55,13 @@ public class EtatMachineView extends VerticalLayout {
     }
 
     private void configureForm() {
-        form = new EtatMachineForm(service.findAllMachines(null) , service.findAllEtatPossibleMachines(), service);
+        form = new EtatMachineForm(service.findAllMachines(null), service.findAllEtatPossibleMachines(), service);
         form.setWidth("25em");
         form.addSaveListener(this::saveEtatMachine);
         form.addDeleteListener(this::deleteEtatMachine);
         form.addCloseListener(e -> closeEditor());
     }
+
     private void saveEtatMachine(EtatMachineForm.SaveEvent event) {
         service.saveEtatMachine(event.getEtatMachine());
         updateList();
@@ -121,7 +120,7 @@ public class EtatMachineView extends VerticalLayout {
                 .setHeader("Date de fin").setSortable(true)
                 .setComparator(Comparator.comparing(EtatMachine::getFin))
                 .setRenderer(new TextRenderer<>(EtatMachine -> {
-                    if(EtatMachine.getFin() == null){
+                    if (EtatMachine.getFin() == null) {
                         return "indeterminée";
                     }
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -148,11 +147,12 @@ public class EtatMachineView extends VerticalLayout {
         addEtatPossibleButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         Button goToMachineButton = new Button("Machines");
         goToMachineButton.setIcon(new Icon(VaadinIcon.COGS));
-        goToMachineButton.addClickListener(click ->getUI().ifPresent(ui -> ui.navigate("machines")));
-        var toolbar = new HorizontalLayout(filterText, addEtatButton,addEtatPossibleButton, goToMachineButton);
+        goToMachineButton.addClickListener(click -> getUI().ifPresent(ui -> ui.navigate("machines")));
+        var toolbar = new HorizontalLayout(filterText, addEtatButton, addEtatPossibleButton, goToMachineButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
+
     public void editEtatMachine(EtatMachine etatMachine) {
         if (etatMachine == null) {
             closeEditor();
@@ -174,6 +174,7 @@ public class EtatMachineView extends VerticalLayout {
         updateEtatsPossibles();
         editEtatMachine(new EtatMachine());
     }
+
     private void addEtatPossibleMachine() {
         EtatPossibleMachineDialog etatPossibleDialog = new EtatPossibleMachineDialog();
 

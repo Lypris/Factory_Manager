@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Entity
-public class EtatMachine extends AbstractEntity{
+public class EtatMachine extends AbstractEntity {
     @NotNull
     private LocalDateTime debut;
     private LocalDateTime fin;
@@ -29,8 +29,7 @@ public class EtatMachine extends AbstractEntity{
 
     public EtatMachine() {
     }
-    
-    
+
 
     public LocalDateTime getDebut() {
         return debut;

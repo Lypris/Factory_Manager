@@ -3,24 +3,18 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
-import java.time.LocalDateTime;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,19 +24,18 @@ import java.util.stream.Collectors;
 @Route(value = "lancerproduction/:commandeID", layout = MainLayout.class)
 public class LancerProductionView extends VerticalLayout implements BeforeEnterObserver {
     private final CrmService service;
+    // Ajoutez un champ pour stocker les ComboBox des machines
+    private final List<ComboBox<Machine>> machineComboBoxes = new ArrayList<>();
+    private final HorizontalLayout entete = new HorizontalLayout();
+    private final Span label = new Span(" ");
+    private final Button lancerProdCommande; //Button pour finaliser la commande
+    private final Button lancerProductionButton; // Bouton pour lancer la production
     private Grid<DefinitionCommande> gridDefinitionCommande;
     private ComboBox<Machine> machineComboBox;
     private ComboBox<Produit> produitComboBox;
     private Grid<Operation> gridEtapes;
     private Long commandeId;
     private List<Produit> ListProduitCommande = new ArrayList<>();
-    // Ajoutez un champ pour stocker les ComboBox des machines
-    private List<ComboBox<Machine>> machineComboBoxes = new ArrayList<>();
-    
-    private HorizontalLayout entete = new HorizontalLayout();
-    private Span label = new Span(" ");
-    private Button lancerProdCommande; //Button pour finaliser la commande
-    private Button lancerProductionButton; // Bouton pour lancer la production
 
     public LancerProductionView(CrmService service) {
         this.service = service;
@@ -55,7 +48,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             //méthode pour lancer la production
             lancerProdProduit(produitComboBox.getValue());
         });
-        
+
         //Initialise le bouton pour finaliser la commander
         lancerProdCommande = new Button("Valider la Commande");
         lancerProdCommande.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -69,7 +62,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         add(lancerProdCommande, entete);
         updateLancerProdCommande();
     }
-    
+
     //Methode pour lancer la production d'un produit
     private void lancerProdProduit(Produit produit) {
         // Récupérer les machines sélectionnées
@@ -114,7 +107,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             event.rerouteTo(InitialView.class);
         }
     }
-    
+
     //Initialise le grilles de operations
     private void initGridEtapes() {
         gridEtapes = new Grid<>(Operation.class);
@@ -129,20 +122,22 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             return machineComboBox;
         });
     }
+
     private void updateLancerProductionButtonState() {
         // Vérifiez si tous les ComboBox ont une machine sélectionnée
         boolean allSelected = machineComboBoxes.stream()
                 .allMatch(comboBox -> comboBox.getValue() != null);
         // Activez ou désactivez le bouton en fonction de la sélection
-        if (allSelected){
+        if (allSelected) {
             lancerProductionButton.setEnabled(allSelected);
         }
     }
+
     private void updateLancerProdCommande() {
         // Vérifiez si tous les produits sont en production et active le bouton en fonction
         lancerProdCommande.setEnabled(this.ListProduitCommande.isEmpty());
     }
-    
+
     //Initialise le Combobox des Produits
     private void setupProduitComboBox(Commande commande) {
         produitComboBox = new ComboBox<>("Choisir un produit");
@@ -166,6 +161,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         configureEntete();
         updateProduitEnProd();
     }
+
     //méthode pour configurer l'entête de la vue
     private void configureEntete() {
         // Ajouter le ComboBox des produits à l'entête
@@ -178,40 +174,36 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         entete.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
 
     }
-    
+
     //Met à jour les element du Combobox des produits
-    private void updateProduitComboBox(){
+    private void updateProduitComboBox() {
 
         this.produitComboBox.setItems(this.ListProduitCommande);
-        if (this.ListProduitCommande.isEmpty()){
-            lancerProdCommande.setEnabled(true);
-        } else {
-            lancerProdCommande.setEnabled(false);
-        }
+        lancerProdCommande.setEnabled(this.ListProduitCommande.isEmpty());
     }
-    
+
     //Methode qui met ajours les produit de la commande qui ne sont pas en production 
-    private void updateProduitEnProd(){ 
+    private void updateProduitEnProd() {
         Commande commande = service.findCommandeById(this.commandeId);
-        if(this.ListProduitCommande.size() == 1){
+        if (this.ListProduitCommande.size() == 1) {
             List<Operation> Listoperations = service.findOperationByProduit(this.ListProduitCommande.get(0));
             List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, this.ListProduitCommande.get(0));
-            for (Exemplaires e : ListExemplaires){
-                for (Operation o : Listoperations){
+            for (Exemplaires e : ListExemplaires) {
+                for (Operation o : Listoperations) {
                     //Si il existe déja une opeartion-Effectuee alors on supprime le produit de la liste des produit pas encore en production
-                    if (service.OperationEffectueeExiste(e, o) && !this.ListProduitCommande.isEmpty()){
+                    if (service.OperationEffectueeExiste(e, o) && !this.ListProduitCommande.isEmpty()) {
                         this.ListProduitCommande.remove(this.ListProduitCommande.get(0));
                     }
                 }
             }
-        }else if(this.ListProduitCommande.size() > 1){
-            for(Produit prod : this.ListProduitCommande){
+        } else if (this.ListProduitCommande.size() > 1) {
+            for (Produit prod : this.ListProduitCommande) {
                 List<Operation> Listoperations = service.findOperationByProduit(prod);
                 List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
-                for (Exemplaires e : ListExemplaires){
-                    for (Operation o : Listoperations){
+                for (Exemplaires e : ListExemplaires) {
+                    for (Operation o : Listoperations) {
                         //Si il existe déja une opeartion-Effectuee alors on supprime le produit de la liste des produit pas encore en production
-                        if (service.OperationEffectueeExiste(e, o)){
+                        if (service.OperationEffectueeExiste(e, o)) {
                             this.ListProduitCommande.remove(prod);
                         }
                     }
@@ -220,7 +212,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         }
         updateProduitComboBox();
     }
-    
+
     //Initialise les ComboBox des machhines
     private ComboBox<Machine> setupMachineComboBox(Operation operation) {
         ComboBox<Machine> machineComboBox = new ComboBox<>("Veuillez choisir une machine disponible et compatible:");
@@ -244,36 +236,36 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
         int i = 0;
         //Boucles qui crée tous les operation_effectuee nécessaire a la production
-        for (Exemplaires e : ListExemplaires){
+        for (Exemplaires e : ListExemplaires) {
             i = 0;
-            for (Operation o : Listoperations){
+            for (Operation o : Listoperations) {
                 //Verifie qu'il n'existe pas encore d'operation effectuee <-> production de produit pas lancée
                 //Si la prod du produit n'est pas lancée on crée tous les operation-effectuee
-                if (!service.OperationEffectueeExiste(e, o)){
+                if (!service.OperationEffectueeExiste(e, o)) {
                     Operation_Effectuee ope_eff = new Operation_Effectuee(e, Listmachines.get(i), o);
                     service.saveOpperation_Effectuee(ope_eff);
-                }else {
+                } else {
                     Notification.show("La production de ce produit est déja lancée");
                     return;
                 }
                 i++;
             }
         }
-        
+
     }
-    
+
     //Met toutes les machines selectionnée en statut de production
     private void MettreMachinEnProduction(List<Machine> Listmachines) {
-        for (Machine m : Listmachines){
+        for (Machine m : Listmachines) {
             //Recuper l'etat actuel et mettre l'heure de fin
-            service.SetFinByEtatMachine(LocalDateTime.now(),service.findLastEtatMachineByMachine(m));
+            service.SetFinByEtatMachine(LocalDateTime.now(), service.findLastEtatMachineByMachine(m));
             //Creer un nouvel etat avec l'heure de début
             service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatEnMarche()));
         }
-        
-        
+
+
     }
-    
+
     //Change le statut de la commande et reviens sur la page production avec le update
     private void lancerProdCommande() {
         Commande commande = service.findCommandeById(this.commandeId);
@@ -289,16 +281,16 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         updateLancerProdCommande();
         updateLabel();
         Commande commande = service.findCommandeById(this.commandeId);
-        if (commande.getStatut().equals("En cours")){
+        if (commande.getStatut().equals("En cours")) {
             getUI().ifPresent(ui -> ui.navigate("production"));
         }
     }
-    
+
     //Met à jour le label en fonction du nombre de produit restant
     private void updateLabel() {
-        if (this.ListProduitCommande.isEmpty()){
+        if (this.ListProduitCommande.isEmpty()) {
             this.label.setText("Tous les produits sont en production");
-        }else{
+        } else {
             this.label.setText(" ");
         }
     }

@@ -13,28 +13,32 @@ import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatPremiere;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatiereProduit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatPremiere;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+interface SaveListenerDefMat {
+    void onSave();
+}
+
 public class DialogDefMat extends Dialog {
 
-    private MatPremiere draggedItem;
-    private CrmService service;
-    private Grid<MatPremiere> grid1 = setupGrid("Matières disponibles", false);
-    private Grid<MatPremiere> grid2 = setupGrid("Matières définies", true);
-    private ArrayList<MatPremiere> matpremieres = new ArrayList<>();
+    private final CrmService service;
+    private final Grid<MatPremiere> grid1 = setupGrid("Matières disponibles", false);
+    private final Grid<MatPremiere> grid2 = setupGrid("Matières définies", true);
+    private final ArrayList<MatPremiere> matpremieres = new ArrayList<>();
+    private final GridListDataView<MatPremiere> dataView1 = grid1.setItems(matpremieres);
+    private final List<SaveListenerDefMat> saveListenerDefMats = new ArrayList<>();
     public ArrayList<MatPremiere> matpremieresDefini = new ArrayList<>();
-    private GridListDataView<MatPremiere> dataView1 = grid1.setItems(matpremieres);
-    private GridListDataView<MatPremiere> dataView2 = grid2.setItems(matpremieresDefini);
+    private final GridListDataView<MatPremiere> dataView2 = grid2.setItems(matpremieresDefini);
+    private MatPremiere draggedItem;
     private Produit produit;
     private Grid<MatPremiere> dragSourceGrid;
     private ProductView.ProduitDetails produitDetails;
-    private List<SaveListenerDefMat> saveListenerDefMats = new ArrayList<>();
 
     public DialogDefMat(List<MatPremiere> matPremieres, CrmService service, Produit produit, ProductView.ProduitDetails produitDetails) {
         this.produitDetails = produitDetails;
@@ -98,21 +102,6 @@ public class DialogDefMat extends Dialog {
         configureFooter();
     }
 
-    private void configureFooter() {
-        Button saveButton = new Button("Enregistrer", e -> {
-            save();
-            notifySaveListeners();
-        });
-        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        saveButton.getStyle().set("margin-right", "auto");
-        this.getFooter().add(saveButton);
-
-        Button cancelButton = new Button("Cancel", (e) -> this.close());
-        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-
-        this.getFooter().add(cancelButton);
-    }
-
     private static Grid<MatPremiere> setupGrid(String header, boolean addOrderColumn) {
         Grid<MatPremiere> grid = new Grid<>(MatPremiere.class);
         grid.removeAllColumns();
@@ -134,7 +123,6 @@ public class DialogDefMat extends Dialog {
                 .set("align-self", "unset");
     }
 
-
     private static Component createOrderLabel(Grid<MatPremiere> grid, MatPremiere item) {
         ListDataProvider<MatPremiere> dataProvider = (ListDataProvider<MatPremiere>) grid.getDataProvider();
         List<MatPremiere> items = new ArrayList<>(dataProvider.getItems());
@@ -143,6 +131,26 @@ public class DialogDefMat extends Dialog {
         H6 label = new H6(String.valueOf(order));
         label.getStyle().set("margin", "auto");
         return label;
+    }
+
+    private static void setContainerStyles(Div container) {
+        container.getStyle().set("display", "flex").set("flex-direction", "row")
+                .set("flex-wrap", "wrap");
+    }
+
+    private void configureFooter() {
+        Button saveButton = new Button("Enregistrer", e -> {
+            save();
+            notifySaveListeners();
+        });
+        saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        saveButton.getStyle().set("margin-right", "auto");
+        this.getFooter().add(saveButton);
+
+        Button cancelButton = new Button("Cancel", (e) -> this.close());
+        cancelButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+
+        this.getFooter().add(cancelButton);
     }
 
     private void notifySaveListeners() {
@@ -157,19 +165,12 @@ public class DialogDefMat extends Dialog {
 
     private void handleDragStart(GridDragStartEvent<MatPremiere> e) {
         draggedItem = e.getDraggedItems().get(0);
-        dragSourceGrid = (Grid<MatPremiere>) e.getSource();
+        dragSourceGrid = e.getSource();
     }
 
     private void handleDragEnd(GridDragEndEvent<MatPremiere> e) {
         draggedItem = null;
     }
-
-
-    private static void setContainerStyles(Div container) {
-        container.getStyle().set("display", "flex").set("flex-direction", "row")
-                .set("flex-wrap", "wrap");
-    }
-
 
     private void save() {
         //TODO : Enregistrer les Matiere définies pour un produit
@@ -193,15 +194,13 @@ public class DialogDefMat extends Dialog {
     public void setProduit(Produit produit) {
         this.produit = produit;
     }
-    public void setProduitDetails(ProductView.ProduitDetails produitDetails) {
-        this.produitDetails = produitDetails;
-    }
 
     public ProductView.ProduitDetails getProduitDetails() {
         return produitDetails;
     }
-}
-interface SaveListenerDefMat {
-    void onSave();
+
+    public void setProduitDetails(ProductView.ProduitDetails produitDetails) {
+        this.produitDetails = produitDetails;
+    }
 }
 

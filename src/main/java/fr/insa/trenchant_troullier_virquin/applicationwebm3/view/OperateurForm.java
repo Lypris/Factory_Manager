@@ -15,8 +15,6 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 
-import java.util.List;
-
 public class OperateurForm extends FormLayout {
     TextField nom = new TextField("Nom");
     TextField prenom = new TextField("Prénom");
@@ -38,6 +36,7 @@ public class OperateurForm extends FormLayout {
                 tel,
                 createButtonsLayout());
     }
+
     public void setOperateur(Operateur operateur) {
         binder.setBean(operateur);
     }
@@ -58,10 +57,27 @@ public class OperateurForm extends FormLayout {
         return new HorizontalLayout(save, delete, close);
     }
 
+    public Registration addDeleteListener(ComponentEventListener<OperateurForm.DeleteEvent> listener) {
+        return addListener(OperateurForm.DeleteEvent.class, listener);
+    }
+
+    public Registration addSaveListener(ComponentEventListener<OperateurForm.SaveEvent> listener) {
+        return addListener(OperateurForm.SaveEvent.class, listener);
+    }
+
+    public Registration addCloseListener(ComponentEventListener<OperateurForm.CloseEvent> listener) {
+        return addListener(OperateurForm.CloseEvent.class, listener);
+    }
+
+    private void validateAndSave() {
+        if (binder.isValid()) {
+            fireEvent(new OperateurForm.SaveEvent(this, binder.getBean()));
+        }
+    }
 
     // Events
     public static abstract class OperateurFormEvent extends ComponentEvent<OperateurForm> {
-        private Operateur operateur;
+        private final Operateur operateur;
 
         protected OperateurFormEvent(OperateurForm source, Operateur operateur) {
             super(source, false);
@@ -89,23 +105,6 @@ public class OperateurForm extends FormLayout {
     public static class CloseEvent extends OperateurForm.OperateurFormEvent {
         CloseEvent(OperateurForm source) {
             super(source, null);
-        }
-    }
-
-    public Registration addDeleteListener(ComponentEventListener<OperateurForm.DeleteEvent> listener) {
-        return addListener(OperateurForm.DeleteEvent.class, listener);
-    }
-
-    public Registration addSaveListener(ComponentEventListener<OperateurForm.SaveEvent> listener) {
-        return addListener(OperateurForm.SaveEvent.class, listener);
-    }
-    public Registration addCloseListener(ComponentEventListener<OperateurForm.CloseEvent> listener) {
-        return addListener(OperateurForm.CloseEvent.class, listener);
-    }
-
-    private void validateAndSave() {
-        if(binder.isValid()) {
-            fireEvent(new OperateurForm.SaveEvent(this, binder.getBean()));
         }
     }
 }

@@ -4,12 +4,12 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMach
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.data.jpa.repository.Modifying;
 
 public interface EtatMachineRepository extends JpaRepository<EtatMachine, Long> {
     @Query("SELECT e FROM EtatMachine e JOIN e.machine m " +
@@ -18,9 +18,8 @@ public interface EtatMachineRepository extends JpaRepository<EtatMachine, Long> 
     List<EtatMachine> search(@Param("searchTerm") String searchTerm);
 
 
-
-
     List<EtatMachine> findByMachine(Machine machine);
+
     List<EtatMachine> findAllByMachineAndDebutBeforeAndFinAfter(Machine machine, LocalDateTime debut, LocalDateTime fin);
 
     @Query("SELECT e FROM EtatMachine e WHERE e.fin is null")
@@ -35,7 +34,7 @@ public interface EtatMachineRepository extends JpaRepository<EtatMachine, Long> 
     @Transactional
     @Modifying
     @Query("UPDATE EtatMachine e SET e.fin = :fin WHERE e = :etatmachine")
-    public void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine);
+    void SetFinByEtatMachine(LocalDateTime fin, EtatMachine etatmachine);
 
 
     @Query("SELECT e FROM EtatMachine e WHERE e.machine = :machine AND e.fin = null")
