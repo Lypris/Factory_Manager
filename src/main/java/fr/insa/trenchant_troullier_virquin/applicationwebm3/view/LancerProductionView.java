@@ -47,6 +47,8 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         lancerProductionButton.addClickListener(event -> {
             //méthode pour lancer la production
             lancerProdProduit(produitComboBox.getValue());
+            update();
+            lancerProductionButton.setEnabled(false);
         });
 
         //Initialise le bouton pour finaliser la commander
@@ -95,7 +97,8 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             if (commande != null) {
                 // Utiliser la commande pour initialiser les composants
                 setupProduitComboBox(commande);
-
+                updateProduitEnProd();
+                this.lancerProductionButton.setEnabled(false);
                 // ... et ainsi de suite
             } else {
                 // Gérer le cas où la commande n'existe pas
@@ -124,12 +127,9 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
 
     private void updateLancerProductionButtonState() {
         // Vérifiez si tous les ComboBox ont une machine sélectionnée
-        boolean allSelected = machineComboBoxes.stream()
-                .allMatch(comboBox -> comboBox.getValue() != null);
+        boolean allSelected = machineComboBoxes.stream().allMatch(comboBox -> comboBox.getValue() != null);
         // Activez ou désactivez le bouton en fonction de la sélection
-        if (allSelected) {
-            lancerProductionButton.setEnabled(allSelected);
-        }
+        lancerProductionButton.setEnabled(allSelected);
     }
 
     private void updateLancerProdCommande() {
@@ -275,6 +275,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
 
     //Met à jour tous les boutons et combobox et aussi la vue si la commande est en production
     private void update() {
+        Notification.show("LA");
         updateProduitComboBox();
         updateLancerProductionButtonState();
         updateLancerProdCommande();
