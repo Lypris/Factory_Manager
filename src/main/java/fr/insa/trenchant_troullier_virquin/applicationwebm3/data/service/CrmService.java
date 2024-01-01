@@ -253,6 +253,9 @@ public class CrmService {
     public List<EtatMachine> findAllEtatMachineByMachine(Machine machine) {
         return etatMachineRepository.findByMachine(machine);
     }
+    public List<EtatMachine> findAllEtatMachineFinisByMachine(Machine selectedMachine) {
+        return etatMachineRepository.findAllEtatMachineFinisByMachine(selectedMachine);
+    }
 
     public EtatMachine findLastEtatMachineByMachine(Machine machine) {
         return etatMachineRepository.findCurrentEtatMachineByMachine(machine);
@@ -682,5 +685,6 @@ public class CrmService {
         }
         habilitationRepository.save(habilitation);
     }
+
 
 }

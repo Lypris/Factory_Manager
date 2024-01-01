@@ -14,7 +14,6 @@
   "@vaadin/app-layout": "24.2.3",
   "@vaadin/avatar": "24.2.3",
   "@vaadin/avatar-group": "24.2.3",
-  "@vaadin/board": "24.2.3",
   "@vaadin/bundles": "24.2.3",
   "@vaadin/button": "24.2.3",
   "@vaadin/checkbox": "24.2.3",
@@ -73,11 +72,13 @@
   "@vaadin/vaadin-usage-statistics": "2.1.2",
   "@vaadin/vertical-layout": "24.2.3",
   "@vaadin/virtual-list": "24.2.3",
+  "apexcharts": "3.35.0",
   "construct-style-sheets-polyfill": "3.1.0",
   "date-fns": "2.29.3",
   "lit": "2.8.0",
   "moment": "2.29.4",
-  "moment-timezone": "0.5.40"
+  "moment-timezone": "0.5.40",
+  "onecolor": "3.1.0"
  },
  "npmModules": {
   "@fullcalendar/core": "6.1.9",
@@ -96,7 +97,6 @@
   "@vaadin/app-layout": "24.2.3",
   "@vaadin/avatar": "24.2.3",
   "@vaadin/avatar-group": "24.2.3",
-  "@vaadin/board": "24.2.3",
   "@vaadin/button": "24.2.3",
   "@vaadin/checkbox": "24.2.3",
   "@vaadin/checkbox-group": "24.2.3",
@@ -152,6 +152,8 @@
   "@vaadin/vaadin-usage-statistics": "2.1.2",
   "@vaadin/vertical-layout": "24.2.3",
   "@vaadin/virtual-list": "24.2.3",
+  "@webcomponents/shadycss": "1.11.2",
+  "apexcharts": "3.35.0",
   "construct-style-sheets-polyfill": "3.1.0",
   "date-fns": "2.29.3",
   "is-regexp": "3.1.0",
@@ -159,6 +161,7 @@
   "lit-html": "2.8.0",
   "moment": "2.29.4",
   "moment-timezone": "0.5.40",
+  "onecolor": "3.1.0",
   "preact": "10.12.1",
   "strip-css-comments": "5.0.0",
   "tslib": "2.6.2"
@@ -170,8 +173,6 @@
   "@vaadin/app-layout/theme/lumo/vaadin-drawer-toggle.js",
   "@vaadin/avatar-group/theme/lumo/vaadin-avatar-group.js",
   "@vaadin/avatar/theme/lumo/vaadin-avatar.js",
-  "@vaadin/board/theme/lumo/vaadin-board-row.js",
-  "@vaadin/board/theme/lumo/vaadin-board.js",
   "@vaadin/button/theme/lumo/vaadin-button.js",
   "@vaadin/checkbox-group/theme/lumo/vaadin-checkbox-group.js",
   "@vaadin/checkbox/theme/lumo/vaadin-checkbox.js",
@@ -235,6 +236,8 @@
   "@vaadin/vertical-layout/theme/lumo/vaadin-vertical-layout.js",
   "@vaadin/virtual-list/theme/lumo/vaadin-virtual-list.js",
   "Frontend/generated/jar-resources/buttonFunctions.js",
+  "Frontend/generated/jar-resources/com/github/appreciated/apexcharts/apexcharts-wrapper-styles.css",
+  "Frontend/generated/jar-resources/com/github/appreciated/apexcharts/apexcharts-wrapper.ts",
   "Frontend/generated/jar-resources/comboBoxConnector.js",
   "Frontend/generated/jar-resources/contextMenuConnector.js",
   "Frontend/generated/jar-resources/contextMenuTargetConnector.js",
@@ -257,6 +260,8 @@
  ],
  "frontendHashes": {
   "buttonFunctions.js": "c852123f9b2c44eb75e555119d3e05a7dbe78b91d0ab616feb9df1654474707d",
+  "com/github/appreciated/apexcharts/apexcharts-wrapper-styles.css": "d837b7f39ff5cac62b2e0d4a48bb9a2c9c073451ee5c96ca4ba9394e7f91a542",
+  "com/github/appreciated/apexcharts/apexcharts-wrapper.ts": "a7651281f94f4d2ec2eef5ce5dbe70985f2005212f4141f1ddcacefda799edff",
   "comboBoxConnector.js": "1d004c3dae9c76f8bcc68678abe1b8f7bdc8b456f5c9c4c7f190df8ed25d66cd",
   "contextMenuConnector.js": "8960e00884b9a8b62e24be63e03fe7045dcb9b6844a8a238eb4619d5595e2cfc",
   "contextMenuTargetConnector.js": "870f67643988dd5618c247bd3c28d843f70aa026ee89f44c3c7556b5e70856af",
@@ -281,17 +286,12 @@
   "applicationwebm3": "{\n  \"lumoImports\" : [ \"typography\", \"color\", \"spacing\", \"badge\", \"utility\" ]\n}"
  },
  "entryScripts": [
-  "VAADIN/build/indexhtml-52273684.js"
+  "VAADIN/build/indexhtml-3e57cb49.js"
  ],
  "webComponents": [],
- "cvdlModules": {
-  "@vaadin/board": {
-   "name": "vaadin-board",
-   "version": "24.2.3"
-  }
- },
- "packageJsonHash": "2bcff82bb77589ffddfc2fd2a9294270e382d7071acfce8f28c2d2fb93f485c3",
+ "cvdlModules": {},
+ "packageJsonHash": "29a1abb5cd5a9d73a164056cceb344bb5ae7e50e46bb7dc232478b9114c4b3c1",
  "indexHtmlGenerated": [
-  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-52273684.js\"></script>"
+  "  <script type=\"module\" crossorigin src=\"./VAADIN/build/indexhtml-3e57cb49.js\"></script>"
  ]
 }

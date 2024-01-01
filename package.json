@@ -17,7 +17,6 @@
     "@vaadin/app-layout": "24.2.3",
     "@vaadin/avatar": "24.2.3",
     "@vaadin/avatar-group": "24.2.3",
-    "@vaadin/board": "24.2.3",
     "@vaadin/bundles": "24.2.3",
     "@vaadin/button": "24.2.3",
     "@vaadin/checkbox": "24.2.3",
@@ -76,11 +75,13 @@
     "@vaadin/vaadin-usage-statistics": "2.1.2",
     "@vaadin/vertical-layout": "24.2.3",
     "@vaadin/virtual-list": "24.2.3",
+    "apexcharts": "3.35.0",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
     "lit": "2.8.0",
     "moment": "2.29.4",
-    "moment-timezone": "0.5.40"
+    "moment-timezone": "0.5.40",
+    "onecolor": "3.1.0"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "5.0.2",
@@ -115,7 +116,6 @@
       "@vaadin/app-layout": "24.2.3",
       "@vaadin/avatar": "24.2.3",
       "@vaadin/avatar-group": "24.2.3",
-      "@vaadin/board": "24.2.3",
       "@vaadin/bundles": "24.2.3",
       "@vaadin/button": "24.2.3",
       "@vaadin/checkbox": "24.2.3",
@@ -174,11 +174,13 @@
       "@vaadin/vaadin-usage-statistics": "2.1.2",
       "@vaadin/vertical-layout": "24.2.3",
       "@vaadin/virtual-list": "24.2.3",
+      "apexcharts": "3.35.0",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
       "lit": "2.8.0",
       "moment": "2.29.4",
-      "moment-timezone": "0.5.40"
+      "moment-timezone": "0.5.40",
+      "onecolor": "3.1.0"
     },
     "devDependencies": {
       "@rollup/plugin-replace": "5.0.2",
@@ -197,7 +199,7 @@
       "workbox-core": "7.0.0",
       "workbox-precaching": "7.0.0"
     },
-    "hash": "2bcff82bb77589ffddfc2fd2a9294270e382d7071acfce8f28c2d2fb93f485c3"
+    "hash": "29a1abb5cd5a9d73a164056cceb344bb5ae7e50e46bb7dc232478b9114c4b3c1"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
@@ -277,6 +279,7 @@
     "moment-timezone": "$moment-timezone",
     "@fullcalendar/multimonth": "$@fullcalendar/multimonth",
     "@fullcalendar/moment": "$@fullcalendar/moment",
-    "@vaadin/board": "$@vaadin/board"
+    "apexcharts": "$apexcharts",
+    "onecolor": "$onecolor"
   }
 }

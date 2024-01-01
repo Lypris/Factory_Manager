@@ -43,6 +43,10 @@ public interface EtatMachineRepository extends JpaRepository<EtatMachine, Long> 
     //on cherche l'état précédent de la machine
     @Query("SELECT e FROM EtatMachine e WHERE e.machine = :machine AND e.fin is not null ORDER BY e.fin DESC")
     List<EtatMachine> findPreviousEtatMachineByMachine(Machine machine);
+
+    @Query("SELECT e FROM EtatMachine e WHERE e.machine = :machine AND e.fin is not null")
+    List<EtatMachine> findAllEtatMachineFinisByMachine(@Param("machine") Machine machine);
+
     
     /*@Transactional
     @Modifying

@@ -1,9 +1,13 @@
 import { injectGlobalCss } from 'Frontend/generated/jar-resources/theme-util.js';
 
 import { css, unsafeCSS, registerStyles } from '@vaadin/vaadin-themable-mixin';
-import $cssFromFile_0 from 'Frontend/generated/jar-resources/vaadin-full-calendar/full-calendar-styles.css?inline';
+import $cssFromFile_0 from 'Frontend/generated/jar-resources/com/github/appreciated/apexcharts/apexcharts-wrapper-styles.css?inline';
+const $css_0 = typeof $cssFromFile_0  === 'string' ? unsafeCSS($cssFromFile_0) : $cssFromFile_0;
+registerStyles('', $css_0, {moduleId: 'apex-charts-style'});
+import $cssFromFile_1 from 'Frontend/generated/jar-resources/vaadin-full-calendar/full-calendar-styles.css?inline';
 
-injectGlobalCss($cssFromFile_0.toString(), 'CSSImport end', document);
+injectGlobalCss($cssFromFile_1.toString(), 'CSSImport end', document);
+import 'Frontend/generated/jar-resources/com/github/appreciated/apexcharts/apexcharts-wrapper.ts';
 import '@vaadin/common-frontend/ConnectionIndicator.js';
 import '@vaadin/polymer-legacy-adapter/style-modules.js';
 import '@vaadin/accordion/theme/lumo/vaadin-accordion.js';
@@ -15,8 +19,6 @@ import 'Frontend/generated/jar-resources/buttonFunctions.js';
 import '@vaadin/app-layout/theme/lumo/vaadin-drawer-toggle.js';
 import '@vaadin/avatar/theme/lumo/vaadin-avatar.js';
 import '@vaadin/avatar-group/theme/lumo/vaadin-avatar-group.js';
-import '@vaadin/board/theme/lumo/vaadin-board.js';
-import '@vaadin/board/theme/lumo/vaadin-board-row.js';
 import '@vaadin/checkbox/theme/lumo/vaadin-checkbox.js';
 import '@vaadin/checkbox-group/theme/lumo/vaadin-checkbox-group.js';
 import '@vaadin/combo-box/theme/lumo/vaadin-combo-box.js';

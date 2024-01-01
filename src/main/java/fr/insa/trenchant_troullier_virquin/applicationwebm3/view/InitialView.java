@@ -14,12 +14,9 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 @PageTitle("Intial | Appli TP Info")
 public class InitialView extends VerticalLayout {
     private final CrmService service;
-    private final BoardColumnSpan boardColumnSpan;
 
     public InitialView(CrmService service) {
         this.service = service;
-        this.boardColumnSpan = new BoardColumnSpan();
-        this.add(boardColumnSpan);
         this.add(new H3("intial"));
     }
 }
