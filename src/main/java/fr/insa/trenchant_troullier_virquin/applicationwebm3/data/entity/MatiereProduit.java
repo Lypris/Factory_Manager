@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 public class MatiereProduit extends AbstractEntity {
 
     //@NotNull
-    private float quantite;
+    private double quantite;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "id_produit")
@@ -23,11 +23,11 @@ public class MatiereProduit extends AbstractEntity {
     }
 
 
-    public float getQuantite() {
+    public double getQuantite() {
         return quantite;
     }
 
-    public void setQuantite(float quantite) {
+    public void setQuantite(double quantite) {
         this.quantite = quantite;
     }
 

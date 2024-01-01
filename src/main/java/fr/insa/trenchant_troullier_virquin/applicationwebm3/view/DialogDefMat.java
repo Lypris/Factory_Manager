@@ -193,7 +193,7 @@ public class DialogDefMat extends Dialog {
             MatiereProduit matiereProduit = new MatiereProduit();
             matiereProduit.setProduit(produit);
             matiereProduit.setMatPremiere(matPremiere);
-            float quantite = QuantMatPremiereMap.get(matPremiere).getValue().floatValue();
+            double quantite = QuantMatPremiereMap.get(matPremiere).getValue();
             matiereProduit.setQuantite(quantite);
             matiereProduitsList.add(matiereProduit);
         }
