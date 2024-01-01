@@ -107,6 +107,7 @@ public class DialogDefMat extends Dialog {
         configureFooter();
     }
 
+
     private  Grid<MatPremiere> setupGrid(String header, boolean addQuantColumn) {
         Grid<MatPremiere> grid = new Grid<>(MatPremiere.class);
         grid.removeAllColumns();
@@ -130,7 +131,10 @@ public class DialogDefMat extends Dialog {
 
     private  NumberField createQuantPeaker(Grid<MatPremiere> grid, MatPremiere item) {
         NumberField quantPicker = new NumberField();
-        if(item != null) {
+        if(item != null && QuantMatPremiereMap.containsKey(item)) {
+            quantPicker.setValue(QuantMatPremiereMap.get(item).getValue());
+        }
+        else if(item != null) {
             quantPicker.setValue(service.getQuantiteForProduit(produit, item));
         }
         quantPicker.setMin(0.0);
@@ -149,6 +153,7 @@ public class DialogDefMat extends Dialog {
     private void configureFooter() {
         Button saveButton = new Button("Enregistrer", e -> {
             save();
+            this.close();
             notifySaveListeners();
         });
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -197,7 +202,6 @@ public class DialogDefMat extends Dialog {
             produitDetails.refreshOperations();
         }
         notifySaveListeners();
-        this.close();
     }
 
     public void setProduit(Produit produit) {
