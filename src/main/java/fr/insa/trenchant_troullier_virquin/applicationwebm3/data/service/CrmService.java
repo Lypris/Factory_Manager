@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatiereProduit.*;
+
 @Service
 public class CrmService {
 
@@ -517,7 +519,11 @@ public class CrmService {
             System.err.println("MatiereProduit is null. Are you sure you have connected your form to the application?");
             return;
         }
-        matiereProduitRepository.save(matiereProduit);
+        if(matiereProduitRepository.findByProduitAndMatPremiere(matiereProduit.getProduit(), matiereProduit.getMatPremiere())==null){
+            matiereProduitRepository.save(matiereProduit);
+        }else{
+            matiereProduitRepository.updateQuantite(matiereProduit.getProduit(),matiereProduit.getMatPremiere(),matiereProduit.getQuantite());
+        }
     }
 
     public List<MatiereProduit> findMatiereProduitByProduit(Produit produit) {

@@ -12,6 +12,7 @@ import com.vaadin.flow.component.grid.dnd.GridDropLocation;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H6;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatPremiere;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatiereProduit;
@@ -19,7 +20,9 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 interface SaveListenerDefMat {
     void onSave();
@@ -33,6 +36,8 @@ public class DialogDefMat extends Dialog {
     private final ArrayList<MatPremiere> matpremieres = new ArrayList<>();
     private final GridListDataView<MatPremiere> dataView1 = grid1.setItems(matpremieres);
     private final List<SaveListenerDefMat> saveListenerDefMats = new ArrayList<>();
+    private static Map<MatPremiere, NumberField> QuantMatPremiereMap = new HashMap<>();
+
     public ArrayList<MatPremiere> matpremieresDefini = new ArrayList<>();
     private final GridListDataView<MatPremiere> dataView2 = grid2.setItems(matpremieresDefini);
     private MatPremiere draggedItem;
@@ -102,13 +107,13 @@ public class DialogDefMat extends Dialog {
         configureFooter();
     }
 
-    private static Grid<MatPremiere> setupGrid(String header, boolean addOrderColumn) {
+    private static Grid<MatPremiere> setupGrid(String header, boolean addQuantColumn) {
         Grid<MatPremiere> grid = new Grid<>(MatPremiere.class);
         grid.removeAllColumns();
 
-        if (addOrderColumn) {
-            grid.addComponentColumn(item -> createOrderLabel(grid, item))
-                    .setHeader("Ordre").setSortable(true).setAutoWidth(true);
+        if (addQuantColumn) {
+            grid.addComponentColumn(item -> createQuantPeaker(grid, item))
+                    .setHeader("Quantite").setSortable(true).setAutoWidth(true);
         }
 
         grid.addColumn(MatPremiere::getDes).setHeader(header);
@@ -123,14 +128,16 @@ public class DialogDefMat extends Dialog {
                 .set("align-self", "unset");
     }
 
-    private static Component createOrderLabel(Grid<MatPremiere> grid, MatPremiere item) {
-        ListDataProvider<MatPremiere> dataProvider = (ListDataProvider<MatPremiere>) grid.getDataProvider();
-        List<MatPremiere> items = new ArrayList<>(dataProvider.getItems());
+    private static NumberField createQuantPeaker(Grid<MatPremiere> grid, MatPremiere item) {
+        NumberField quantPicker = new NumberField();
 
-        int order = items.indexOf(item) + 1;
-        H6 label = new H6(String.valueOf(order));
-        label.getStyle().set("margin", "auto");
-        return label;
+        quantPicker.setValue(0.0);
+        quantPicker.setMin(0.0);
+        Div suffix = new Div();
+        suffix.setText("kg");
+        quantPicker.setSuffixComponent(suffix);
+        QuantMatPremiereMap.put(item, quantPicker);
+        return quantPicker;
     }
 
     private static void setContainerStyles(Div container) {
@@ -180,7 +187,8 @@ public class DialogDefMat extends Dialog {
             MatiereProduit matiereProduit = new MatiereProduit();
             matiereProduit.setProduit(produit);
             matiereProduit.setMatPremiere(matPremiere);
-            //TODO matiereProduit.setOrdre(matpremieresDefini.indexOf(matPremiere)+1);
+            float quantite = QuantMatPremiereMap.get(matPremiere).getValue().floatValue();
+            matiereProduit.setQuantite(quantite);
             operations.add(matiereProduit);
             service.saveMatiereProduit(matiereProduit);
         }
