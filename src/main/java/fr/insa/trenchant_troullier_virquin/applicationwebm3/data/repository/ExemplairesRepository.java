@@ -37,7 +37,10 @@ public interface ExemplairesRepository extends JpaRepository<Exemplaires, Long> 
 
     @Query("SELECT e FROM Exemplaires e WHERE e.commande = :commande AND e.produit = :produit")
     List<Exemplaires> findByCommandeAndProduit(Commande commande, Produit produit);
-
+    
+    @Query("SELECT e FROM Exemplaires e WHERE e.commande = :commande AND e.produit = :produit ORDER BY e.id LIMIT 1")
+    Exemplaires findONEByCommandeAndProduit(Commande commande, Produit produit);
+    
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM Exemplaires e WHERE e.commande = :commande")

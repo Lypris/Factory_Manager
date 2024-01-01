@@ -26,5 +26,5 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
     @Transactional
     @Modifying
     @Query("UPDATE Commande c SET c.statut = :statut WHERE c = :commande")
-    void setCommandeEnProduction(Commande commande, String statut);
+    void setStatutCommande(Commande commande, String statut);
 }

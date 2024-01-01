@@ -35,7 +35,8 @@ public class ProductionView extends VerticalLayout {
         addClassName("production-view");
         setSizeFull();
         configureGrid();
-        add(getContent());
+        H1 titre = new H1 ("Production");
+        add(titre, getContent());
         updateList();
     }
 

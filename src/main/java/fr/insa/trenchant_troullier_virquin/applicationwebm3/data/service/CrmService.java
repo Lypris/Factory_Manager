@@ -220,6 +220,10 @@ public class CrmService {
     public List<Machine> findAllMachineDisponiblesForTypeOperation(TypeOperation typeOperation) {
         return machineRepository.findAllMachineDisponiblesForTypeOperation(typeOperation);
     }
+    
+    public List<Machine> findAllMachineByCommandeAndProduit(Exemplaires exemplaire){
+        return machineRepository.findAllMachineByProduitAndCommande(exemplaire);
+    } 
 
     //////////////////////////// ETAT MACHINE ////////////////////////////
     public List<EtatMachine> findAllEtatMachines(String stringFilter) {
@@ -366,7 +370,7 @@ public class CrmService {
     }
 
     public void SetStatutCommande(Commande commande, String statut) {
-        commandeRepository.setCommandeEnProduction(commande, statut);
+        commandeRepository.setStatutCommande(commande, statut);
     }
 
 
@@ -639,6 +643,10 @@ public class CrmService {
 
     public void ExemplaireFini(int nbOpe, Exemplaires exemplaire) {
         exemplairesRepository.ExemplaireFini(nbOpe, exemplaire);
+    }
+    
+    public Exemplaires findONEByCommandeAndProduit(Commande commande, Produit produit){
+        return exemplairesRepository.findONEByCommandeAndProduit(commande, produit);
     }
 
     //////////////////////// POSTE DE TRAVAIL ////////////////////////////

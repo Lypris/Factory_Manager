@@ -1,7 +1,10 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository;
 
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Exemplaires;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.PosteDeTravail;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOperation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,4 +36,9 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
     @Query("SELECT m FROM Machine m " +
             "WHERE m.posteDeTravail = :posteDeTravail")
     List<Machine> findByPosteDeTravail(@Param("posteDeTravail") PosteDeTravail posteDeTravail);
+    
+    @Query("SELECT m FROM Machine m "
+            + "JOIN Operation_Effectuee opf ON opf.machine = m "
+            + "WHERE opf.exemplaire = :exemplaire")
+    List<Machine> findAllMachineByProduitAndCommande(Exemplaires exemplaire); 
 }

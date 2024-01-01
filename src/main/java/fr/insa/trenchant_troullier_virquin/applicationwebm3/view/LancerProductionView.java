@@ -61,6 +61,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         // Ajouter le bouton à la vue
         add(lancerProdCommande, entete);
         updateLancerProdCommande();
+        updateLancerProductionButtonState();
     }
 
     //Methode pour lancer la production d'un produit
@@ -70,12 +71,10 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         for (ComboBox<Machine> comboBox : machineComboBoxes) {
             Listmachines.add(comboBox.getValue());
         }
-        //Récupérer les opérations
-        List<Operation> Listoperations = gridEtapes.getDataProvider().fetch(new Query<>()).collect(Collectors.toList());
         //TODO: Vérifier qu'il y ait suffisamment de matière première
 
         //créer toutes les OperationEffectuee associées
-        CreerToutesOperationEffectuee(commandeId, produit, Listoperations, Listmachines);
+        CreerToutesOperationEffectuee(commandeId, produit, Listmachines);
         //Change l'etat des machine pour les mettre en production
         MettreMachinEnProduction(Listmachines);
         //Supprime le produit qui vient d'etre validé
@@ -229,7 +228,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         return machineComboBox;
     }
 
-    private void CreerToutesOperationEffectuee(Long commandeId, Produit prod, List<Operation> Listoperations, List<Machine> Listmachines) {
+    private void CreerToutesOperationEffectuee(Long commandeId, Produit prod, List<Machine> Listmachines) {
         //méthode qui récupère la commande avec l'ID
         Commande commande = service.findCommandeById(commandeId);
         //Methode qui récupère tous les exemplaires
@@ -238,7 +237,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         //Boucles qui crée tous les operation_effectuee nécessaire a la production
         for (Exemplaires e : ListExemplaires) {
             i = 0;
-            for (Operation o : Listoperations) {
+            for (Operation o : service.findOperationByProduit(prod)) {
                 //Verifie qu'il n'existe pas encore d'operation effectuee <-> production de produit pas lancée
                 //Si la prod du produit n'est pas lancée on crée tous les operation-effectuee
                 if (!service.OperationEffectueeExiste(e, o)) {

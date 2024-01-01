@@ -15,7 +15,9 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Exemplaires;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operation_Effectuee;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
@@ -45,6 +47,7 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
         this.ValidationButton.setEnabled(false);
         this.ValidationButton.addClickListener((t) -> {
             //Methdode Validation de la commande
+            TerminerCommande();
         });
         this.add(this.ValidationButton);
     }
@@ -124,7 +127,7 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
         ExemplaireField.setMax(Max);
         if (Max == 0) {
             ValiderExemplaire.setEnabled(false);
-            Notification.show("3");
+            MettreMachineDisponible(commande1, produit);
         } else {
             ValiderExemplaire.setEnabled(true);
         }
@@ -154,6 +157,21 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
             }
         }
         this.ValidationButton.setEnabled(tousProduitsFinis);
+    }
+
+    private void MettreMachineDisponible(Commande commande, Produit produit) {
+        List<Machine> ListMachine = this.service.findAllMachineByCommandeAndProduit(this.service.findONEByCommandeAndProduit(commande, produit));
+        for (Machine m : ListMachine){
+            //Recuper l'etat actuel et mettre l'heure de fin
+            service.SetFinByEtatMachine(LocalDateTime.now(), service.findLastEtatMachineByMachine(m));
+            //Creer un nouvel etat avec l'heure de début
+            service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatDisponible()));
+        }
+    }
+
+    private void TerminerCommande() {
+        this.service.SetStatutCommande(commande, "Terminée");
+        getUI().ifPresent(ui -> ui.navigate("production"));
     }
 
 
