@@ -56,6 +56,9 @@ public class StockView extends VerticalLayout {
         this.b_ProdFini.addClickListener((t) -> {
             this.ChangeToProduitFini();
         });
+        this.b_Ajouter_MatPre.addClickListener((t) -> {
+            this.AjouterMatPremiere();
+        });
         setSizeFull();
         this.add(this.Bandeau);
     }
@@ -120,6 +123,11 @@ public class StockView extends VerticalLayout {
             matPremiereForm.setVisible(true);
             addClassName("editing");
         }
+    }
+    
+    private void AjouterMatPremiere() {
+        gridMatPremiere.asSingleSelect().clear();
+        editMatPremiere(new MatPremiere());
     }
 
     private void closeEditor() {
