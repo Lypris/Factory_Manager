@@ -261,8 +261,6 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             //Creer un nouvel etat avec l'heure de début
             service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatEnMarche()));
         }
-
-
     }
 
     //Change le statut de la commande et reviens sur la page production avec le update
@@ -275,7 +273,6 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
 
     //Met à jour tous les boutons et combobox et aussi la vue si la commande est en production
     private void update() {
-        Notification.show("LA");
         updateProduitComboBox();
         updateLancerProductionButtonState();
         updateLancerProdCommande();

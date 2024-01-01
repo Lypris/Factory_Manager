@@ -1,5 +1,6 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service;
 
+import com.vaadin.flow.component.notification.Notification;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository.*;
 import org.springframework.stereotype.Service;
@@ -221,9 +222,9 @@ public class CrmService {
         return machineRepository.findAllMachineDisponiblesForTypeOperation(typeOperation);
     }
     
-    public List<Machine> findAllMachineByCommandeAndProduit(Exemplaires exemplaire){
-        return machineRepository.findAllMachineByProduitAndCommande(exemplaire);
-    } 
+    public List<Machine> findAllMachineByExemplaire(Exemplaires exemplaire){
+        return machineRepository.findAllMachineByExemplaire(exemplaire);
+    }
 
     //////////////////////////// ETAT MACHINE ////////////////////////////
     public List<EtatMachine> findAllEtatMachines(String stringFilter) {
@@ -358,14 +359,35 @@ public class CrmService {
     }
 
     public void deleteCommande(Commande commande) {
-        //supprimer les opérations effectuées associées aux exemplaires associés à la commande
         List<Exemplaires> exemplaires = exemplairesRepository.findByCommande(commande);
+        //si la commande est en cours, elle a des opérations effectuées et des machines occupées
+        if (commande.getStatut().equals("En cours")) {
+            Notification.show("La commande est en cours");
+            //passer les machines associées aux exemplaires de la commande en disponible
+            for (Exemplaires exemplaire : exemplaires) {
+                Notification.show("Exemplaire " + exemplaire.getId());
+                List<Machine> machines = findAllMachineByExemplaire(exemplaire);
+                for (Machine machine : machines) {
+                    Notification.show("Machine " + machine.getRef());
+                    EtatMachine etatMachine = findLastEtatMachineByMachine(machine);
+                    if (etatMachine.getEtat().getDes().equals("en marche")) {
+                        Notification.show("La machine " + machine.getRef() + " est en marche");
+                        //Recuper l'etat actuel et mettre l'heure de fin
+                        this.SetFinByEtatMachine(LocalDateTime.now(), etatMachine);
+                        //Creer un nouvel etat avec l'heure de début
+                        this.saveEtatMachine(new EtatMachine(LocalDateTime.now(), machine, this.findEtatDisponible()));
+                    }
+                }
+            }
+        }
+        //supprimer les opérations effectuées associées aux exemplaires associés à la commande
         for (Exemplaires exemplaire : exemplaires) {
             deleteAllOperationEffectueesByExemplaire(exemplaire);
         }
-
         deleteExemplairesByCommande(commande);//supprime les exemplaires associés à la commande
         deleteAllDefinitionByCommande(commande);//supprime les définitions de commande associées à la commande
+
+
         commandeRepository.delete(commande);
     }
 

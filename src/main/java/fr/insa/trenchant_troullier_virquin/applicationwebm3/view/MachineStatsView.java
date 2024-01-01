@@ -9,14 +9,17 @@ import com.github.appreciated.apexcharts.config.chart.Type;
 import com.github.appreciated.apexcharts.config.legend.Position;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatPossibleMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -28,13 +31,12 @@ public class MachineStatsView extends VerticalLayout {
     private ComboBox<Machine> machineComboBox;
     private ApexCharts chart;
     private List<EtatMachine> etatMachines = new ArrayList<>();
+    LinkedHashMap<String, Double> etatPourcentageMap = new LinkedHashMap<>();
 
     public MachineStatsView(CrmService service) {
         this.service = service;
-        this.setSizeFull();
-        setupMachineComboBox();
         HorizontalLayout firstRow = createFirstRow();
-
+        setupMachineComboBox();
         add(machineComboBox, firstRow);
     }
     private HorizontalLayout createFirstRow(){
@@ -46,13 +48,10 @@ public class MachineStatsView extends VerticalLayout {
         dataInfoLayout.setPadding(false);
         dataInfoLayout.setWidth("1100px");
 */
-        ApexCharts machinePieChart = createVendorPieChart();
-        machinePieChart.setId("chart-section");
-        machinePieChart.setWidthFull();
-
-
-        firstRow.add(machinePieChart);
-
+        chart = createVendorPieChart();
+        chart.setId("chart-section");
+        chart.setWidthFull();
+        firstRow.add(chart);
         return firstRow;
     }
 
@@ -64,64 +63,77 @@ public class MachineStatsView extends VerticalLayout {
             Machine selectedMachine = machineComboBox.getValue();
             if(selectedMachine != null){
                 this.etatMachines = service.findAllEtatMachineFinisByMachine(selectedMachine);
+                Notification.show("Nombre d'états: " + etatMachines.size());
+                updateChart(); // Mise à jour du graphique au lieu de le recréer
             }
         });
     }
     private void updateChart() {
+        // Calculer les nouveaux pourcentages
+        etatPourcentageMap.put("disponible", calculateEtatPourcentage("disponible"));
+        etatPourcentageMap.put("en panne", calculateEtatPourcentage("en panne"));
+        etatPourcentageMap.put("en marche", calculateEtatPourcentage("en marche"));
 
-
-        // crée un LinkedHashMap with key = description de l'état and value = pourcentage de cet état
-        LinkedHashMap<String, Double> etatPourcentageMap = new LinkedHashMap<>();
-        etatPourcentageMap.put("Disponible", 30.0);
-        etatPourcentageMap.put("En panne", 30.0);
-        etatPourcentageMap.put("En marche", 40.0);
-
+        // Mettre à jour les données du graphique
         String[] etatDescriptions = etatPourcentageMap.keySet().toArray(new String[0]);
         Double [] etatPercentage = etatPourcentageMap.values().toArray(new Double[0]);
 
         chart.updateSeries(new Series<>(etatPercentage));
-    }
-    private long getDurationInMinutes(LocalDateTime start, LocalDateTime end) {
-        return java.time.Duration.between(start, end).toMinutes();
-    }
-/*
-    private Map<String, Long> calculateEtatDurations(List<EtatMachine> etatMachines) {
-        Map<String, Long> etatDurations = new HashMap<>();
-        // Logique pour calculer la durée de chaque état
-        for (EtatMachine etatMachine : etatMachines) {
-            String etat = etatMachine.getEtat().getDes();
-            if (etatDurations.containsKey(etat)) {
-                long duration = etatDurations.get(etat);
-                duration += getDurationInMinutes(etatMachine.getDebut(), etatMachine.getFin());
-                etatDurations.put(etat, duration);
-            } else {
-                etatDurations.put(etat, getDurationInMinutes(etatMachine.getDebut(), etatMachine.getFin()));
-            }
-        }
-        return etatDurations;
+        chart.setLabels(etatDescriptions);
+        // Tu peux aussi avoir besoin d'appeler une méthode pour rafraîchir le graphique ici
     }
 
- */
+    private Double getDurationInMinutes(LocalDateTime start, LocalDateTime end) {
+        if (start == null || end == null) {
+            return 0.0; // Retourne 0 si l'une des dates est null
+        }
+        Duration duration = Duration.between(start, end);
+        return (double) duration.toMinutes(); // Convertit la durée en minutes et la retourne en tant que Double
+    }
+
+    //méthode qui calcul le pourcentage de temps passé dans un état donné
+    private Double calculateEtatPourcentage(String des) {
+        Double duration = calculateEtatDurations(des);
+        Double totalDuration = calculateEtatDurations("disponible") + calculateEtatDurations("en panne") + calculateEtatDurations("en marche");
+        duration =duration / totalDuration * 100;
+//à supprimer
+        Notification.show("Etat"+ des +" : " + duration.shortValue() + "%");
+        return duration;
+    }
+
+    // Modifie la méthode de comparaison des chaînes
+    private Double calculateEtatDurations(String des) {
+        Double duration = 0.0;
+        for (EtatMachine etatMachine : etatMachines) {
+            if (etatMachine.getEtat().getDes().equals(des)) { // Utilise equals au lieu de ==
+                LocalDateTime debut = etatMachine.getDebut();
+                LocalDateTime fin = etatMachine.getFin();
+                if (fin != null) {
+                    duration += getDurationInMinutes(debut, fin);
+                } else {
+                    duration += getDurationInMinutes(debut, LocalDateTime.now());
+                }
+            }
+        }
+        return duration;
+    }
+
     private ApexCharts createVendorPieChart() {
-        // crée un LinkedHashMap with key = description de l'état and value = pourcentage de cet état
-        LinkedHashMap<String, Double> etatPourcentageMap = new LinkedHashMap<>();
-        etatPourcentageMap.put("Disponible", 30.0);
-        etatPourcentageMap.put("En panne", 30.0);
-        etatPourcentageMap.put("En marche", 40.0);
+        // Initialisation avec les valeurs par défaut
+        etatPourcentageMap.put("disponible", 0.0);
+        etatPourcentageMap.put("en panne", 0.0);
+        etatPourcentageMap.put("en marche", 0.0);
 
         String[] etatDescriptions = etatPourcentageMap.keySet().toArray(new String[0]);
         Double [] etatPercentage = etatPourcentageMap.values().toArray(new Double[0]);
 
-        // Configuration de base du graphique
-        ApexCharts chart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.PIE).build())
+        chart = ApexChartsBuilder.get().withChart(ChartBuilder.get().withType(Type.PIE).build())
                 .withTitle(TitleSubtitleBuilder.get().withText("Répartition des états de la machine").build())
                 .withSeries(etatPercentage)
                 .withLabels(etatDescriptions)
                 .withLegend(LegendBuilder.get().withPosition(Position.RIGHT).build())
                 // Ajouter d'autres configurations comme les titres, les couleurs, etc.
                 .build();
-
-        //updateChart(); // Mettre à jour le graphique avec les données initiales
         return chart;
     }
 

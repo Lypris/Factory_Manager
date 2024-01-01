@@ -40,5 +40,5 @@ public interface MachineRepository extends JpaRepository<Machine, Long> {
     @Query("SELECT m FROM Machine m "
             + "JOIN Operation_Effectuee opf ON opf.machine = m "
             + "WHERE opf.exemplaire = :exemplaire")
-    List<Machine> findAllMachineByProduitAndCommande(Exemplaires exemplaire); 
+    List<Machine> findAllMachineByExemplaire(Exemplaires exemplaire);
 }

@@ -51,9 +51,9 @@ public class MachineForm extends FormLayout {
     }
 
     public void setMachine(Machine machine) {
-
         binder.setBean(machine);
         if (machine != null) {
+            delete.setEnabled(machine.getId() != null);
             // Récupérer le type d'opération de la machine et le sélectionner dans le ComboBox
             TypeOperation typeOperation = machine.getTypeOperation();
             if (typeOperation != null) {
@@ -65,16 +65,18 @@ public class MachineForm extends FormLayout {
                 // Déterminer les états possibles suivants en fonction de l'état actuel
                 if (currentEtatMachine != null) {
                     EtatPossibleMachine etatActuel = currentEtatMachine.getEtat();
-                    if ("en marche".equals(etatActuel.getDes())) {
+                    if ("en marche".equals(etatActuel.getDes())) { // Si la machine est en marche, on peut la mettre en panne
                         etatComboBox.setItems(service.findEtatPossibleByDes("en panne"));
+                        delete.setEnabled(false); // On ne peut pas supprimer une machine en marche
                     } else if ("disponible".equals(etatActuel.getDes())) {
-                        etatComboBox.setItems(service.findEtatPossibleByDes("en panne"));
+                        etatComboBox.setItems(service.findEtatPossibleByDes("en panne")); // On peut mettre la machine en panne
                     } else if ("en panne".equals(etatActuel.getDes())) {
                         // Si la machine est en panne, on peut la remettre en marche si elle était en marche avant
                         //on récupère l'état précédent
                         EtatMachine previousEtatMachine = service.findMostRecentEtatMachineByMachine(machine);
-                        if (previousEtatMachine.getEtat().getDes().equals("en marche")) {
+                        if (previousEtatMachine.getEtat().getDes().equals("en marche")) { // Si la machine était en marche avant
                             etatComboBox.setItems(service.findEtatPossibleByDes("en marche"));
+                            delete.setEnabled(false); // On ne peut pas supprimer une machine en marche
                         } else {
                             etatComboBox.setItems(service.findEtatPossibleByDes("disponible"));
                         }
