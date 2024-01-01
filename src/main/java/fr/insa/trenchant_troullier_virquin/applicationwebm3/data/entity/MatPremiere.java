@@ -17,6 +17,8 @@ public class MatPremiere extends AbstractEntity {
 
     @NotEmpty
     private String des = "";
+    
+    private double quantite;
 
 
     @Override
@@ -41,5 +43,13 @@ public class MatPremiere extends AbstractEntity {
 
     public void setDes(String des) {
         this.des = des;
+    }
+
+    public double getQuantite() {
+        return quantite;
+    }
+
+    public void setQuantite(double quantite) {
+        this.quantite = quantite;
     }
 }

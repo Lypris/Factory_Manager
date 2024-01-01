@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.shared.Registration;
@@ -23,6 +24,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 public class MatPremiereForm extends FormLayout {
     TextField ref = new TextField("Référence");
     TextField des = new TextField("Description");
+    NumberField quantite = new NumberField("Quantité");
 
     Button save = new Button("Enregistrer");
 
@@ -38,8 +40,9 @@ public class MatPremiereForm extends FormLayout {
         addClassName("MatPremiere-form");
 
         add(ref,
-                des,
-                createButtonsLayout());
+            des,
+            quantite,
+            createButtonsLayout());
     }
 
     private Component createButtonsLayout() {

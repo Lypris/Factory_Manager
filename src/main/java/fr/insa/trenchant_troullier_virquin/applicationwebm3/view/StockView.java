@@ -88,11 +88,10 @@ public class StockView extends VerticalLayout {
     private void configureGridMatPremiere() {
         this.gridMatPremiere.addClassName("matpremiere-grid");
         this.gridMatPremiere.setSizeFull();
-        this.gridMatPremiere.removeColumnByKey("id");
-        this.gridMatPremiere.removeColumnByKey("ref");
-        this.gridMatPremiere.removeColumnByKey("des");
+        this.gridMatPremiere.removeAllColumns();
         this.gridMatPremiere.addColumn(MatPremiere::getRef).setHeader("Référence");
         this.gridMatPremiere.addColumn(MatPremiere::getDes).setHeader("Description");
+        this.gridMatPremiere.addColumn(MatPremiere::getQuantite).setHeader("Quantité (kg)");
         this.gridMatPremiere.getColumns().forEach(col -> col.setAutoWidth(true));
         this.gridMatPremiere.asSingleSelect().addValueChangeListener(event -> editMatPremiere(event.getValue()));
     }
