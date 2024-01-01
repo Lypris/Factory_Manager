@@ -514,7 +514,7 @@ public class CrmService {
     }
 
     //////////////////////// MATIEREPRODUIT ////////////////////////////
-    public void saveMatiereProduit(MatiereProduit matiereProduit) {
+    /*public void saveMatiereProduit(MatiereProduit matiereProduit) {
         if (matiereProduit == null) {
             System.err.println("MatiereProduit is null. Are you sure you have connected your form to the application?");
             return;
@@ -524,6 +524,26 @@ public class CrmService {
         }else{
             matiereProduitRepository.updateQuantite(matiereProduit.getProduit(),matiereProduit.getMatPremiere(),matiereProduit.getQuantite());
         }
+    }*/
+    public void saveAllMatiereProduit(List<MatiereProduit> matiereProduitsList) {
+        if (matiereProduitsList == null) {
+            System.err.println("MatiereProduit is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        List<MatiereProduit> matiereProduitsList2 = new ArrayList<>();
+        matiereProduitsList2 = matiereProduitRepository.findByProduit(matiereProduitsList.get(0).getProduit().getId());
+        for(MatiereProduit matiereProduit : matiereProduitsList2){
+            matiereProduitRepository.delete(matiereProduit);
+        }
+        matiereProduitRepository.saveAll(matiereProduitsList);
+    }
+    public double getQuantiteForProduit(Produit produit, MatPremiere matPremiere){
+         MatiereProduit mp = matiereProduitRepository.findByProduitAndMatPremiere(produit, matPremiere);
+            if(mp!=null) {
+                return mp.getQuantite();
+            }else{
+                return 0;
+            }
     }
 
     public List<MatiereProduit> findMatiereProduitByProduit(Produit produit) {

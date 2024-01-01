@@ -107,7 +107,7 @@ public class DialogDefMat extends Dialog {
         configureFooter();
     }
 
-    private static Grid<MatPremiere> setupGrid(String header, boolean addQuantColumn) {
+    private  Grid<MatPremiere> setupGrid(String header, boolean addQuantColumn) {
         Grid<MatPremiere> grid = new Grid<>(MatPremiere.class);
         grid.removeAllColumns();
 
@@ -128,10 +128,11 @@ public class DialogDefMat extends Dialog {
                 .set("align-self", "unset");
     }
 
-    private static NumberField createQuantPeaker(Grid<MatPremiere> grid, MatPremiere item) {
+    private  NumberField createQuantPeaker(Grid<MatPremiere> grid, MatPremiere item) {
         NumberField quantPicker = new NumberField();
-
-        quantPicker.setValue(0.0);
+        if(item != null) {
+            quantPicker.setValue(service.getQuantiteForProduit(produit, item));
+        }
         quantPicker.setMin(0.0);
         Div suffix = new Div();
         suffix.setText("kg");
@@ -182,16 +183,16 @@ public class DialogDefMat extends Dialog {
     private void save() {
         //TODO : Enregistrer les Matiere définies pour un produit
         service.deleteAllOperationForProduit(produit);
-        List<MatiereProduit> operations = new ArrayList<>();
+        List<MatiereProduit> matiereProduitsList = new ArrayList<>();
         for (MatPremiere matPremiere : matpremieresDefini) {
             MatiereProduit matiereProduit = new MatiereProduit();
             matiereProduit.setProduit(produit);
             matiereProduit.setMatPremiere(matPremiere);
             float quantite = QuantMatPremiereMap.get(matPremiere).getValue().floatValue();
             matiereProduit.setQuantite(quantite);
-            operations.add(matiereProduit);
-            service.saveMatiereProduit(matiereProduit);
+            matiereProduitsList.add(matiereProduit);
         }
+        service.saveAllMatiereProduit(matiereProduitsList);
         if (produitDetails != null) {
             produitDetails.refreshOperations();
         }

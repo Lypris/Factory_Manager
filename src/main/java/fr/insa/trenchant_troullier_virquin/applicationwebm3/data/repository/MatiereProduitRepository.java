@@ -20,4 +20,10 @@ public interface MatiereProduitRepository extends JpaRepository<MatiereProduit, 
     @Modifying
     @Query("update MatiereProduit mp set mp.quantite = :quantite where mp.produit = :produit and mp.matPremiere = :matPremiere")
     void updateQuantite(@Param("produit") Produit produit, @Param("matPremiere") MatPremiere matPremiere, @Param("quantite") double quantite);
+
+    @Transactional
+    @Modifying
+    @Query("delete from MatiereProduit mp where mp.produit = :produit")
+    void deleteByProduit(@Param("produit") Produit produit);
+
 }
