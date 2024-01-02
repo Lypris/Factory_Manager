@@ -35,6 +35,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     private ComboBox<Produit> produitComboBox;
     private Grid<Operation> gridEtapes;
     private Long commandeId;
+    private Commande commande;
     private List<Produit> ListProduitCommande = new ArrayList<>();
 
     public LancerProductionView(CrmService service) {
@@ -73,18 +74,24 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         for (ComboBox<Machine> comboBox : machineComboBoxes) {
             Listmachines.add(comboBox.getValue());
         }
-        //TODO: Vérifier qu'il y ait suffisamment de matière première
-
-        //créer toutes les OperationEffectuee associées
-        CreerToutesOperationEffectuee(commandeId, produit, Listmachines);
-        //Change l'etat des machine pour les mettre en production
-        MettreMachinEnProduction(Listmachines);
-        //Supprime le produit qui vient d'etre validé
-        this.ListProduitCommande.remove(produit);
-        //Met à jour l'interface
-        update();
-        // Afficher une notification
-        Notification.show("Production lancée");
+        //Vérifier qu'il y ait suffisamment de matière première
+        if (AssezMatPremiere(produit, this.commande)){
+            
+            //créer toutes les OperationEffectuee associées
+            CreerToutesOperationEffectuee(commandeId, produit, Listmachines);
+            //Change l'etat des machine pour les mettre en production
+            MettreMachinEnProduction(Listmachines);
+            //Met a jour le stock de matiere premiere
+            MiseAJourMatierePremiere(produit, commande);
+            //Supprime le produit qui vient d'etre validé
+            this.ListProduitCommande.remove(produit);
+            //Met à jour l'interface
+            update();
+            // Afficher une notification
+            Notification.show("Production lancée");   
+        }else{
+            Notification.show("PAS ASSEZ DE MATIERE");
+        }
     }
 
     //Cette méthode est appelée avant que la vue ne soit affichée afin de récupérer l'ID de la commande
@@ -99,7 +106,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
                 setupProduitComboBox(commande);
                 updateProduitEnProd();
                 this.lancerProductionButton.setEnabled(false);
-                // ... et ainsi de suite
+                this.commande = service.findCommandeById(commandeId);
             } else {
                 // Gérer le cas où la commande n'existe pas
                 event.rerouteTo(InitialView.class);
@@ -237,6 +244,8 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         //Boucles qui crée tous les operation_effectuee nécessaire a la production
         for (Exemplaires e : ListExemplaires) {
             i = 0;
+            /*e.setEtape(0);
+            service.saveExemplaire(e);*/
             for (Operation o : service.findOperationByProduit(prod)) {
                 //Verifie qu'il n'existe pas encore d'operation effectuee <-> production de produit pas lancée
                 //Si la prod du produit n'est pas lancée on crée tous les operation-effectuee
@@ -277,6 +286,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         updateLancerProductionButtonState();
         updateLancerProdCommande();
         updateLabel();
+        this.label.setText("");
         Commande commande = service.findCommandeById(this.commandeId);
         if (commande.getStatut().equals("En cours")) {
             getUI().ifPresent(ui -> ui.navigate("production"));
@@ -289,6 +299,33 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             this.label.setText("Tous les produits sont en production");
         } else {
             this.label.setText(" ");
+        }
+    }
+    
+    private boolean AssezMatPremiere(Produit produit, Commande commande) {
+        List<MatPremiere> ListMat = service.findAllMatPremiereForProduit(produit);
+        int nbExemplaires = service.countExemplairesByCommandeAndProduit(commande, produit);
+        for (MatPremiere m : ListMat){
+            List<MatiereProduit> ListMatPro = service.findMatProByProduitAndMatiere(produit, m);
+            for(MatiereProduit mp :ListMatPro){
+                if (m.getQuantite() < mp.getQuantite()*nbExemplaires){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    private void MiseAJourMatierePremiere(Produit produit, Commande commande){
+        List<MatPremiere> ListMat = service.findAllMatPremiereForProduit(produit);
+        int nbExemplaires = service.countExemplairesByCommandeAndProduit(commande, produit);
+        for (MatPremiere m : ListMat){
+            List<MatiereProduit> ListMatPro = service.findMatProByProduitAndMatiere(produit, m);
+            for(MatiereProduit mp :ListMatPro){
+                double q = m.getQuantite();
+                m.setQuantite(q-mp.getQuantite()*nbExemplaires);
+                service.saveMatPremiere(m);
+            }
         }
     }
 

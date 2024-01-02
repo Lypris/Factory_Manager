@@ -342,6 +342,10 @@ public class CrmService {
     public ArrayList findAllProduitByCommande(Commande commande) {
         return (ArrayList) produitRepository.findByCommande(commande);
     }
+    
+    public Produit findProduitByID(long ID){
+        return produitRepository.findProduitByID(ID);
+    }
 
     //////////////////////////// Commmande ////////////////////////////
     public List<Commande> findAllCommande(String stringFilter) {
@@ -419,6 +423,10 @@ public class CrmService {
 
     public List<Commande> findAllCommandeEnCours() {
         return commandeRepository.findAllCommandeEnCours();
+    }
+    
+    public void setFinCommande(Commande commande, LocalDateTime now) {
+        commandeRepository.setFinCommande(commande, now);
     }
 
     //////////////////////////Definition Commande ////////////////////////////
@@ -513,6 +521,7 @@ public class CrmService {
         matPremiereRepository.delete(matPremiere);
     }
 
+    
     //////////////////////// MATIEREPRODUIT ////////////////////////////
     /*public void saveMatiereProduit(MatiereProduit matiereProduit) {
         if (matiereProduit == null) {
@@ -550,6 +559,10 @@ public class CrmService {
         if (produit != null) {
             return matiereProduitRepository.findByProduit(produit.getId());
         } else return null;
+    }
+    
+    public List<MatiereProduit> findMatProByProduitAndMatiere(Produit produit, MatPremiere matPre){
+        return matiereProduitRepository.findByProduitAndMatiere(produit, matPre);
     }
 
     //////////////////////// OPERATION ////////////////////////////
@@ -636,7 +649,14 @@ public class CrmService {
     }
 
     public List<Exemplaires> findAllProdEnCours() {
-        return exemplairesRepository.findAllProdEnCours();
+        List<Exemplaires> exemplaires = exemplairesRepository.findAll();
+        List<Exemplaires> exemplairesEnCours = new ArrayList<>();
+        for (Exemplaires exemplaire : exemplaires) {
+            if (operation_EffectueeRepository.findByExemplaire(exemplaire).get(0).getFin() == null) {
+                exemplairesEnCours.add(exemplaire);
+            }
+        }
+        return exemplairesEnCours;
     }
 
     public void deleteExemplairesByCommande(Commande commande) {
@@ -696,7 +716,7 @@ public class CrmService {
     public Exemplaires findONEByCommandeAndProduit(Commande commande, Produit produit){
         return exemplairesRepository.findONEByCommandeAndProduit(commande, produit);
     }
-
+    
     //////////////////////// POSTE DE TRAVAIL ////////////////////////////
     public List<PosteDeTravail> findAllPosteDeTravail(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
@@ -741,6 +761,4 @@ public class CrmService {
         }
         habilitationRepository.save(habilitation);
     }
-
-
 }

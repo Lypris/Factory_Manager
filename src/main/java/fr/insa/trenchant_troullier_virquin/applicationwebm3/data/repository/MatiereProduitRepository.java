@@ -25,5 +25,8 @@ public interface MatiereProduitRepository extends JpaRepository<MatiereProduit, 
     @Modifying
     @Query("delete from MatiereProduit mp where mp.produit = :produit")
     void deleteByProduit(@Param("produit") Produit produit);
-
+    
+    @Query("SELECT mp FROM MatiereProduit mp WHERE mp.produit = :produit AND mp.matPremiere = :matPre")
+    List<MatiereProduit> findByProduitAndMatiere(Produit produit, MatPremiere matPre);
+ 
 }

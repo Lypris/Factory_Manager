@@ -19,4 +19,7 @@ public interface ProduitRepository extends JpaRepository<Produit, Long> {
             "JOIN Commande c ON c.id = d.commande.id " +
             "WHERE c = :commande")
     List<Produit> findByCommande(Commande commande);
+    
+    @Query("SELECT p FROM Produit p WHERE p.id = :ID")
+    Produit findProduitByID(long ID);
 }

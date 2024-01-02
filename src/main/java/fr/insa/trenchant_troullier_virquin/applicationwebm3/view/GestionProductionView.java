@@ -171,16 +171,19 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
     private void MettreMachineDisponible(Commande commande, Produit produit) {
         List<Machine> ListMachine = this.service.findAllMachineByExemplaire(this.service.findONEByCommandeAndProduit(commande, produit));
         for (Machine m : ListMachine){
-            //Recuper l'etat actuel et mettre l'heure de fin
-            service.SetFinByEtatMachine(LocalDateTime.now(), service.findLastEtatMachineByMachine(m));
-            //Creer un nouvel etat avec l'heure de début
-            service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatDisponible()));
+            if (service.findLastEtatMachineByMachine(m).getEtat().getDes().equals("en marche")){
+                //Recuper l'etat actuel et mettre l'heure de fin
+                service.SetFinByEtatMachine(LocalDateTime.now(), service.findLastEtatMachineByMachine(m));
+                //Creer un nouvel etat avec l'heure de début
+                service.saveEtatMachine(new EtatMachine(LocalDateTime.now(), m, service.findEtatDisponible()));  
+            }
         }
     }
 
     //Methode pour finaliser la commande et changer sont statut
     private void TerminerCommande() {
         this.service.SetStatutCommande(commande, "Terminée");
+        this.service.setFinCommande(commande, LocalDateTime.now());
         getUI().ifPresent(ui -> ui.navigate("production"));
     }
 
