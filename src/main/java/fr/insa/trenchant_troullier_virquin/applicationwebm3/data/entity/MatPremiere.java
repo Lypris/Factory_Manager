@@ -20,7 +20,6 @@ public class MatPremiere extends AbstractEntity {
     
     private double quantite;
 
-
     @Override
     public String toString() {
         return "Produit{" +

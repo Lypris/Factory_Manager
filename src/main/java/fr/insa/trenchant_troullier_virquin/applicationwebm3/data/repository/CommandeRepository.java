@@ -2,6 +2,7 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.repository;
 
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,9 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
     @Modifying
     @Query("UPDATE Commande c SET c.statut = :statut WHERE c = :commande")
     void setStatutCommande(Commande commande, String statut);
+    
+    @Transactional
+    @Modifying
+    @Query("UPDATE Commande c SET c.fin = :now WHERE c = :commande")
+    public void setFinCommande(Commande commande, LocalDateTime now);
 }

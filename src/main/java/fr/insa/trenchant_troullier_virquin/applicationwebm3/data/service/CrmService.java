@@ -342,6 +342,10 @@ public class CrmService {
     public ArrayList findAllProduitByCommande(Commande commande) {
         return (ArrayList) produitRepository.findByCommande(commande);
     }
+    
+    public Produit findProduitByID(long ID){
+        return produitRepository.findProduitByID(ID);
+    }
 
     //////////////////////////// Commmande ////////////////////////////
     public List<Commande> findAllCommande(String stringFilter) {
@@ -419,6 +423,10 @@ public class CrmService {
 
     public List<Commande> findAllCommandeEnCours() {
         return commandeRepository.findAllCommandeEnCours();
+    }
+    
+    public void setFinCommande(Commande commande, LocalDateTime now) {
+        commandeRepository.setFinCommande(commande, now);
     }
 
     //////////////////////////Definition Commande ////////////////////////////
@@ -513,8 +521,9 @@ public class CrmService {
         matPremiereRepository.delete(matPremiere);
     }
 
+    
     //////////////////////// MATIEREPRODUIT ////////////////////////////
-    public void saveMatiereProduit(MatiereProduit matiereProduit) {
+    /*public void saveMatiereProduit(MatiereProduit matiereProduit) {
         if (matiereProduit == null) {
             System.err.println("MatiereProduit is null. Are you sure you have connected your form to the application?");
             return;
@@ -524,12 +533,36 @@ public class CrmService {
         }else{
             matiereProduitRepository.updateQuantite(matiereProduit.getProduit(),matiereProduit.getMatPremiere(),matiereProduit.getQuantite());
         }
+    }*/
+    public void saveAllMatiereProduit(List<MatiereProduit> matiereProduitsList) {
+        if (matiereProduitsList == null) {
+            System.err.println("MatiereProduit is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        List<MatiereProduit> matiereProduitsList2 = new ArrayList<>();
+        matiereProduitsList2 = matiereProduitRepository.findByProduit(matiereProduitsList.get(0).getProduit().getId());
+        for(MatiereProduit matiereProduit : matiereProduitsList2){
+            matiereProduitRepository.delete(matiereProduit);
+        }
+        matiereProduitRepository.saveAll(matiereProduitsList);
+    }
+    public double getQuantiteForProduit(Produit produit, MatPremiere matPremiere){
+         MatiereProduit mp = matiereProduitRepository.findByProduitAndMatPremiere(produit, matPremiere);
+            if(mp!=null) {
+                return mp.getQuantite();
+            }else{
+                return 0;
+            }
     }
 
     public List<MatiereProduit> findMatiereProduitByProduit(Produit produit) {
         if (produit != null) {
             return matiereProduitRepository.findByProduit(produit.getId());
         } else return null;
+    }
+    
+    public List<MatiereProduit> findMatProByProduitAndMatiere(Produit produit, MatPremiere matPre){
+        return matiereProduitRepository.findByProduitAndMatiere(produit, matPre);
     }
 
     //////////////////////// OPERATION ////////////////////////////
@@ -616,7 +649,14 @@ public class CrmService {
     }
 
     public List<Exemplaires> findAllProdEnCours() {
-        return exemplairesRepository.findAllProdEnCours();
+        List<Exemplaires> exemplaires = exemplairesRepository.findAll();
+        List<Exemplaires> exemplairesEnCours = new ArrayList<>();
+        for (Exemplaires exemplaire : exemplaires) {
+            if (operation_EffectueeRepository.findByExemplaire(exemplaire).get(0).getFin() == null) {
+                exemplairesEnCours.add(exemplaire);
+            }
+        }
+        return exemplairesEnCours;
     }
 
     public void deleteExemplairesByCommande(Commande commande) {
@@ -676,7 +716,7 @@ public class CrmService {
     public Exemplaires findONEByCommandeAndProduit(Commande commande, Produit produit){
         return exemplairesRepository.findONEByCommandeAndProduit(commande, produit);
     }
-
+    
     //////////////////////// POSTE DE TRAVAIL ////////////////////////////
     public List<PosteDeTravail> findAllPosteDeTravail(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {
@@ -721,6 +761,4 @@ public class CrmService {
         }
         habilitationRepository.save(habilitation);
     }
-
-
 }
