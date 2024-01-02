@@ -9,7 +9,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -19,7 +18,6 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Route(value = "lancerproduction/:commandeID", layout = MainLayout.class)
 public class LancerProductionView extends VerticalLayout implements BeforeEnterObserver {
@@ -102,11 +100,11 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
                 // ... et ainsi de suite
             } else {
                 // Gérer le cas où la commande n'existe pas
-                event.rerouteTo(InitialView.class);
+                event.rerouteTo(DashboardView.class);
             }
         } else {
             // Gérer le cas où l'ID de la commande n'est pas fourni ou est invalide
-            event.rerouteTo(InitialView.class);
+            event.rerouteTo(DashboardView.class);
         }
     }
 

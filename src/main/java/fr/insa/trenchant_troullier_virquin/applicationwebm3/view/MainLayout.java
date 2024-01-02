@@ -55,7 +55,7 @@ public class MainLayout extends AppLayout {
 
     private void createDrawer() {
         Tabs tabs = new Tabs(
-                createTab(VaadinIcon.HOME, "Retour à la vue principale", InitialView.class),
+                createTab(VaadinIcon.HOME, "Retour à la vue principale", DashboardView.class),
                 createTab(VaadinIcon.USERS, "Employés", OperatorView.class),
                 //createTab(VaadinIcon.CALENDAR_USER, "Etat des Employés", StatutView.class),
                 createTab(VaadinIcon.COGS, "Machines", MachineView.class),
@@ -64,11 +64,13 @@ public class MainLayout extends AppLayout {
                 createTab(VaadinIcon.CLIPBOARD, "Commandes", CommandView.class),
                 createTab(VaadinIcon.STOCK, "Stock", StockView.class),
                 createTab(VaadinIcon.FACTORY, "Production", ProductionView.class),
-                createTab(VaadinIcon.BAR_CHART, "Statistiques", InitialView.class)
+                createTab(VaadinIcon.BAR_CHART, "Statistiques", DashboardView.class)
 
 
         );
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
+        tabs.setFlexGrowForEnclosedTabs(1);
+        // Ajoute les onglets au tiroir (drawer)
         addToDrawer(tabs);
     }
 

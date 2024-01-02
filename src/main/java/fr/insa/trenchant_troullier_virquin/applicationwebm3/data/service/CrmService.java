@@ -356,7 +356,7 @@ public class CrmService {
         return commandeRepository.findById(id).get();
     }
 
-    public long countCommande() {
+    public long countCommandes() {
         return commandeRepository.count();
     }
 

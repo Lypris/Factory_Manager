@@ -6,7 +6,6 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -70,11 +69,11 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
                 updateListProduit();
             } else {
                 // Gérer le cas où la commande n'existe pas
-                event.rerouteTo(InitialView.class);
+                event.rerouteTo(DashboardView.class);
             }
         } else {
             // Gérer le cas où l'ID de la commande n'est pas fourni ou est invalide
-            event.rerouteTo(InitialView.class);
+            event.rerouteTo(DashboardView.class);
         }
     }
     

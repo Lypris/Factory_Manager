@@ -8,6 +8,7 @@ import com.github.appreciated.apexcharts.config.builder.TitleSubtitleBuilder;
 import com.github.appreciated.apexcharts.config.chart.Type;
 import com.github.appreciated.apexcharts.config.legend.Position;
 import com.github.appreciated.apexcharts.helper.Series;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -35,6 +36,7 @@ public class MachineStatsView extends VerticalLayout {
 
     public MachineStatsView(CrmService service) {
         this.service = service;
+        this.setSizeFull();
         HorizontalLayout firstRow = createFirstRow();
         setupMachineComboBox();
         add(machineComboBox, firstRow);
@@ -42,17 +44,31 @@ public class MachineStatsView extends VerticalLayout {
     private HorizontalLayout createFirstRow(){
         HorizontalLayout firstRow = new HorizontalLayout();
         firstRow.setSizeFull();
-/*
+
         VerticalLayout dataInfoLayout = createDataInfoLayout();
         dataInfoLayout.setMargin(false);
         dataInfoLayout.setPadding(false);
         dataInfoLayout.setWidth("1100px");
-*/
+
         chart = createVendorPieChart();
         chart.setId("chart-section");
         chart.setWidthFull();
-        firstRow.add(chart);
+        firstRow.add(dataInfoLayout, chart);
         return firstRow;
+    }
+
+    private VerticalLayout createDataInfoLayout() {
+        //on affiche les informations sur la machine
+        VerticalLayout dataInfoLayout = new VerticalLayout();
+        dataInfoLayout.setId("chart-section");
+        dataInfoLayout.setSpacing(false);
+        dataInfoLayout.setPadding(false);
+        Text dataInfoTitleLabel = new Text("Informations sur la machine");
+        Text machineRefLabel = new Text("Référence: ");
+        Text machineDesLabel = new Text("Description: ");
+        Text machineTypeOperationLabel = new Text("Type d'opération: ");
+        dataInfoLayout.add(dataInfoTitleLabel, machineRefLabel, machineDesLabel, machineTypeOperationLabel);
+        return dataInfoLayout;
     }
 
     private void setupMachineComboBox() {
