@@ -73,6 +73,7 @@ public class CrmService {
         this.matiereProduitRepository = matiereProduitRepository;
 
         verifierEtatPossibleMachineIntiaux();
+        verifierStatutPossibleOperateurInitiaux();
     }
 
     private void verifierEtatPossibleMachineIntiaux() {
@@ -98,6 +99,24 @@ public class CrmService {
             etatPossibleMachineRepository.save(etatPossibleMachine);
         }
 
+    }
+    
+    private void verifierStatutPossibleOperateurInitiaux(){
+        if (statusRepository.findStatutPossibleByDes("Disponible") == null){
+            Statut statut = new Statut();
+            statut.setName("Disponible");
+            statusRepository.save(statut);
+        }
+        if (statusRepository.findStatutPossibleByDes("En Congé") == null){
+            Statut statut = new Statut();
+            statut.setName("En Congé");
+            statusRepository.save(statut);
+        }
+        if (statusRepository.findStatutPossibleByDes("Absent") == null){
+            Statut statut = new Statut();
+            statut.setName("Absent");
+            statusRepository.save(statut);
+        }
     }
 
     //////////////////////////// STATUT POSSIBLE OPERATEUR////////////////////////////
