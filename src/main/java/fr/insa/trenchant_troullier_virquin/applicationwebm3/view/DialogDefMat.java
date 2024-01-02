@@ -187,7 +187,6 @@ public class DialogDefMat extends Dialog {
 
     private void save() {
         //TODO : Enregistrer les Matiere définies pour un produit
-        service.deleteAllOperationForProduit(produit);
         List<MatiereProduit> matiereProduitsList = new ArrayList<>();
         for (MatPremiere matPremiere : matpremieresDefini) {
             MatiereProduit matiereProduit = new MatiereProduit();
