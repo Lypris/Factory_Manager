@@ -123,15 +123,17 @@ public class StatutForm extends FormLayout {
             }
             if (service.findAllStatutOperateurByOperateur(selectedOperateur) != null) {
                 for (StatutOperateur etatOperateur1 : service.findAllStatutOperateurByOperateur(selectedOperateur)) {
-                    if (etatOperateur1.getDebut().isBefore(debutValue) && etatOperateur1.getFin().isAfter(debutValue)) {
+                    LocalDateTime datefin = etatOperateur1.getFin();
+                    LocalDateTime datedebut = etatOperateur1.getDebut();
+                    if (datefin!=null &&  datedebut.isBefore(debutValue) && datefin.isAfter(debutValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }
-                    if (finValue != null && etatOperateur1.getDebut().isBefore(finValue) && etatOperateur1.getFin().isAfter(finValue)) {
+                    if (datefin!=null && finValue != null && datedebut.isBefore(finValue) && datefin.isAfter(finValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }
-                    if (finValue != null && etatOperateur1.getDebut().isAfter(debutValue) && etatOperateur1.getFin().isBefore(finValue)) {
+                    if (datefin!=null && finValue != null && datedebut.isAfter(debutValue) && datefin.isBefore(finValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }

@@ -88,7 +88,7 @@ public class IconUtils {
         switch (description.toLowerCase()) {
             case "en congé":
                 return VaadinIcon.CLOCK;
-            case "présent":
+            case "disponible":
                 return VaadinIcon.CHECK;
             case "absent":
                 return VaadinIcon.WARNING;
@@ -103,7 +103,7 @@ public class IconUtils {
             case "en congé":
                 element.getElement().getThemeList().add("badge");
                 break;
-            case "présent":
+            case "disponible":
                 element.getElement().getThemeList().add("badge success");
                 break;
             case "absent":
