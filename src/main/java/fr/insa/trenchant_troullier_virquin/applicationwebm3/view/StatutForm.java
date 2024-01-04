@@ -12,6 +12,7 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
@@ -20,6 +21,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class StatutForm extends FormLayout {
     ComboBox<Operateur> operateurComboBox = new ComboBox<>("Opérateur");
@@ -39,6 +41,8 @@ public class StatutForm extends FormLayout {
         addClassName("Statut-form");
         operateurComboBox.setItems(operateurs);
         operateurComboBox.setItemLabelGenerator(operateur -> operateur.getNom() + " " + operateur.getPrenom());
+        operateurComboBox.addValueChangeListener(e -> configureDateTimePickers(e.getValue()));
+
         statutComboBox.setItems(statuts);
         statutComboBox.setItemLabelGenerator(Statut::getName);
 
@@ -49,6 +53,25 @@ public class StatutForm extends FormLayout {
                 createButtonsLayout());
     }
 
+    private void configureDateTimePickers(Operateur operateur) {
+        List<StatutOperateur> statutOperateurs = service.findAllStatutOperateurByOperateur(operateur);
+        if (statutOperateurs != null && !statutOperateurs.isEmpty()) {
+            // Trouver la date de fin la plus récente parmi tous les statuts de l'opérateur
+            LocalDateTime latestEndDate = statutOperateurs.stream()
+                    .map(StatutOperateur::getFin)
+                    .filter(Objects::nonNull)
+                    .max(LocalDateTime::compareTo)
+                    .orElse(null);
+            if (latestEndDate != null) {
+                debut.setValue(latestEndDate);
+                debut.setReadOnly(true); // Désactiver la modification de la date de début
+            } else {
+                debut.setReadOnly(false); // Activer la modification si aucun statut précédent ou si le dernier statut est indéterminé
+                debut.clear();
+            }
+        }
+    }
+
     public void setStatut(StatutOperateur statutOperateur) {
         binder.setBean(statutOperateur);
         if (statutOperateur != null) {
@@ -56,12 +79,15 @@ public class StatutForm extends FormLayout {
             Operateur operateur = statutOperateur.getOperateur();
             if (operateur != null) {
                 operateurComboBox.setValue(operateur);
+            } else {
+                operateurComboBox.setValue(null);
             }
-
             // Récupérer le statut du statutOperateur et le sélectionner dans le ComboBox
             Statut statut = statutOperateur.getStatut();
             if (statut != null) {
                 statutComboBox.setValue(statut);
+            } else {
+                statutComboBox.setValue(null);
             }
         }
 

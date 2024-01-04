@@ -4,12 +4,14 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridSortOrder;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.provider.SortDirection;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -20,8 +22,12 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Statut;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.StatutOperateur;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
+import java.util.List;
+
+import static com.vaadin.flow.component.grid.Grid.*;
 
 @Route(value = "statuts", layout = MainLayout.class)
 @PageTitle("Statut | M3 Application")
@@ -62,6 +68,20 @@ public class StatutView extends VerticalLayout {
     }
 
     private void saveStatut(StatutForm.SaveEvent event) {
+
+        //logique pour mettre à jour la date de fin du statut précédent
+        StatutOperateur statutOperateur = event.getStatutOperateur();
+        //on récupère la liste de statuts de l'opérateur
+        List<StatutOperateur> statutOperateurs = service.findAllStatutOperateurByOperateur(statutOperateur.getOperateur());
+        // si un statut est déjà en cours, on le met à jour
+        if(statutOperateurs != null) {
+            for (StatutOperateur statutOperateur1 : statutOperateurs) {
+                if (statutOperateur1.getFin() == null) {
+                    statutOperateur1.setFin(LocalDateTime.now());
+                    service.saveStatutOperateur(statutOperateur1);
+                }
+            }
+        }
         service.saveStatutOperateur(event.getStatutOperateur());
         updateList();
         closeEditor();
@@ -112,7 +132,8 @@ public class StatutView extends VerticalLayout {
         grid.addColumn(statutOperateur -> {
                     return statutOperateur.getDebut().toString();
                 })
-                .setHeader("Date de début").setSortable(true)
+                .setHeader("Date de début").setSortable(true).setKey("debut")
+                //on trie les dates de début par ordre décroissant (le plus récent en premier)
                 .setComparator(Comparator.comparing(StatutOperateur::getDebut))
                 .setRenderer(new TextRenderer<>(statutOperateur -> {
                     // Personnalisez le format de date selon vos besoins
@@ -131,10 +152,12 @@ public class StatutView extends VerticalLayout {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                     return statutOperateur.getFin().format(formatter);
                 }));
-
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editStatutOperateur(event.getValue()));
+        //on trie les dates de début par ordre décroissant
+        grid.sort(List.of(new GridSortOrder<>(grid.getColumnByKey("debut"), SortDirection.DESCENDING)));
+
     }
 
     private HorizontalLayout getToolbar() {
@@ -159,9 +182,11 @@ public class StatutView extends VerticalLayout {
         if (statutOperateur == null) {
             closeEditor();
         } else {
-            form.setStatut(statutOperateur);
-            form.setVisible(true);
-            addClassName("editing");
+            if (statutOperateur.getFin() == null) {
+                form.setStatut(statutOperateur);
+                form.setVisible(true);
+                addClassName("editing");
+            }
         }
     }
 
