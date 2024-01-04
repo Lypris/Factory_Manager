@@ -24,7 +24,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 import java.io.ByteArrayInputStream;
 
 @Route(value = "produits", layout = MainLayout.class)
-@PageTitle("Produits | M3 Application")
+@PageTitle("Produits | Factory Manager")
 public class ProductView extends VerticalLayout {
 
     Grid<Produit> grid = new Grid<>(Produit.class);

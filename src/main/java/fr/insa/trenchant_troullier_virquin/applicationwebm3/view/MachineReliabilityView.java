@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Route(value = "machine-reliability", layout = MainLayout.class)
-@PageTitle("Fiabilité des Machines | Appli TP Info")
+@PageTitle("Fiabilité des Machines | Factory Manager")
 public class MachineReliabilityView extends VerticalLayout {
 
     private final CrmService service;

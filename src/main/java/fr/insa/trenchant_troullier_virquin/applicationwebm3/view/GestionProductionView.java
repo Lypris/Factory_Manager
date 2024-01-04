@@ -13,6 +13,7 @@ import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
@@ -31,6 +32,7 @@ import java.util.List;
  */
 
 @Route(value = "GestionProduction/:commandeID", layout = MainLayout.class)
+@PageTitle("Gestion Production | Factory Manager")
 public class GestionProductionView extends VerticalLayout implements BeforeEnterObserver {
     private final Grid<Produit> gridProduit = new Grid<>(Produit.class);
     private final CrmService service;

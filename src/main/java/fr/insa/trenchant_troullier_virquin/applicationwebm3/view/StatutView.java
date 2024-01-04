@@ -30,7 +30,7 @@ import java.util.List;
 import static com.vaadin.flow.component.grid.Grid.*;
 
 @Route(value = "statuts", layout = MainLayout.class)
-@PageTitle("Statut | M3 Application")
+@PageTitle("Statut | Factory Manager")
 public class StatutView extends VerticalLayout {
 
     Grid<StatutOperateur> grid = new Grid<>(StatutOperateur.class);

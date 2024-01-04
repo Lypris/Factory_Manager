@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>fr.insa.trenchant_troullier_virquin</groupId>
-    <artifactId>ApplicationWebM3</artifactId>
+    <artifactId>Factory_Manager</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>ApplicationWebM3</name>
+    <name>Factory_Manager</name>
     <description>ApplicationWebM3</description>
     <properties>
         <java.version>21</java.version>

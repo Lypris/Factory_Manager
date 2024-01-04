@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Route(value = "production", layout = MainLayout.class)
-@PageTitle("Production | M3 Application")
+@PageTitle("Production | Factory Manager")
 public class ProductionView extends VerticalLayout {
     Grid<Commande> grid = new Grid<>(Commande.class);
     CrmService service;

@@ -28,7 +28,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeader() {
-        H1 logo = new H1("M3 Application");
+        H1 logo = new H1("Factory Manager");
         logo.addClassNames(
                 LumoUtility.FontSize.LARGE,
                 LumoUtility.Margin.MEDIUM);

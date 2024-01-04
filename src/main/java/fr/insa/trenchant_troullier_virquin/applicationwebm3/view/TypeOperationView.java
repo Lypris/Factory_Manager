@@ -14,7 +14,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.TypeOper
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 @Route(value = "typeoperation", layout = MainLayout.class)
-@PageTitle("Types d'opérations | M3 Application")
+@PageTitle("Types d'opérations | Factory Manager")
 public class TypeOperationView extends VerticalLayout {
     Grid<TypeOperation> grid = new Grid<>(TypeOperation.class);
     TypeOperationForm formTypeOperation;

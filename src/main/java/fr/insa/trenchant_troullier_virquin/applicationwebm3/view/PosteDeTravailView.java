@@ -16,7 +16,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.PosteDeT
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 @Route(value = "postes-de-travail", layout = MainLayout.class)
-@PageTitle("Postes de Travail")
+@PageTitle("Postes de Travail | Factory Manager")
 public class PosteDeTravailView extends VerticalLayout {
 
     private final CrmService service;
