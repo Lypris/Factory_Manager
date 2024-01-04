@@ -61,24 +61,7 @@ public class ProductionView extends VerticalLayout {
                 .setHeader("Référence").setSortable(true);
         grid.addColumn(Commande::getDes)
                 .setHeader("Description").setSortable(true);
-        grid.addColumn(Commande -> {
-                    LocalDateTime debut = Commande.getDebut();
-                    return (debut != null) ? debut.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "";
-                })
-                .setHeader("Date de début").setSortable(true);
-        grid.addColumn(Commande -> {
-                    LocalDateTime fin = Commande.getFin();
-                    return (fin != null) ? fin.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "";
-                })
-                .setHeader("Date de fin").setSortable(true);
-        grid.addColumn(new ComponentRenderer<>(commande -> {
-                    VaadinIcon icon = IconUtils.determineIconCommande(commande.getStatut());
-                    Span badge = new Span(IconUtils.createIcon(icon),
-                            new Span(commande.getStatut()));
-                    IconUtils.applyStyleForStatutCommande(badge, commande.getStatut());
-                    return badge;
-                }))
-                .setHeader("Statut").setSortable(true);
+        CommandView.configureDate(grid);
         grid.setItemDetailsRenderer(createCommandeDetailsRenderer());
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));

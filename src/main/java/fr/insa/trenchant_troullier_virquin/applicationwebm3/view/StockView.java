@@ -6,8 +6,10 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -24,43 +26,53 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
  */
 
 @Route(value = "stock", layout = MainLayout.class)
-@PageTitle("Intial | Appli TP Info")
+@PageTitle("Gestion des Stocks | Appli TP Info")
 public class StockView extends VerticalLayout {
-    private final Button b_MatPre = new Button("Matiere Première");
-    private final Button b_ProdFini = new Button("Produit fini");
-    private final Button b_ProdEnCours = new Button("En production");
-    private final Button b_Ajouter_MatPre = new Button("Ajouter");
+    private final Button b_MatPre = new Button("Matières premières");
+    private final Button b_ProdFini = new Button("Produits finis");
+    private final Button b_ProdEnCours = new Button("Produits en cours");
+    private final Button b_Ajouter_MatPre = new Button("Ajouter une nouvelle matière première");
     private final CrmService service;
     private final Grid<Exemplaires> gridProduitFini = new Grid<>(Exemplaires.class);
     private final Grid<MatPremiere> gridMatPremiere = new Grid<>(MatPremiere.class);
     private final Grid<Exemplaires> gridProdEnCours = new Grid<>(Exemplaires.class);
     private final HorizontalLayout Bandeau = new HorizontalLayout();
+    private final HorizontalLayout Entete = new HorizontalLayout();
     TextField filterText = new TextField();
     private MatPremiereForm matPremiereForm;
 
     public StockView(CrmService service) {
         this.service = service;
-        getBandeau();
-
         configureGridMatPremiere();
         configureGridProduitFini();
         configureGridProdEnCours();
         configureMatPremiereForm();
-
+        ChangeToMatPremiere();
+        b_MatPre.setIcon(VaadinIcon.BOOK.create());
         this.b_MatPre.addClickListener((t) -> {
             this.ChangeToMatPremiere();
         });
+        b_ProdEnCours.setIcon(VaadinIcon.COGS.create());
         this.b_ProdEnCours.addClickListener((t) -> {
             this.ChangeToProdEnCours();
         });
+        b_ProdFini.setIcon(VaadinIcon.CHECK.create());
         this.b_ProdFini.addClickListener((t) -> {
             this.ChangeToProduitFini();
         });
+        b_Ajouter_MatPre.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        b_Ajouter_MatPre.setIcon(VaadinIcon.PLUS.create());
         this.b_Ajouter_MatPre.addClickListener((t) -> {
             this.AjouterMatPremiere();
         });
         setSizeFull();
-        this.add(this.Bandeau);
+    }
+
+    private HorizontalLayout getEntete() {
+        this.Entete.removeAll();
+        H1 titre = new H1("Gestion des Stocks");
+        this.Entete.add(titre);
+        return this.Entete;
     }
 
     public void updateList(GridProduit grid) {
@@ -70,19 +82,19 @@ public class StockView extends VerticalLayout {
     public void ChangeToMatPremiere() {
         this.removeAll();
         updateListMatPremiere();
-        this.add(getBandeauMatPremiere(), getContentMatPremiere());
+        this.add(getEntete(), getBandeauMatPremiere(), getContentMatPremiere());
     }
 
     public void ChangeToProduitFini() {
         this.removeAll();
         updateListProduit();
-        this.add(getBandeau(), this.gridProduitFini);
+        this.add(getEntete(), getBandeau(), this.gridProduitFini);
     }
 
     public void ChangeToProdEnCours() {
         this.removeAll();
         updateListProdEncours();
-        this.add(getBandeau(), this.gridProdEnCours);
+        this.add(getEntete(), getBandeau(), this.gridProdEnCours);
     }
 
     private void configureGridMatPremiere() {
@@ -202,7 +214,7 @@ public class StockView extends VerticalLayout {
         this.Bandeau.removeAll();
         H1 txtVide = new H1(" ");
         this.Bandeau.setWidthFull();
-        this.Bandeau.add(this.b_MatPre, this.b_ProdEnCours, this.b_ProdFini, txtVide, this.b_Ajouter_MatPre);
+        this.Bandeau.add(this.b_ProdEnCours, this.b_ProdFini, txtVide, this.b_Ajouter_MatPre);
         this.Bandeau.expand(txtVide);
         return this.Bandeau;
     }

@@ -15,7 +15,10 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.DefinitionCommande;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Exemplaires;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
+import jakarta.validation.groups.Default;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -89,6 +92,16 @@ public class CommandView extends VerticalLayout {
                 .setHeader("Référence").setSortable(true);
         grid.addColumn(Commande::getDes)
                 .setHeader("Description").setSortable(true);
+        grid.addColumn((new ComponentRenderer<>(commande -> new Span(commande.getCoutTotal(service) + " €"))))
+                .setHeader("Coût total").setSortable(true);
+        configureDate(grid);
+
+        grid.getColumns().forEach(col -> col.setAutoWidth(true));
+        grid.asSingleSelect().addValueChangeListener(event ->
+                editCommande(event.getValue()));
+    }
+
+    static void configureDate(Grid<Commande> grid) {
         grid.addColumn(Commande -> {
                     LocalDateTime debut = Commande.getDebut();
                     return (debut != null) ? debut.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "";
@@ -107,10 +120,6 @@ public class CommandView extends VerticalLayout {
                     return badge;
                 }))
                 .setHeader("Statut").setSortable(true);
-
-        grid.getColumns().forEach(col -> col.setAutoWidth(true));
-        grid.asSingleSelect().addValueChangeListener(event ->
-                editCommande(event.getValue()));
     }
 
     private HorizontalLayout getToolbar() {
@@ -154,4 +163,5 @@ public class CommandView extends VerticalLayout {
         deleteCommandeNonDefini(service.findAllCommande(null));
         grid.setItems(service.findAllCommande(filterText.getValue()));
     }
+
 }

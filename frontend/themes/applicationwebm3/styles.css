@@ -5,6 +5,7 @@
         display: none;
     }
 }
+
 [theme~="dark"] {
     --lumo-primary-color: rgba(187, 134, 252);
     --lumo-secondary-text-color: #03DAC5;
@@ -82,9 +83,15 @@ vaadin-scroller[slot="drawer"][overflow~="bottom"] {
 }
 
 #chart-section {
-    border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: rgba( 255, 255, 255, 0.15 );
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur( 18px );
+    -webkit-backdrop-filter: blur( 18px );
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    border-radius: 1rem;
+    z-index: 10;
+    color: whitesmoke;
+    font-size: medium;
 }
 #title-section {
     display: flex;
@@ -94,4 +101,42 @@ vaadin-scroller[slot="drawer"][overflow~="bottom"] {
     background-size: cover;
     font-family: "Montserrat Black", sans-serif;
 }
+#info-section{
+    background: rgba( 255, 255, 255, 0.15 );
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur( 18px );
+    -webkit-backdrop-filter: blur( 18px );
+    border: 1px solid rgba( 255, 255, 255, 0.18 );
+    border-radius: 1rem;
+    z-index: 10;
+    color: whitesmoke;
+}
+#text-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3em;
+    background-size: cover;
+    color: #121212;
+}
+[theme~="dark"] #text-section {
+    color: #FFFFFF;
+}
+[theme~="dark"] #chart-section {
+    color: #FFFFFF;
+}
+#chiffre-affaire-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3em;
+    background-size: cover;
+    color: #121212;
+    font-weight: bold;
+    font-size: 1em;
+}
+[theme~="dark"] #chiffre-affaire-section {
+    color: #FFFFFF;
+}
+
 

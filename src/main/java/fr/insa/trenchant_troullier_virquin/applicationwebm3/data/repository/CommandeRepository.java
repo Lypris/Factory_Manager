@@ -33,4 +33,7 @@ public interface CommandeRepository extends JpaRepository<Commande, Long> {
     @Modifying
     @Query("UPDATE Commande c SET c.fin = :now WHERE c = :commande")
     public void setFinCommande(Commande commande, LocalDateTime now);
+
+    @Query("select c from Commande c where c.statut = 'Terminée'")
+    List<Commande> findAllCommandeTerminee();
 }

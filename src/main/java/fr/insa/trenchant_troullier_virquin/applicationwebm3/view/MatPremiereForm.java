@@ -24,7 +24,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
 public class MatPremiereForm extends FormLayout {
     TextField ref = new TextField("Référence");
     TextField des = new TextField("Description");
-    NumberField quantite = new NumberField("Quantité");
+    NumberField quantite = new NumberField("Quantité (en kg)");
 
     Button save = new Button("Enregistrer");
 
@@ -36,6 +36,7 @@ public class MatPremiereForm extends FormLayout {
     BeanValidationBinder<MatPremiere> binder = new BeanValidationBinder<>(MatPremiere.class);
 
     public MatPremiereForm(CrmService service) {
+        this.service = service;
         binder.bindInstanceFields(this);
         addClassName("MatPremiere-form");
 

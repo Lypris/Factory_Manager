@@ -58,6 +58,14 @@ public class Commande extends AbstractEntity {
     public ArrayList<Produit> getProduit(CrmService service) {
         return new ArrayList<>(service.findAllProduitByCommande(this));
     }
+    public double getCoutTotal(CrmService service) {
+        double coutTotal = 0;
+        List<DefinitionCommande> definitionCommandes = service.findAllDefinitionCommandeByCommande(this);
+        for (DefinitionCommande definitionCommande : definitionCommandes) {
+            coutTotal += definitionCommande.getNbr() * definitionCommande.getProduit().getPrix();
+        }
+        return coutTotal;
+    }
 
     public void creatExemplairesAssociate(CrmService service) {//fonctionne uniquement si la commande est en attente
         List<Exemplaires> nouveauxExemplaires = new ArrayList<>();

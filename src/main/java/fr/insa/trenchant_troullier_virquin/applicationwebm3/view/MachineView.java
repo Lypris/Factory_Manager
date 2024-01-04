@@ -145,11 +145,8 @@ public class MachineView extends VerticalLayout {
         Button addMachineButton = new Button("Ajouter une machine");
         addMachineButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
         addMachineButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        Button goToEtatMachineButton = new Button("Etat des machines");
-        goToEtatMachineButton.setIcon(new Icon(VaadinIcon.CALENDAR_CLOCK));
-        goToEtatMachineButton.addClickListener(click -> getUI().ifPresent(ui -> ui.navigate("etatmachines")));
         addMachineButton.addClickListener(click -> addMachine());
-        var toolbar = new HorizontalLayout(filterText, addMachineButton, goToEtatMachineButton);
+        var toolbar = new HorizontalLayout(filterText, addMachineButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

@@ -32,15 +32,11 @@ public class MainLayout extends AppLayout {
                 LumoUtility.FontSize.LARGE,
                 LumoUtility.Margin.MEDIUM);
 
-        Button logout = new Button("Déconnexion");
-        logout.addClickListener(e -> {
-            Notification.show("Pas encore implémenté");
-        });
         var themeToggle = new Checkbox("Mode sombre");
         themeToggle.addValueChangeListener(e -> {
             setTheme(e.getValue());
         });
-        var header = new HorizontalLayout(new DrawerToggle(), logo, themeToggle, logout);
+        var header = new HorizontalLayout(new DrawerToggle(), logo, themeToggle);
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(logo);
         header.setWidthFull();
@@ -57,9 +53,8 @@ public class MainLayout extends AppLayout {
         Tabs tabs = new Tabs(
                 createTab(VaadinIcon.HOME, "Retour à la vue principale", DashboardView.class),
                 createTab(VaadinIcon.USERS, "Employés", OperatorView.class),
-                //createTab(VaadinIcon.CALENDAR_USER, "Etat des Employés", StatutView.class),
                 createTab(VaadinIcon.COGS, "Machines", MachineView.class),
-                //createTab(VaadinIcon.CALENDAR_CLOCK, "Etat des Machines", EtatMachineView.class),
+                createTab(VaadinIcon.COGS, "Type d'opération", TypeOperationView.class),
                 createTab(VaadinIcon.PACKAGE, "Produits", ProductView.class),
                 createTab(VaadinIcon.CLIPBOARD, "Commandes", CommandView.class),
                 createTab(VaadinIcon.STOCK, "Stock", StockView.class),

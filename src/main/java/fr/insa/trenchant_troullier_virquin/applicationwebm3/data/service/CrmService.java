@@ -424,6 +424,10 @@ public class CrmService {
     public List<Commande> findAllCommandeEnCours() {
         return commandeRepository.findAllCommandeEnCours();
     }
+
+    public List<Commande> findAllCommandeTerminee(){
+        return commandeRepository.findAllCommandeTerminee();
+    }
     
     public void setFinCommande(Commande commande, LocalDateTime now) {
         commandeRepository.setFinCommande(commande, now);
@@ -760,5 +764,16 @@ public class CrmService {
             return;
         }
         habilitationRepository.save(habilitation);
+    }
+
+    public Double getChiffreAffaireAnnuel() {
+        List<Commande> commandes = commandeRepository.findAllCommandeTerminee();
+        Double chiffreAffaire = 0.0;
+        for (Commande commande : commandes) {
+            if(commande.getFin().getYear() == LocalDateTime.now().getYear()){
+                chiffreAffaire += commande.getCoutTotal(this);
+            }
+        }
+        return chiffreAffaire;
     }
 }
