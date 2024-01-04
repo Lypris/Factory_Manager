@@ -5,6 +5,7 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -44,6 +45,7 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
         this.service = service;
         this.ValidationButton = new Button("Valider la Commande");
         this.ValidationButton.setEnabled(false);
+        this.ValidationButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         this.ValidationButton.addClickListener((t) -> {
             //Methdode Validation de la commande
             TerminerCommande();

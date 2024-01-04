@@ -181,7 +181,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
 
     //Met à jour les element du Combobox des produits
     private void updateProduitComboBox() {
-
+        
         this.produitComboBox.setItems(this.ListProduitCommande);
         lancerProdCommande.setEnabled(this.ListProduitCommande.isEmpty());
     }
@@ -302,12 +302,18 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
     
     private boolean AssezMatPremiere(Produit produit, Commande commande) {
         List<MatPremiere> ListMat = service.findAllMatPremiereForProduit(produit);
-        int nbExemplaires = service.countExemplairesByCommandeAndProduit(commande, produit);
-        for (MatPremiere m : ListMat){
-            List<MatiereProduit> ListMatPro = service.findMatProByProduitAndMatiere(produit, m);
-            for(MatiereProduit mp :ListMatPro){
-                if (m.getQuantite() < mp.getQuantite()*nbExemplaires){
-                    return false;
+        if (ListMat.isEmpty()){
+            Notification.show("Il n'y a pas de matiere première associée au produit");
+            return false;
+        }else{
+            int nbExemplaires = service.countExemplairesByCommandeAndProduit(commande, produit);
+            for (MatPremiere m : ListMat){
+                List<MatiereProduit> ListMatPro = service.findMatProByProduitAndMatiere(produit, m);
+                for(MatiereProduit mp :ListMatPro){
+                    if (m.getQuantite() < mp.getQuantite()*nbExemplaires){
+                        Notification.show("Il manque de "+m.getDes());
+                        return false;
+                    }
                 }
             }
         }

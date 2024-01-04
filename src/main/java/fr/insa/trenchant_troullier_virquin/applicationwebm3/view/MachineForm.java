@@ -64,7 +64,6 @@ public class MachineForm extends FormLayout {
                 EtatMachine currentEtatMachine = service.findLastEtatMachineByMachine(machine);
                 // Déterminer les états possibles suivants en fonction de l'état actuel
                 if (currentEtatMachine != null) {
-                    Notification.show("A");
                     etatComboBox.setVisible(true);
                     EtatPossibleMachine etatActuel = currentEtatMachine.getEtat();
                     if ("en marche".equals(etatActuel.getDes())) { // Si la machine est en marche, on peut la mettre en panne
@@ -89,7 +88,6 @@ public class MachineForm extends FormLayout {
                     etatComboBox.setItems(service.findAllEtatPossibleMachines());
                 }
             } else {
-                Notification.show("B");
                 etatComboBox.setVisible(false);
                 //etatComboBox.setItems(service.findAllEtatPossibleMachines());
             }
