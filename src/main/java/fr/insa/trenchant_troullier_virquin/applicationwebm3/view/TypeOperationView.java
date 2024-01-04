@@ -62,7 +62,7 @@ public class TypeOperationView extends VerticalLayout {
     }
 
     public void configureForm() {
-        formTypeOperation = new TypeOperationForm();
+        formTypeOperation = new TypeOperationForm(service);
         formTypeOperation.setWidth("35em");
         formTypeOperation.addSaveListener(this::saveTypeOperation);
         formTypeOperation.addDeleteListener(this::deleteTypeOperation);

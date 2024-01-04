@@ -7,6 +7,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -145,7 +146,13 @@ public class MachineView extends VerticalLayout {
         Button addMachineButton = new Button("Ajouter une machine");
         addMachineButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
         addMachineButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        addMachineButton.addClickListener(click -> addMachine());
+        addMachineButton.addClickListener(click -> {
+            if(service.findAllTypeOperation().isEmpty() || service.findAllTypeOperation() == null){
+                Notification.show("Veuillez ajouter des types d'opérations avant de créer une machine.").setPosition(Notification.Position.MIDDLE);
+                return;
+            }
+            addMachine();
+        });
         var toolbar = new HorizontalLayout(filterText, addMachineButton);
         toolbar.addClassName("toolbar");
         return toolbar;

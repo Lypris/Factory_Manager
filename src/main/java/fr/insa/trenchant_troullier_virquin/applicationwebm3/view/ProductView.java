@@ -143,7 +143,13 @@ public class ProductView extends VerticalLayout {
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.setWidth("25em");
         filterText.addValueChangeListener(e -> updateList());
-        Button addProductButton = new Button("Ajouter un produit", click -> addProduct());
+        Button addProductButton = new Button("Ajouter un produit", click -> {
+            if(service.findAllTypeOperation().isEmpty() || service.findAllTypeOperation() == null){
+                Notification.show("Veuillez ajouter des types d'opérations avant de créer un produit.").setPosition(Notification.Position.MIDDLE);
+                return;
+            }
+            addProduct();
+        });
         addProductButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
         addProductButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         Button defineOperation = new Button("Définir les opérations", click -> {
