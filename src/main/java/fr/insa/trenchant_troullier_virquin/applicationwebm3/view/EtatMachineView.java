@@ -25,7 +25,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @Route(value = "etatmachines", layout = MainLayout.class)
-@PageTitle("Etat des Machines | M3 Application")
+@PageTitle("Etat des Machines | Factory Manager")
 public class EtatMachineView extends VerticalLayout {
 
     Grid<EtatMachine> grid = new Grid<>(EtatMachine.class);

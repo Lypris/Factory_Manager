@@ -17,7 +17,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateu
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
 @Route(value = "operateurs", layout = MainLayout.class)
-@PageTitle("Opérateurs | M3 Application")
+@PageTitle("Opérateurs | Factory Manager")
 public class OperatorView extends VerticalLayout {
 
     Grid<Operateur> grid = new Grid<>(Operateur.class);

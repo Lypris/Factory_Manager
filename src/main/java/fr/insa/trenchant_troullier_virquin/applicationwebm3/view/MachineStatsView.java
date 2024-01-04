@@ -25,7 +25,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Route(value = "machine-stats", layout = MainLayout.class)
-@PageTitle("Statistiques des Machines | M3 Application")
+@PageTitle("Statistiques des Machines | Factory Manager")
 public class MachineStatsView extends VerticalLayout {
 
     private final CrmService service;

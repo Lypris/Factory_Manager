@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.*;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "lancerproduction/:commandeID", layout = MainLayout.class)
+@PageTitle("Lancement Production | Factory Manager")
 public class LancerProductionView extends VerticalLayout implements BeforeEnterObserver {
     private final CrmService service;
     // Ajoutez un champ pour stocker les ComboBox des machines

@@ -12,7 +12,7 @@ import org.vaadin.stefan.fullcalendar.FullCalendarBuilder;
 import java.util.List;
 
 @Route(value = "test", layout = MainLayout.class)
-@PageTitle("Calendrier des Opérateurs")
+@PageTitle("Calendrier des Opérateurs | Factory Manager")
 public class CalendarView extends VerticalLayout {
 
     private final FullCalendar calendar;

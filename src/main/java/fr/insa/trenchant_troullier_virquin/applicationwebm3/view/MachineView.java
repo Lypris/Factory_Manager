@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 
 @Route(value = "machines", layout = MainLayout.class)
-@PageTitle("Machines | M3 Application")
+@PageTitle("Machines | Factory Manager")
 public class MachineView extends VerticalLayout {
 
     Grid<Machine> grid = new Grid<>(Machine.class);

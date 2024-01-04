@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 
 
 @Route(value = "", layout = MainLayout.class)
-@PageTitle("Dashboard | Appli TP Info")
+@PageTitle("Dashboard | Factory Manager")
 public class DashboardView extends VerticalLayout {
     private final CrmService service;
     private List<StatutOperateur> statutOperateurs = new ArrayList<>();

@@ -26,7 +26,7 @@ import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmServ
  */
 
 @Route(value = "stock", layout = MainLayout.class)
-@PageTitle("Gestion des Stocks | Appli TP Info")
+@PageTitle("Gestion des Stocks | Factory Manager")
 public class StockView extends VerticalLayout {
     private final Button b_MatPre = new Button("Matières premières");
     private final Button b_ProdFini = new Button("Produits finis");

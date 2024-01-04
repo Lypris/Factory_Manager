@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "commande", layout = MainLayout.class)
-@PageTitle("Commande | M3 Application")
+@PageTitle("Commande | Factory Manager")
 public class CommandView extends VerticalLayout {
     Grid<Commande> grid = new Grid<>(Commande.class);
     TextField filterText = new TextField();
