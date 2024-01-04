@@ -102,19 +102,19 @@ public class CrmService {
     }
     
     private void verifierStatutPossibleOperateurInitiaux(){
-        if (statusRepository.findStatutPossibleByDes("Disponible") == null){
+        if (statusRepository.findStatutPossibleByDes("disponible") == null){
             Statut statut = new Statut();
-            statut.setName("Disponible");
+            statut.setName("disponible");
             statusRepository.save(statut);
         }
-        if (statusRepository.findStatutPossibleByDes("En Congé") == null){
+        if (statusRepository.findStatutPossibleByDes("en congé") == null){
             Statut statut = new Statut();
-            statut.setName("En Congé");
+            statut.setName("en congé");
             statusRepository.save(statut);
         }
-        if (statusRepository.findStatutPossibleByDes("Absent") == null){
+        if (statusRepository.findStatutPossibleByDes("absent") == null){
             Statut statut = new Statut();
-            statut.setName("Absent");
+            statut.setName("absent");
             statusRepository.save(statut);
         }
     }
@@ -191,6 +191,9 @@ public class CrmService {
 
     public List<StatutOperateur> findAllStatutOperateurByOperateur(Operateur operateur) {
         return statutOperateurRepository.findByOperateur(operateur);
+    }
+    public List<StatutOperateur> findAllStatutOperateurFinisByOperateur(Operateur operateur) {
+        return statutOperateurRepository.findAllStatutOperateurFinisByOperateur(operateur);
     }
 
     //////////////////////////// MACHINE ////////////////////////////

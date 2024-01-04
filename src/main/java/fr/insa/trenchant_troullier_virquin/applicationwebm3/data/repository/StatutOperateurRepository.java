@@ -16,6 +16,9 @@ public interface StatutOperateurRepository extends JpaRepository<StatutOperateur
     List<StatutOperateur> search(@Param("searchTerm") String searchTerm);
 
     List<StatutOperateur> findByOperateur(Operateur operateur);
+
+    @Query("SELECT s FROM StatutOperateur s WHERE s.operateur = :operateur AND s.fin is not null")
+    List<StatutOperateur> findAllStatutOperateurFinisByOperateur(@Param("operateur") Operateur operateur);
 }
 /*
 

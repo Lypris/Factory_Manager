@@ -146,8 +146,6 @@ public class ProductView extends VerticalLayout {
         Button addProductButton = new Button("Ajouter un produit", click -> addProduct());
         addProductButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
         addProductButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        Button TypeOperationView = new Button("Voir les types d'opérations", click -> getUI().get().navigate("typeoperation"));
-        TypeOperationView.setIcon(new Icon(VaadinIcon.COGS));
         Button defineOperation = new Button("Définir les opérations", click -> {
             if (grid.asSingleSelect().getValue() == null) {
                 Notification notification = new Notification();
@@ -174,7 +172,7 @@ public class ProductView extends VerticalLayout {
             }
         });
         defineMaterial.setIcon(new Icon(VaadinIcon.COGS));
-        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, TypeOperationView, defineOperation, defineMaterial);
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, defineOperation, defineMaterial);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

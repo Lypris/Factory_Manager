@@ -126,7 +126,10 @@ public class DashboardView extends VerticalLayout {
 
     private ApexCharts createOperateurChart() {
         LinkedHashMap<String, Double> etatOperateurPourcentageMap = new LinkedHashMap<>();
-        statutOperateurs = service.findAllStatutOperateurs(null);
+        List<Operateur> operateurs = service.findAllOperateurs(null);
+        for (Operateur o : operateurs) {
+            statutOperateurs.addAll(service.findAllStatutOperateurFinisByOperateur(o));
+        }
         // Calculer le pourcentage de chaque statut
         Double presentPourcentage = calculateStatutTime("présent",statutOperateurs);
         Double absentPourcentage = calculateStatutTime("absent", statutOperateurs);
