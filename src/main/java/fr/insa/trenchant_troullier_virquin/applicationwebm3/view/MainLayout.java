@@ -24,6 +24,7 @@ public class MainLayout extends AppLayout {
     public MainLayout() {
         createHeader();
         createDrawer();
+        this.setId("main-layout");
     }
 
     private void createHeader() {
