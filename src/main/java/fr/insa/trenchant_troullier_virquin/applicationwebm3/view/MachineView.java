@@ -121,10 +121,7 @@ public class MachineView extends VerticalLayout {
         grid.addColumn(Machine -> {
                     return service.findLastEtatMachineByMachine(Machine).getFin().toString();
                 })
-                .setHeader("Date de fin").setSortable(true)
-                .setComparator(Comparator.comparing(Machine -> {
-                    return service.findLastEtatMachineByMachine(Machine).getFin();
-                }))
+                .setHeader("Date de fin")
                 .setRenderer(new TextRenderer<>(Machine -> {
                     if (service.findLastEtatMachineByMachine(Machine).getFin() == null) {
                         return "indeterminée";

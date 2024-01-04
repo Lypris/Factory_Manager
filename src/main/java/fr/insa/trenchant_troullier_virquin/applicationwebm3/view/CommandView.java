@@ -9,19 +9,24 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
+import com.vaadin.flow.component.progressbar.ProgressBarVariant;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TextRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.DefinitionCommande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Exemplaires;
+import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 import jakarta.validation.groups.Default;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "commande", layout = MainLayout.class)
@@ -95,12 +100,53 @@ public class CommandView extends VerticalLayout {
         grid.addColumn((new ComponentRenderer<>(commande -> new Span(commande.getCoutTotal(service) + " €"))))
                 .setHeader("Coût total").setSortable(true);
         configureDate(grid);
+        //si la commande est en cours de traitement, on affiche la barre de progression
+        //nouvelle colonne pour afficher la progression de la commande en fonction du nombre d'exemplaires
+        grid.addColumn(new ComponentRenderer<>(commande -> {
+            if (commande.getStatut().equals("En cours")) {
+                //on récupère les produits associés à la commande
+                ArrayList definitionCommandes = service.findAllDefinitionCommandeByCommande(commande);
+                List<Produit> produitsCommande = new ArrayList<>();
+                int nbExemplairesTotal = 0;
+                for (Object definitionCommande : definitionCommandes) {
+                    Produit produit = ((DefinitionCommande) definitionCommande).getProduit();
+                    produitsCommande.add(produit);
+                    nbExemplairesTotal += ((DefinitionCommande) definitionCommande).getNbr();
+                }
+                //on récupère les exemplaires finis associés à la commande et au produit
+                int nbExemplaires = 0;
+                for (Produit produit : produitsCommande) {
+                    nbExemplaires += service.findAllProdFiniByProduitAndCommande(produit, commande).size();
+                }
+                double pourcentage = (double) nbExemplaires / nbExemplairesTotal;
+                ProgressBar progressBar = new ProgressBar();
+                progressBar.setValue(pourcentage);
+                configureProgressBar(progressBar, pourcentage);
+                Span span = new Span();
+                span.setText(nbExemplaires + "/" + nbExemplairesTotal);
+                HorizontalLayout layout = new HorizontalLayout();
+                layout.add(progressBar, span);
+                return layout;
+            } else {
+                return new Span("");
+            }
+                }))
+                .setHeader("Progression");
+
 
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editCommande(event.getValue()));
     }
-
+    public void configureProgressBar(ProgressBar progressBar, double pourcentage){
+        if(pourcentage < 0.25){
+            progressBar.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
+        }else if( pourcentage > 0.65){
+            progressBar.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
+        }else{
+            return;
+        }
+    }
     static void configureDate(Grid<Commande> grid) {
         grid.addColumn(Commande -> {
                     LocalDateTime debut = Commande.getDebut();
@@ -108,10 +154,16 @@ public class CommandView extends VerticalLayout {
                 })
                 .setHeader("Date de début").setSortable(true);
         grid.addColumn(Commande -> {
-                    LocalDateTime fin = Commande.getFin();
-                    return (fin != null) ? fin.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "";
+                    return Commande.getFin().toString();
                 })
-                .setHeader("Date de fin").setSortable(true);
+                .setHeader("Date de fin")
+                .setRenderer(new TextRenderer<>(Commande -> {
+                    if (Commande.getFin() == null) {
+                        return "indeterminée";
+                    }
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                    return Commande.getFin().format(formatter);
+                }));
         grid.addColumn(new ComponentRenderer<>(commande -> {
                     VaadinIcon icon = IconUtils.determineIconCommande(commande.getStatut());
                     Span badge = new Span(IconUtils.createIcon(icon),
