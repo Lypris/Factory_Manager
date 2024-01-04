@@ -65,7 +65,7 @@ public class MainLayout extends AppLayout {
         );
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         tabs.setFlexGrowForEnclosedTabs(1);
-        // Ajoute les onglets au tiroir (drawer)
+        tabs.setId("tabs");
         addToDrawer(tabs);
     }
 
