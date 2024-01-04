@@ -183,7 +183,6 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
 
     //Met à jour les element du Combobox des produits
     private void updateProduitComboBox() {
-        
         this.produitComboBox.setItems(this.ListProduitCommande);
         lancerProdCommande.setEnabled(this.ListProduitCommande.isEmpty());
     }
@@ -194,27 +193,23 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
         if (this.ListProduitCommande.size() == 1) {
             List<Operation> Listoperations = service.findOperationByProduit(this.ListProduitCommande.get(0));
             List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, this.ListProduitCommande.get(0));
-            for (Exemplaires e : ListExemplaires) {
-                for (Operation o : Listoperations) {
+            List<Produit> ProdARemove = new ArrayList<>();
                     //Si il existe déja une opeartion-Effectuee alors on supprime le produit de la liste des produit pas encore en production
-                    if (service.OperationEffectueeExiste(e, o) && !this.ListProduitCommande.isEmpty()) {
-                        this.ListProduitCommande.remove(this.ListProduitCommande.get(0));
+                    if (service.OperationEffectueeExiste(ListExemplaires.get(0), Listoperations.get(0)) && !this.ListProduitCommande.isEmpty()) {
+                        ProdARemove.add(this.ListProduitCommande.get(0));
                     }
-                }
-            }
+            this.ListProduitCommande.removeAll(ProdARemove);
         } else if (this.ListProduitCommande.size() > 1) {
+            List<Produit> ProdARemove = new ArrayList<>();
             for (Produit prod : this.ListProduitCommande) {
                 List<Operation> Listoperations = service.findOperationByProduit(prod);
                 List<Exemplaires> ListExemplaires = service.findAllByCommandeAndProduit(commande, prod);
-                for (Exemplaires e : ListExemplaires) {
-                    for (Operation o : Listoperations) {
                         //Si il existe déja une opeartion-Effectuee alors on supprime le produit de la liste des produit pas encore en production
-                        if (service.OperationEffectueeExiste(e, o)) {
-                            this.ListProduitCommande.remove(prod);
+                        if (service.OperationEffectueeExiste(ListExemplaires.get(0), Listoperations.get(0))) {
+                            ProdARemove.add(this.ListProduitCommande.get(0));
                         }
-                    }
-                }
             }
+            this.ListProduitCommande.removeAll(ProdARemove);
         }
         updateProduitComboBox();
     }
