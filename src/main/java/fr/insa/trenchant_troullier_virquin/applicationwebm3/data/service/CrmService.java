@@ -390,16 +390,12 @@ public class CrmService {
         List<Exemplaires> exemplaires = exemplairesRepository.findByCommande(commande);
         //si la commande est en cours, elle a des opérations effectuées et des machines occupées
         if (commande.getStatut().equals("En cours")) {
-            Notification.show("La commande est en cours");
             //passer les machines associées aux exemplaires de la commande en disponible
             for (Exemplaires exemplaire : exemplaires) {
-                Notification.show("Exemplaire " + exemplaire.getId());
                 List<Machine> machines = findAllMachineByExemplaire(exemplaire);
                 for (Machine machine : machines) {
-                    Notification.show("Machine " + machine.getRef());
                     EtatMachine etatMachine = findLastEtatMachineByMachine(machine);
                     if (etatMachine.getEtat().getDes().equals("en marche")) {
-                        Notification.show("La machine " + machine.getRef() + " est en marche");
                         //Recuper l'etat actuel et mettre l'heure de fin
                         this.SetFinByEtatMachine(LocalDateTime.now(), etatMachine);
                         //Creer un nouvel etat avec l'heure de début
@@ -417,6 +413,7 @@ public class CrmService {
 
 
         commandeRepository.delete(commande);
+        Notification.show("La commande a été supprimé");
     }
 
     public void SetStatutCommande(Commande commande, String statut) {
@@ -725,7 +722,6 @@ public class CrmService {
     public List<Exemplaires> findAllProdEnCoursByProduitAndCommande(Produit produit, Commande commande) {
         //int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
         int nbOperation = operationRepository.CountOperationByProduit(produit);
-        Notification.show(produit.getDes() +" nbOpe : "+nbOperation);
         return exemplairesRepository.findAllProdEnCoursByProduitAndCommande(produit, commande, nbOperation);
     }
 

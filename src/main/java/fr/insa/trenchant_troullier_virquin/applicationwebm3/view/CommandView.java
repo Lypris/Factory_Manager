@@ -116,7 +116,7 @@ public class CommandView extends VerticalLayout {
                 //on récupère les exemplaires finis associés à la commande et au produit
                 int nbExemplaires = 0;
                 for (Produit produit : produitsCommande) {
-                    nbExemplaires += service.findAllProdFiniByProduitAndCommande(produit, commande).size();
+                    nbExemplaires += service.countProdFiniByCommandeAndProduit(commande, produit);
                 }
                 double pourcentage = (double) nbExemplaires / nbExemplairesTotal;
                 ProgressBar progressBar = new ProgressBar();
