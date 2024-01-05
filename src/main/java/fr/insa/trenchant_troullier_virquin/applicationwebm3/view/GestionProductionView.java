@@ -100,14 +100,14 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
     private String custominfo(Commande commande, Produit produit) {
         //méthode qui permet d'afficher le nombre d'exemplaires finis pour un produit et une commande donnés
         // par rapport au nombre d'exemplaires commandés
-        int NbrExemplaires = service.findAllProdFiniByProduitAndCommande(produit, commande).size();
+        int NbrExemplaires = service.countProdFiniByCommandeAndProduit(commande, produit);
         int NbrExemplairesCommandes = service.getDefinitionByProduitAndCommandeUnique(produit, commande).getNbr();
         return NbrExemplaires + "/" + NbrExemplairesCommandes + " Exemplaires produits";
     }
     
     //Methode pour mettre a jour la liste des produit
     private void updateListProduit() {
-        this.gridProduit.setItems(this.service.findAllProduitByCommande(commande));
+        this.gridProduit.setItems(this.ListProduitCommande);
     }
     
     //C'est la defintion du composant de la troisième colonne de la grille
@@ -131,7 +131,9 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
         ExemplaireField.setValue(0);
         ExemplaireField.setStepButtonsVisible(true);
         ExemplaireField.setMin(0);
-        int Max = service.getDefinitionByProduitAndCommandeUnique(produit, commande).getNbr() - service.findAllProdFiniByProduitAndCommande(produit, commande1).size();
+        int NbrExemplaires = service.countProdFiniByCommandeAndProduit(commande, produit);
+        int NbrExemplairesCommandes = service.getDefinitionByProduitAndCommandeUnique(produit, commande).getNbr();
+        int Max = NbrExemplairesCommandes - NbrExemplaires;
         ExemplaireField.setMax(Max);
         if (Max == 0) {
             ValiderExemplaire.setEnabled(false);
@@ -144,7 +146,7 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
     
     //Methode pour valider la production d'un nombre d'exemplaire donné
     private void AjouterExemplaires(Produit produit, Integer nbEx) {
-        int nbOpe = this.service.findOperationByProduit(produit).size();
+        int nbOpe = this.service.CountOperationByProduit(produit);
         List<Exemplaires> ListExemplaireEnCours = this.service.findAllProdEnCoursByProduitAndCommande(produit, this.commande);
         for (int i = 0; i < nbEx; i++) {
             this.service.ExemplaireFini(nbOpe + 1, ListExemplaireEnCours.get(i));
@@ -160,7 +162,7 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
     private void verifierEtatProduction() {
         boolean tousProduitsFinis = true;
         for (Produit produit : ListProduitCommande) {
-            int nbExemplairesProduits = service.findAllProdFiniByProduitAndCommande(produit, commande).size();
+            int nbExemplairesProduits = service.countProdFiniByCommandeAndProduit(commande, produit);
             int nbExemplairesCommandes = service.getDefinitionByProduitAndCommandeUnique(produit, commande).getNbr();
             if (nbExemplairesProduits < nbExemplairesCommandes) {
                 tousProduitsFinis = false;

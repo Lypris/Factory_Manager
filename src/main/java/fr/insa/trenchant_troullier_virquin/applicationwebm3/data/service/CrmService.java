@@ -361,8 +361,8 @@ public class CrmService {
         produitRepository.delete(produit);
     }
 
-    public ArrayList findAllProduitByCommande(Commande commande) {
-        return (ArrayList) produitRepository.findByCommande(commande);
+    public List<Produit> findAllProduitByCommande(Commande commande) {
+        return produitRepository.findByCommande(commande);
     }
     
     public Produit findProduitByID(long ID){
@@ -602,6 +602,16 @@ public class CrmService {
             return operationRepository.findByProduitId(produit.getId());
         } else return null;
     }
+    
+    public Operation findOneOperationByProduit(Produit produit) {
+        if (produit != null) {
+            return operationRepository.findOneByProduit(produit);
+        } else return null;
+    }
+    
+    public int CountOperationByProduit (Produit produit){
+        return operationRepository.CountOperationByProduit(produit);
+    }
 
     public void deleteAllOperationForProduit(Produit produit) {
         List<Operation> operations = operationRepository.findByProduitId(produit.getId());
@@ -708,18 +718,14 @@ public class CrmService {
     public List<Exemplaires> findAllProdFiniByProduitAndCommande(Produit produit, Commande commande) {
         //récupère les exemplaires dont l'étape est supérieure au nombre d'opérations associé au produit
         // et qui sont associés à un produit et une commande donnée
-        List<Exemplaires> exemplaires = exemplairesRepository.findAll();
-        List<Exemplaires> exemplairesFini = new ArrayList<>();
-        for (Exemplaires exemplaire : exemplaires) {
-            if (exemplaire.getEtape() > operationRepository.findByProduitId(exemplaire.getProduit().getId()).size() && exemplaire.getProduit().equals(produit) && exemplaire.getCommande().equals(commande)) {
-                exemplairesFini.add(exemplaire);
-            }
-        }
-        return exemplairesFini;
+        int nbOperation = operationRepository.CountOperationByProduit(produit);
+        return exemplairesRepository.findAllProdFiniByProduitAndCommande(produit, commande, nbOperation);
     }
 
     public List<Exemplaires> findAllProdEnCoursByProduitAndCommande(Produit produit, Commande commande) {
-        int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
+        //int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
+        int nbOperation = operationRepository.CountOperationByProduit(produit);
+        Notification.show(produit.getDes() +" nbOpe : "+nbOperation);
         return exemplairesRepository.findAllProdEnCoursByProduitAndCommande(produit, commande, nbOperation);
     }
 
@@ -743,6 +749,10 @@ public class CrmService {
         return exemplairesRepository.findONEByCommandeAndProduit(commande, produit);
     }
     
+    public int countProdFiniByCommandeAndProduit(Commande commande, Produit produit){
+        int nbOpe = operationRepository.CountOperationByProduit(produit);
+        return exemplairesRepository.countProdFiniByCommandeAndProduit(commande, produit, nbOpe);
+    }
     //////////////////////// POSTE DE TRAVAIL ////////////////////////////
     public List<PosteDeTravail> findAllPosteDeTravail(String stringFilter) {
         if (stringFilter == null || stringFilter.isEmpty()) {

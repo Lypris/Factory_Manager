@@ -141,7 +141,7 @@ public class ProductionView extends VerticalLayout {
         private String custominfo(Commande commande, Produit produit) {
             //méthode qui permet d'afficher le nombre d'exemplaires finis pour un produit et une commande donnés
             // par rapport au nombre d'exemplaires commandés
-            int NbrExemplaires = service.findAllProdFiniByProduitAndCommande(produit, commande).size();
+            int NbrExemplaires = service.countProdFiniByCommandeAndProduit(commande, produit);
             int NbrExemplairesCommandes = service.getDefinitionByProduitAndCommandeUnique(produit, commande).getNbr();
             return NbrExemplaires + "/" + NbrExemplairesCommandes + " Exemplaires produits";
         }

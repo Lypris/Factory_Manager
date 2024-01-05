@@ -58,6 +58,9 @@ public interface ExemplairesRepository extends JpaRepository<Exemplaires, Long> 
 
     @Query("SELECT COUNT(e) FROM Exemplaires e WHERE e.commande = :commande and e.produit = :produit")
     int countExemplairesByCommandeAndProduit(Commande commande, Produit produit);
+    
+    @Query("SELECT COUNT(*) FROM Exemplaires e WHERE e.etape > :nbOpe AND e.commande = :commande and e.produit = :produit")
+    int countProdFiniByCommandeAndProduit(Commande commande, Produit produit, int nbOpe);
 
     @Transactional
     @Modifying
