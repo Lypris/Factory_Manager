@@ -197,6 +197,7 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
                     //Si il existe déja une opeartion-Effectuee alors on supprime le produit de la liste des produit pas encore en production
                     if (service.OperationEffectueeExiste(OneExemplaire, OneOperation) && !this.ListProduitCommande.isEmpty()) {
                         ProdRemove = this.ListProduitCommande.get(0);
+                        Notification.show("11");
                     }
             this.ListProduitCommande.remove(ProdRemove);
         } else if (this.ListProduitCommande.size() > 1) {
@@ -207,7 +208,8 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
                 Exemplaires OneExemplaire = service.findONEByCommandeAndProduit(commande, prod);
                         //Si il existe déja une opeartion-Effectuee alors on supprime le produit de la liste des produit pas encore en production
                         if (service.OperationEffectueeExiste(OneExemplaire, OneOperation)) {
-                            ProdARemove.add(this.ListProduitCommande.get(0));
+                            ProdARemove.add(prod);
+                            Notification.show("21");
                         }
             }
             this.ListProduitCommande.removeAll(ProdARemove);
