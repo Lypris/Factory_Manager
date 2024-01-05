@@ -1,6 +1,5 @@
 package fr.insa.trenchant_troullier_virquin.applicationwebm3.view;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -11,9 +10,7 @@ import com.vaadin.flow.component.grid.dnd.GridDragStartEvent;
 import com.vaadin.flow.component.grid.dnd.GridDropLocation;
 import com.vaadin.flow.component.grid.dnd.GridDropMode;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H6;
 import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatPremiere;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatiereProduit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;

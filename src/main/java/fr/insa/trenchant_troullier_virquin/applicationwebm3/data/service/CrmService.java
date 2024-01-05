@@ -705,7 +705,7 @@ public class CrmService {
         List<Exemplaires> exemplaires = exemplairesRepository.findAll();
         List<Exemplaires> exemplairesFini = new ArrayList<>();
         for (Exemplaires exemplaire : exemplaires) {
-            if (exemplaire.getEtape() > operationRepository.findByProduitId(exemplaire.getProduit().getId()).size()) {
+            if (exemplaire.getEtape() > operationRepository.CountOperationByProduit(exemplaire.getProduit())) {
                 exemplairesFini.add(exemplaire);
             }
         }
@@ -720,7 +720,6 @@ public class CrmService {
     }
 
     public List<Exemplaires> findAllProdEnCoursByProduitAndCommande(Produit produit, Commande commande) {
-        //int nbOperation = operationRepository.findByProduitId(produit.getId()).size();
         int nbOperation = operationRepository.CountOperationByProduit(produit);
         return exemplairesRepository.findAllProdEnCoursByProduitAndCommande(produit, commande, nbOperation);
     }

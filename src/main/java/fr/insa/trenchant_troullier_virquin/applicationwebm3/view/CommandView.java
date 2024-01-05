@@ -19,10 +19,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.DefinitionCommande;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Exemplaires;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
-import jakarta.validation.groups.Default;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -143,8 +141,6 @@ public class CommandView extends VerticalLayout {
             progressBar.addThemeVariants(ProgressBarVariant.LUMO_ERROR);
         }else if( pourcentage > 0.65){
             progressBar.addThemeVariants(ProgressBarVariant.LUMO_SUCCESS);
-        }else{
-            return;
         }
     }
     static void configureDate(Grid<Commande> grid) {

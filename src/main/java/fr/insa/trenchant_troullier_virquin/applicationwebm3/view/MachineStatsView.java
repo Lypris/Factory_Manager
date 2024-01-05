@@ -10,13 +10,11 @@ import com.github.appreciated.apexcharts.config.legend.Position;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatMachine;
-import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.EtatPossibleMachine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Machine;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 
@@ -79,7 +77,6 @@ public class MachineStatsView extends VerticalLayout {
             Machine selectedMachine = machineComboBox.getValue();
             if(selectedMachine != null){
                 this.etatMachines = service.findAllEtatMachineFinisByMachine(selectedMachine);
-                Notification.show("Nombre d'états: " + etatMachines.size());
                 updateChart(); // Mise à jour du graphique au lieu de le recréer
             }
         });
@@ -112,8 +109,6 @@ public class MachineStatsView extends VerticalLayout {
         Double duration = calculateEtatDurations(des);
         Double totalDuration = calculateEtatDurations("disponible") + calculateEtatDurations("en panne") + calculateEtatDurations("en marche");
         duration =duration / totalDuration * 100;
-//à supprimer
-        Notification.show("Etat"+ des +" : " + duration.shortValue() + "%");
         return duration;
     }
 

@@ -89,8 +89,6 @@ public class LancerProductionView extends VerticalLayout implements BeforeEnterO
             update();
             // Afficher une notification
             Notification.show("Production lancée");   
-        }else{
-            Notification.show("PAS ASSEZ DE MATIERE");
         }
     }
 
