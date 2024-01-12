@@ -29,9 +29,9 @@ public class StatutForm extends FormLayout {
     DateTimePicker debut = new DateTimePicker("Début");
     DateTimePicker fin = new DateTimePicker("Fin");
 
-    Button save = new Button("Save");
-    Button delete = new Button("Delete");
-    Button close = new Button("Cancel");
+    Button save = new Button("Enregistrer");
+    Button delete = new Button("Supprimer");
+    Button close = new Button("Annuler");
     BeanValidationBinder<StatutOperateur> binder = new BeanValidationBinder<>(StatutOperateur.class);
     CrmService service;
 

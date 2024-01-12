@@ -143,7 +143,7 @@ public class StatutView extends VerticalLayout {
         grid.addColumn(statutOperateur -> {
                     return statutOperateur.getFin().toString();
                 })
-                .setHeader("Date de fin").setSortable(true)
+                .setHeader("Date de fin")
                 .setComparator(Comparator.comparing(StatutOperateur::getFin))
                 .setRenderer(new TextRenderer<>(statutOperateur -> {
                     if (statutOperateur.getFin() == null) {

@@ -14,6 +14,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.MatPremiere;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
@@ -38,6 +39,9 @@ public class MatPremiereForm extends FormLayout {
     public MatPremiereForm(CrmService service) {
         this.service = service;
         binder.bindInstanceFields(this);
+        ref.setValueChangeMode(ValueChangeMode.LAZY);
+        des.setValueChangeMode(ValueChangeMode.LAZY);
+        quantite.setValueChangeMode(ValueChangeMode.LAZY);
         addClassName("MatPremiere-form");
 
         add(ref,

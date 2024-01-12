@@ -33,7 +33,7 @@ public class TypeOperationForm extends FormLayout {
         this.service = service;
         binder.bindInstanceFields(this);
         addClassName("TypeOperation-form");
-        des.setValueChangeMode(ValueChangeMode.EAGER);
+        des.setValueChangeMode(ValueChangeMode.LAZY);
         des.addValueChangeListener(e ->
                 save.setEnabled(!e.getValue().isEmpty()));
         add(des,

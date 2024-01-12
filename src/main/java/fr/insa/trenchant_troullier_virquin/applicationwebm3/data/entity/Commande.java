@@ -15,6 +15,16 @@ public class Commande extends AbstractEntity {
     private LocalDateTime debut;
     private LocalDateTime fin;
 
+    public Commande(String des, String ref, LocalDateTime fin, String statut) {
+        this.des = des;
+        this.ref = ref;
+        this.fin = fin;
+        this.setStatut(statut);
+    }
+
+    public Commande() {
+    }
+
     public String getDes() {
         return des;
     }

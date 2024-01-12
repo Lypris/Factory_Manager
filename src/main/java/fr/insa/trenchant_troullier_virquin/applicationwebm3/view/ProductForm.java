@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
@@ -36,7 +37,9 @@ public class ProductForm extends FormLayout {
     public ProductForm(List<TypeOperation> typeoperations, CrmService service) {
         binder.bindInstanceFields(this);
         addClassName("product-form");
-
+        ref.setValueChangeMode(ValueChangeMode.LAZY);
+        des.setValueChangeMode(ValueChangeMode.LAZY);
+        prix.setValueChangeMode(ValueChangeMode.LAZY);
         add(ref,
                 des,
                 prix,

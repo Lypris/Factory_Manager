@@ -219,25 +219,25 @@ public class DashboardView extends VerticalLayout {
 
         // Utilise HorizontalLayout pour aligner sur sa valeur
         HorizontalLayout operateurCountLayout = new HorizontalLayout();
-        Text operateurCountLabel = new Text("Nombre d'employés: ");
+        Text operateurCountLabel = new Text("Nombre d'employés : ");
         Text operateurCountValue = new Text(String.valueOf(service.countOperateurs()));
         operateurCountLayout.add(operateurCountLabel, operateurCountValue);
         operateurCountLayout.setId("text-section");
 
         HorizontalLayout machineCountLayout = new HorizontalLayout();
-        Text machineCountLabel = new Text("Nombre de machines: ");
+        Text machineCountLabel = new Text("Nombre de machines : ");
         Text machineCountValue = new Text(String.valueOf(service.countMachines()));
         machineCountLayout.add(machineCountLabel, machineCountValue);
         machineCountLayout.setId("text-section");
 
         HorizontalLayout commandeCountLayout = new HorizontalLayout();
-        Text commandeCountLabel = new Text("Nombre de commandes: ");
+        Text commandeCountLabel = new Text("Nombre de commandes : ");
         Text commandeCountValue = new Text(String.valueOf(service.countCommandes()));
         commandeCountLayout.add(commandeCountLabel, commandeCountValue);
         commandeCountLayout.setId("text-section");
 
         HorizontalLayout produitCountLayout = new HorizontalLayout();
-        Text produitCountLabel = new Text("Nombre de produits: ");
+        Text produitCountLabel = new Text("Nombre de produits : ");
         Text produitCountValue = new Text(String.valueOf(service.countProduits()));
         produitCountLayout.add(produitCountLabel, produitCountValue);
         produitCountLayout.setId("text-section");

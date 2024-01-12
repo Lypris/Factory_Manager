@@ -54,9 +54,7 @@ public class TypeOperationView extends VerticalLayout {
         Button addTypeOperationButton = new Button("Ajouter un type d'opération", click -> addTypeOperation());
         addTypeOperationButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
         addTypeOperationButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        Button ProductButton = new Button("Voir les produits", click -> getUI().ifPresent(ui -> ui.navigate("produits")));
-        ProductButton.setIcon(new Icon(VaadinIcon.PACKAGE));
-        HorizontalLayout toolbar = new HorizontalLayout(addTypeOperationButton, ProductButton);
+        HorizontalLayout toolbar = new HorizontalLayout(addTypeOperationButton);
         toolbar.addClassName("toolbar");
         return toolbar;
     }

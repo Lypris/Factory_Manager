@@ -118,17 +118,6 @@ public class MachineView extends VerticalLayout {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
                     return service.findLastEtatMachineByMachine(Machine).getDebut().format(formatter);
                 }));
-        grid.addColumn(Machine -> {
-                    return service.findLastEtatMachineByMachine(Machine).getFin().toString();
-                })
-                .setHeader("Date de fin")
-                .setRenderer(new TextRenderer<>(Machine -> {
-                    if (service.findLastEtatMachineByMachine(Machine).getFin() == null) {
-                        return "indeterminée";
-                    }
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-                    return service.findLastEtatMachineByMachine(Machine).getFin().format(formatter);
-                }));
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(event ->
                 editMachine(event.getValue()));

@@ -88,13 +88,13 @@ public class StockView extends VerticalLayout {
     public void ChangeToProduitFini() {
         this.removeAll();
         updateListProduit();
-        this.add(getEntete(), getBandeau(), this.gridProduitFini);
+        this.add(getEntete(), getBandeauProduitFini(), this.gridProduitFini);
     }
 
     public void ChangeToProdEnCours() {
         this.removeAll();
         updateListProdEncours();
-        this.add(getEntete(), getBandeau(), this.gridProdEnCours);
+        this.add(getEntete(), getBandeauProduitEnCours(), this.gridProdEnCours);
     }
 
     private void configureGridMatPremiere() {
@@ -103,7 +103,10 @@ public class StockView extends VerticalLayout {
         this.gridMatPremiere.removeAllColumns();
         this.gridMatPremiere.addColumn(MatPremiere::getRef).setHeader("Référence");
         this.gridMatPremiere.addColumn(MatPremiere::getDes).setHeader("Description");
-        this.gridMatPremiere.addColumn(MatPremiere::getQuantite).setHeader("Quantité (kg)");
+        this.gridMatPremiere.addColumn(MatPremiere->{
+            double q = MatPremiere.getQuantite();
+            return Math.round(q);
+                }).setHeader("Quantité (kg)");
         this.gridMatPremiere.getColumns().forEach(col -> col.setAutoWidth(true));
         this.gridMatPremiere.asSingleSelect().addValueChangeListener(event -> editMatPremiere(event.getValue()));
     }
@@ -204,9 +207,14 @@ public class StockView extends VerticalLayout {
         gridMatPremiere.setItems(service.findAllMatPremiere(filterText.getValue()));
     }
 
-    public HorizontalLayout getBandeau() {
+    public HorizontalLayout getBandeauProduitFini() {
         this.Bandeau.removeAll();
-        this.Bandeau.add(this.b_MatPre, this.b_ProdEnCours, this.b_ProdFini);
+        this.Bandeau.add(this.b_MatPre, this.b_ProdEnCours);
+        return this.Bandeau;
+    }
+    public HorizontalLayout getBandeauProduitEnCours() {
+        this.Bandeau.removeAll();
+        this.Bandeau.add(this.b_MatPre, this.b_ProdFini);
         return this.Bandeau;
     }
 

@@ -389,7 +389,7 @@ public class CrmService {
     public void deleteCommande(Commande commande) {
         List<Exemplaires> exemplaires = exemplairesRepository.findByCommande(commande);
         //si la commande est en cours, elle a des opérations effectuées et des machines occupées
-        if (commande.getStatut().equals("En cours")) {
+        if (commande.getStatut().equals("En cours") || commande.getStatut().equals("En attente")) {
             //passer les machines associées aux exemplaires de la commande en disponible
             for (Exemplaires exemplaire : exemplaires) {
                 List<Machine> machines = findAllMachineByExemplaire(exemplaire);
@@ -684,10 +684,14 @@ public class CrmService {
     public List<Exemplaires> findAllProdEnCours() {
         List<Exemplaires> exemplaires = exemplairesRepository.findAll();
         List<Exemplaires> exemplairesEnCours = new ArrayList<>();
-        for (Exemplaires exemplaire : exemplaires) {
-            if (operation_EffectueeRepository.findByExemplaire(exemplaire).get(0).getFin() == null) {
-                exemplairesEnCours.add(exemplaire);
-            }
+        
+            for (Exemplaires exemplaire : exemplaires) {
+                List<Operation_Effectuee> tempo = operation_EffectueeRepository.findByExemplaire(exemplaire);
+                if (!tempo.isEmpty()){
+                    if (tempo.get(0).getFin() == null) {
+                        exemplairesEnCours.add(exemplaire);
+                    }
+                }
         }
         return exemplairesEnCours;
     }
