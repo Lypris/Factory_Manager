@@ -1,4 +1,4 @@
-# ApplicationWebM3
+# Factory Manager
 
 # Projet M3 - BDD et Gestion d'un atelier
 
