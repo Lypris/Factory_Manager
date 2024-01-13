@@ -66,6 +66,11 @@ public class MatPremiereForm extends FormLayout {
 
     public void setMatPremiere(MatPremiere matPre) {
         binder.setBean(matPre);
+        if (binder.getBean() != null && binder.getBean().getRef().isEmpty()){
+            delete.setEnabled(false);
+        }else{
+            this.delete.setEnabled(true);
+        }
     }
 
     private void validateAndSave() {

@@ -12,10 +12,10 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
 @Theme("applicationwebm3")
 
-public class ApplicationWebM3Application extends SpringBootServletInitializer implements AppShellConfigurator {
+public class Factory_Manager_App extends SpringBootServletInitializer implements AppShellConfigurator {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationWebM3Application.class, args);
+        SpringApplication.run(Factory_Manager_App.class, args);
     }
 
 }

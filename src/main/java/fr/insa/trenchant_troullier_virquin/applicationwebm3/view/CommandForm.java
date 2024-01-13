@@ -11,6 +11,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Commande;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Produit;
@@ -32,6 +33,8 @@ public class CommandForm extends FormLayout {
 
     public CommandForm(List<Produit> produits, CrmService service) {
         this.service = service;
+        this.ref.setValueChangeMode(ValueChangeMode.LAZY);
+        this.des.setValueChangeMode(ValueChangeMode.LAZY);
         binder.bindInstanceFields(this);
         addClassName("Commande-form");
         add(ref, des, addProduct,
@@ -56,6 +59,11 @@ public class CommandForm extends FormLayout {
             addProduct.setText("Définir les produits");
             addProduct.setIcon(VaadinIcon.PLUS.create());
         }
+        if (binder.getBean() != null && binder.getBean().getRef().isEmpty()){
+            delete.setEnabled(false);
+        }else{
+            this.delete.setEnabled(true);
+        }
     }
 
     private Component createButtonsLayout() {
@@ -71,8 +79,8 @@ public class CommandForm extends FormLayout {
         close.addClickListener(event -> {
             fireEvent(new CommandForm.CloseEvent(this));
         });
-
-        binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
+        
+        binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid() && champTextPlein()));
         return new HorizontalLayout(save, delete, close);
     }
 
@@ -103,6 +111,14 @@ public class CommandForm extends FormLayout {
     public void suppCommande() {
 
         fireEvent(new CommandForm.DeleteEvent(this, binder.getBean()));
+    }
+
+    private boolean champTextPlein() {
+        if (!this.ref.isEmpty() && !this.des.isEmpty()){
+            return(true);
+        }else{
+            return(false);
+        }    
     }
 
     // Events

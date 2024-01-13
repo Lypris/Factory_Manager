@@ -56,6 +56,11 @@ public class ProductForm extends FormLayout {
             originalImageData = produit.getImage();
             updateImage(produit.getImage());
         }
+        if (binder.getBean() != null && binder.getBean().getRef().isEmpty()){
+            delete.setEnabled(false);
+        }else{
+            this.delete.setEnabled(true);
+        }
     }
 
     public void resetUploadAndImage() {

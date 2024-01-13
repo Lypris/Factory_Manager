@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.shared.Registration;
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity.Operateur;
 
@@ -29,6 +30,11 @@ public class OperateurForm extends FormLayout {
     public OperateurForm() {
         binder.bindInstanceFields(this);
         addClassName("operateur-form");
+        
+        nom.setValueChangeMode(ValueChangeMode.LAZY);
+        prenom.setValueChangeMode(ValueChangeMode.LAZY);
+        mail.setValueChangeMode(ValueChangeMode.LAZY);
+        tel.setValueChangeMode(ValueChangeMode.LAZY);
 
         add(nom,
                 prenom,
@@ -39,6 +45,11 @@ public class OperateurForm extends FormLayout {
 
     public void setOperateur(Operateur operateur) {
         binder.setBean(operateur);
+        if (binder.getBean() != null && binder.getBean().getNom().isEmpty()){
+            this.delete.setEnabled(false);
+        }else{
+            this.delete.setEnabled(true);
+        }
     }
 
     private Component createButtonsLayout() {

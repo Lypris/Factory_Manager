@@ -2,6 +2,7 @@ package fr.insa.trenchant_troullier_virquin.applicationwebm3.data.entity;
 
 import fr.insa.trenchant_troullier_virquin.applicationwebm3.data.service.CrmService;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,8 +10,11 @@ import java.util.List;
 
 @Entity
 public class Commande extends AbstractEntity {
+    //@NotEmpty
     private String des = "";
+    //@NotEmpty
     private String ref = "";
+    
     private String statut = "";
     private LocalDateTime debut;
     private LocalDateTime fin;

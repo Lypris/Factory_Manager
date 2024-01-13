@@ -42,6 +42,11 @@ public class TypeOperationForm extends FormLayout {
 
     public void setTypeOperation(TypeOperation TypeOperation) {
         binder.setBean(TypeOperation);
+        if (binder.getBean() != null && binder.getBean().getDes().isEmpty()){
+            delete.setEnabled(false);
+        }else{
+            this.delete.setEnabled(true);
+        }
     }
 
     private Component createButtonsLayout() {
