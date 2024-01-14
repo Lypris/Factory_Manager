@@ -601,6 +601,17 @@ public class CrmService {
         }
         matiereProduitRepository.saveAll(matiereProduitsList);
     }
+    public void saveAllMatiereProduit2(Produit produit) {
+        if (produit == null) {
+            System.err.println("produit is null. Are you sure you have connected your form to the application?");
+            return;
+        }
+        List<MatiereProduit> matiereProduitsList2 = new ArrayList<>();
+        matiereProduitsList2 = matiereProduitRepository.findByProduit(produit.getId());
+        for(MatiereProduit matiereProduit : matiereProduitsList2){
+            matiereProduitRepository.delete(matiereProduit);
+        }
+    }
     public double getQuantiteForProduit(Produit produit, MatPremiere matPremiere){
          MatiereProduit mp = matiereProduitRepository.findByProduitAndMatPremiere(produit, matPremiere);
             if(mp!=null) {

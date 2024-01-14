@@ -110,6 +110,7 @@ public class DialogDefMat extends Dialog {
         grid.removeAllColumns();
 
         if (addQuantColumn) {
+            QuantMatPremiereMap.clear();
             grid.addComponentColumn(item -> createQuantPeaker(grid, item))
                     .setHeader("Quantite").setSortable(true).setAutoWidth(true);
         }
@@ -128,13 +129,13 @@ public class DialogDefMat extends Dialog {
 
     private  NumberField createQuantPeaker(Grid<MatPremiere> grid, MatPremiere item) {
         NumberField quantPicker = new NumberField();
-        if(item != null && QuantMatPremiereMap.containsKey(item)) {
-            quantPicker.setValue(QuantMatPremiereMap.get(item).getValue());
+        if(item != null && QuantMatPremiereMap.containsKey(item)) { // si il y a une matiere première et qu'elle est deja enregistré dans le Map
+            quantPicker.setValue(QuantMatPremiereMap.get(item).getValue()); // on réecris la valeurs
         }
         else if(item != null) {
             quantPicker.setValue(service.getQuantiteForProduit(produit, item));
         }
-        quantPicker.setMin(0.0);
+        quantPicker.setMin(0);
         Div suffix = new Div();
         suffix.setText("kg");
         quantPicker.setSuffixComponent(suffix);
@@ -183,17 +184,21 @@ public class DialogDefMat extends Dialog {
     }
 
     private void save() {
-        //TODO : Enregistrer les Matiere définies pour un produit
         List<MatiereProduit> matiereProduitsList = new ArrayList<>();
-        for (MatPremiere matPremiere : matpremieresDefini) {
-            MatiereProduit matiereProduit = new MatiereProduit();
-            matiereProduit.setProduit(produit);
-            matiereProduit.setMatPremiere(matPremiere);
-            double quantite = QuantMatPremiereMap.get(matPremiere).getValue();
-            matiereProduit.setQuantite(quantite);
-            matiereProduitsList.add(matiereProduit);
+        if(!matpremieresDefini.isEmpty()){
+            for (MatPremiere matPremiere : matpremieresDefini) {
+                MatiereProduit matiereProduit = new MatiereProduit();
+                matiereProduit.setProduit(produit);
+                matiereProduit.setMatPremiere(matPremiere);
+                double quantite = QuantMatPremiereMap.get(matPremiere).getValue();
+                matiereProduit.setQuantite(quantite);
+                matiereProduitsList.add(matiereProduit);
+                service.saveAllMatiereProduit(matiereProduitsList);
+            }
         }
-        service.saveAllMatiereProduit(matiereProduitsList);
+        else{
+            service.saveAllMatiereProduit2(produit);
+        }
         if (produitDetails != null) {
             produitDetails.refreshOperations();
         }
