@@ -157,53 +157,53 @@ public class ProductView extends VerticalLayout {
         addProductButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         Button defineOperation = new Button("Définir les opérations", click -> {
             if (grid.asSingleSelect().getValue() == null) {
-                Notification notification = new Notification();
-                notification.setPosition(Notification.Position.MIDDLE);
-                notification.setText("Veuillez sélectionner un produit");
-                notification.setDuration(1200);
-                notification.open();
+                Notification.show("Veuillez sélectionner un produit", 1200, Notification.Position.MIDDLE);
             } else {
                 List<Commande> commandes = service.findAllCommande(null);
-                for(Commande commande : commandes){
-                    List<DefinitionCommande> definitionCommandes = service.getDefinitionByProduitAndCommande(grid.asSingleSelect().getValue(), commande);
-                    if(definitionCommandes != null && !definitionCommandes.isEmpty()){
-                        Notification notification = new Notification();
-                        notification.setPosition(Notification.Position.MIDDLE);
-                        notification.setText("Ce produit est déjà utilisé dans une commande");
-                        notification.setDuration(1200);
-                        notification.open();
-                        return;
+                boolean isProductUsed = false;
+
+                if(commandes != null){
+                    for(Commande commande : commandes){
+                        List<DefinitionCommande> definitionCommandes = service.getDefinitionByProduitAndCommande(grid.asSingleSelect().getValue(), commande);
+                        if(definitionCommandes != null && !definitionCommandes.isEmpty()){
+                            isProductUsed = true;
+                            Notification.show("Ce produit est déjà utilisé dans une commande", 1200, Notification.Position.MIDDLE);
+                            break; // Sortir de la boucle si le produit est utilisé
+                        }
                     }
                 }
-                configureDialogDefOpp();
-                defineOperation(grid.asSingleSelect().getValue());
+
+                if (!isProductUsed) {
+                    configureDialogDefMat();
+                    defineOperation(grid.asSingleSelect().getValue());                    }
             }
         });
         defineOperation.setIcon(new Icon(VaadinIcon.COGS));
         Button defineMaterial = new Button("Définir les matières premières", click -> {
             if (grid.asSingleSelect().getValue() == null) {
-                Notification notification = new Notification();
-                notification.setPosition(Notification.Position.MIDDLE);
-                notification.setText("Veuillez sélectionner un produit");
-                notification.setDuration(1200);
-                notification.open();
+                Notification.show("Veuillez sélectionner un produit", 1200, Notification.Position.MIDDLE);
             } else {
                 List<Commande> commandes = service.findAllCommande(null);
-                for(Commande commande : commandes){
-                    List<DefinitionCommande> definitionCommandes = service.getDefinitionByProduitAndCommande(grid.asSingleSelect().getValue(), commande);
-                    if(definitionCommandes != null && !definitionCommandes.isEmpty()){
-                        Notification notification = new Notification();
-                        notification.setPosition(Notification.Position.MIDDLE);
-                        notification.setText("Ce produit est déjà utilisé dans une commande");
-                        notification.setDuration(1200);
-                        notification.open();
-                        return;
+                boolean isProductUsed = false;
+
+                if(commandes != null){
+                    for(Commande commande : commandes){
+                        List<DefinitionCommande> definitionCommandes = service.getDefinitionByProduitAndCommande(grid.asSingleSelect().getValue(), commande);
+                        if(definitionCommandes != null && !definitionCommandes.isEmpty()){
+                            isProductUsed = true;
+                            Notification.show("Ce produit est déjà utilisé dans une commande", 1200, Notification.Position.MIDDLE);
+                            break; // Sortir de la boucle si le produit est utilisé
+                        }
                     }
                 }
-                configureDialogDefMat();
-                defineMaterial(grid.asSingleSelect().getValue());
+
+                if (!isProductUsed) {
+                    configureDialogDefMat();
+                    defineMaterial(grid.asSingleSelect().getValue());
+                }
             }
         });
+
         defineMaterial.setIcon(new Icon(VaadinIcon.COGS));
         HorizontalLayout toolbar = new HorizontalLayout(filterText, addProductButton, defineOperation, defineMaterial);
         toolbar.addClassName("toolbar");
