@@ -41,9 +41,14 @@ public class StatutForm extends FormLayout {
         addClassName("Statut-form");
         operateurComboBox.setItems(operateurs);
         operateurComboBox.setItemLabelGenerator(operateur -> operateur.getNom() + " " + operateur.getPrenom());
+        operateurComboBox.setAllowCustomValue(false);
+        operateurComboBox.setAllowedCharPattern("[]");
+
         operateurComboBox.addValueChangeListener(e -> configureDateTimePickers(e.getValue()));
 
         statutComboBox.setItems(statuts);
+        statutComboBox.setAllowCustomValue(false);
+        statutComboBox.setAllowedCharPattern("[]");
         statutComboBox.setItemLabelGenerator(Statut::getName);
 
         add(operateurComboBox,
@@ -52,27 +57,54 @@ public class StatutForm extends FormLayout {
                 statutComboBox,
                 createButtonsLayout());
     }
-
     private void configureDateTimePickers(Operateur operateur) {
-        List<StatutOperateur> statutOperateurs = service.findAllStatutOperateurByOperateur(operateur);
-        if (statutOperateurs != null && !statutOperateurs.isEmpty()) {
-            // Trouver la date de fin la plus récente parmi tous les statuts de l'opérateur
-            LocalDateTime latestEndDate = statutOperateurs.stream()
-                    .map(StatutOperateur::getFin)
-                    .filter(Objects::nonNull)
-                    .max(LocalDateTime::compareTo)
-                    .orElse(null);
-            if (latestEndDate != null) {
-                debut.setValue(latestEndDate);
-                debut.setReadOnly(true); // Désactiver la modification de la date de début
+        if (operateur == null) {
+            debut.clear();
+            debut.setReadOnly(false);
+        } else {
+            List<StatutOperateur> statutOperateurs = service.findAllStatutOperateurByOperateur(operateur);
+            if (!statutOperateurs.isEmpty()) {
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime latestEndDate = statutOperateurs.stream()
+                        .map(StatutOperateur::getFin)
+                        .filter(Objects::nonNull)
+                        .max(LocalDateTime::compareTo)
+                        .orElse(null);
+
+                if (latestEndDate == null) {
+                    if (statutOperateurs.size() == 1) {
+                        StatutOperateur currentStatut = statutOperateurs.get(0);
+                        if (this.binder.getBean() != null && this.binder.getBean().getId() == null) {
+// Création d'un nouveau statut
+                            debut.setValue(now);
+                        } else if (this.binder.getBean() != null && this.binder.getBean().getId().equals(currentStatut.getId())) {
+// Modification du statut en cours
+                            debut.setValue(currentStatut.getDebut());
+                        } else {
+// Nouveau statut après un statut en cours sans fin définie
+                            debut.setValue(now);
+                        }
+                    } else {
+// Aucune date de fin trouvée pour les statuts précédents
+                        debut.setValue(now);
+                    }
+                    debut.setReadOnly(false);
+                } else {
+                    debut.setValue(latestEndDate.isAfter(now) ? latestEndDate : now);
+                    debut.setReadOnly(!latestEndDate.isAfter(now));
+                }
             } else {
-                debut.setReadOnly(false); // Activer la modification si aucun statut précédent ou si le dernier statut est indéterminé
-                debut.clear();
+                debut.setValue(LocalDateTime.now());
+                debut.setReadOnly(false);
             }
         }
     }
 
-    public void setStatut(StatutOperateur statutOperateur) {
+
+
+
+
+                    public void setStatut(StatutOperateur statutOperateur) {
         binder.setBean(statutOperateur);
         if (statutOperateur != null) {
             // Récupérer l'opérateur du statutOperateur et le sélectionner dans le ComboBox
@@ -151,18 +183,19 @@ public class StatutForm extends FormLayout {
                 for (StatutOperateur etatOperateur1 : service.findAllStatutOperateurByOperateur(selectedOperateur)) {
                     LocalDateTime datefin = etatOperateur1.getFin();
                     LocalDateTime datedebut = etatOperateur1.getDebut();
-                    if (datefin!=null &&  datedebut.isBefore(debutValue) && datefin.isAfter(debutValue)) {
+                    if (datefin!=null &&  datedebut.isBefore(debutValue) && datefin.isAfter(debutValue) && !datefin.isEqual(debutValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }
-                    if (datefin!=null && finValue != null && datedebut.isBefore(finValue) && datefin.isAfter(finValue)) {
+                    if (datefin!=null && finValue != null && datedebut.isBefore(finValue) && datefin.isAfter(finValue) && !datedebut.isEqual(finValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }
-                    if (datefin!=null && finValue != null && datedebut.isAfter(debutValue) && datefin.isBefore(finValue)) {
+                    if (datefin!=null && finValue != null && datedebut.isAfter(debutValue) && datefin.isBefore(finValue) && !datedebut.isEqual(debutValue) && !datefin.isEqual(finValue)) {
                         Notification.show("L'opérateur a déjà un état pour cette période", 3000, Notification.Position.MIDDLE);
                         return;
                     }
+
                 }
             }
             statutOperateur.setOperateur(selectedOperateur);
