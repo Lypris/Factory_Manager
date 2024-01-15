@@ -869,7 +869,7 @@ public class CrmService {
     public Double getChiffreAffaireAnnuel() {
         List<Commande> commandes = commandeRepository.findAllCommandeTerminee();
         Double chiffreAffaire = 0.0;
-        if (commandes.isEmpty()){
+        if (!commandes.isEmpty()){
             for (Commande commande : commandes) {
                 if(commande.getFin().getYear() == LocalDateTime.now().getYear()){
                     chiffreAffaire += commande.getCoutTotal(this);

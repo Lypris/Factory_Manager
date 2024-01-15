@@ -52,17 +52,17 @@ public class DashboardView extends VerticalLayout {
         HorizontalLayout thirdRow = new HorizontalLayout();
         thirdRow.setSizeFull();
 
-        //graphique des employés
-        ApexCharts operateurChart = createOperateurChart();
-        operateurChart.setId("chart-section");
-        operateurChart.setWidthFull();
+        //graphique des commandes terminées sur l'année
+        ApexCharts completedOrdersPerMonthChart = createCompletedOrdersPerMonthChart();
+        completedOrdersPerMonthChart.setId("chart-section");
+        completedOrdersPerMonthChart.setWidthFull();
 
         //graphique des machines
         ApexCharts machineChart = createMachineChart();
         machineChart.setId("chart-section");
         machineChart.setWidthFull();
 
-        thirdRow.add(operateurChart, machineChart);
+        thirdRow.add(completedOrdersPerMonthChart, machineChart);
 
         return thirdRow;
     }
@@ -86,12 +86,9 @@ public class DashboardView extends VerticalLayout {
         machineChart.setId("chart-section");
         machineChart.setWidthFull();
 
-        //graphique des commandes terminées sur l'année
-        ApexCharts completedOrdersPerMonthChart = createCompletedOrdersPerMonthChart();
-        completedOrdersPerMonthChart.setId("chart-section");
-        completedOrdersPerMonthChart.setWidthFull();
 
-        firstRow.add(dataInfoLayout, operateurChart, machineChart, completedOrdersPerMonthChart);
+
+        firstRow.add(dataInfoLayout, operateurChart, machineChart);
 
         return firstRow;
     }
@@ -135,7 +132,7 @@ public class DashboardView extends VerticalLayout {
         Double presentPourcentage = calculateStatutTime("présent",statutOperateurs);
         Double absentPourcentage = calculateStatutTime("absent", statutOperateurs);
         Double congéPourcentage = calculateStatutTime("en congé",statutOperateurs);
-        etatOperateurPourcentageMap.put("présent", presentPourcentage);
+        etatOperateurPourcentageMap.put("disponible", presentPourcentage);
         etatOperateurPourcentageMap.put("absent", absentPourcentage);
         etatOperateurPourcentageMap.put("en congé", congéPourcentage);
 
@@ -318,7 +315,7 @@ public class DashboardView extends VerticalLayout {
             // Assure-toi que le statut actuel est considéré
             if (statutOperateur.getDebut().isBefore(now) && (statutOperateur.getFin() == null || statutOperateur.getFin().isAfter(now))) {
                 switch (statutOperateur.getStatut().getName()) {
-                    case "présent":
+                    case "disponible":
                         presentCount++;
                         break;
                     case "absent":
@@ -394,7 +391,7 @@ public class DashboardView extends VerticalLayout {
             // Ici, on suppose que tu as une méthode pour obtenir le mois de la date du statut
             int month = statut.getDebut().getMonthValue();
             String statutName = statut.getStatut().getName();
-            presentCountPerMonth.computeIfPresent(month, (key, value) -> value + ("présent".equals(statutName) ? 1 : 0));
+            presentCountPerMonth.computeIfPresent(month, (key, value) -> value + ("disponible".equals(statutName) ? 1 : 0));
             absentCountPerMonth.computeIfPresent(month, (key, value) -> value + ("absent".equals(statutName) ? 1 : 0));
             congeCountPerMonth.computeIfPresent(month, (key, value) -> value + ("en congé".equals(statutName) ? 1 : 0));
         }
