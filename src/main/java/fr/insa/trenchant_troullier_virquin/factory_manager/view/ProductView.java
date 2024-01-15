@@ -175,6 +175,7 @@ public class ProductView extends VerticalLayout {
 
                 if (!isProductUsed) {
                     configureDialogDefMat();
+                    configureDialogDefOpp();
                     defineOperation(grid.asSingleSelect().getValue());                    }
             }
         });
