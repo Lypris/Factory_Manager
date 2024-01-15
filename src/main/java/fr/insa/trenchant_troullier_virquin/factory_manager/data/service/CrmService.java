@@ -386,8 +386,29 @@ public class CrmService {
         }
         produitRepository.save(produit);
     }
+    public boolean isProductUsedInCommand(Produit produit) {
+        // Récupère toutes les définitions de commande où ce produit est utilisé
+        List<DefinitionCommande> definitions = findAllDefinitionCommandeByProduit(produit);
+        return !definitions.isEmpty(); // Retourne vrai si la liste n'est pas vide
+    }
+
 
     public void deleteProduit(Produit produit) {
+        List<MatiereProduit> matiereProduits = findMatiereProduitByProduit(produit);
+        // Si des références existent, les supprimer
+        if (!matiereProduits.isEmpty()) {
+            for (MatiereProduit matiereProduit : matiereProduits) {
+                deleteMatiereProduit(matiereProduit);
+            }
+        }
+        //supprimer les opérations associées au produit
+        List<Operation> operations = findOperationByProduit(produit);
+        if (!operations.isEmpty()) {
+            for (Operation operation : operations) {
+                deleteOperation(operation);
+            }
+        }
+
         exemplairesRepository.deleteAllExemplaireEnAttenteByProduit(produit);//supprime les exemplaires associés au produit
         definitionCommandeRepository.deleteAllDefinitionByProduit(produit);//supprime les définitions de commande associées au produit
         produitRepository.delete(produit);
@@ -496,6 +517,9 @@ public class CrmService {
 
     public ArrayList findAllDefinitionCommandeByCommande(Commande commande) {
         return (ArrayList) definitionCommandeRepository.findByIdCommande(commande.getId());
+    }
+    public List<DefinitionCommande> findAllDefinitionCommandeByProduit(Produit produit) {
+        return definitionCommandeRepository.findByProduit(produit);
     }
 
     public List<DefinitionCommande> getDefinitionByProduitAndCommande(Produit produit, Commande commande) {
@@ -625,6 +649,9 @@ public class CrmService {
         if (produit != null) {
             return matiereProduitRepository.findByProduit(produit.getId());
         } else return null;
+    }
+    public void deleteMatiereProduit(MatiereProduit matiereProduit) {
+        matiereProduitRepository.delete(matiereProduit);
     }
     
     public List<MatiereProduit> findMatProByProduitAndMatiere(Produit produit, MatPremiere matPre){

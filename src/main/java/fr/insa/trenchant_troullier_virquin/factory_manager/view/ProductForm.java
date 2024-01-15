@@ -5,8 +5,11 @@ import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
@@ -35,6 +38,7 @@ public class ProductForm extends FormLayout {
     private byte[] originalImageData;
 
     public ProductForm(List<TypeOperation> typeoperations, CrmService service) {
+        this.service = service;
         binder.bindInstanceFields(this);
         addClassName("product-form");
         ref.setValueChangeMode(ValueChangeMode.LAZY);
@@ -95,7 +99,17 @@ public class ProductForm extends FormLayout {
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         save.addClickListener(event -> validateAndSave());
-        delete.addClickListener(event -> fireEvent(new ProductForm.DeleteEvent(this, binder.getBean())));
+        delete.addClickListener(event -> {
+            boolean isProductUsedInCommand = service.isProductUsedInCommand(binder.getBean());
+            if (isProductUsedInCommand) {
+                Notification notification = new Notification("Le produit est utilisé dans une ou plusieurs commandes.");
+                notification.setDuration(3000);
+                notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+                notification.open();
+            } else {
+                fireEvent(new ProductForm.DeleteEvent(this, binder.getBean()));
+            }
+        });
         close.addClickListener(event -> fireEvent(new ProductForm.CloseEvent(this)));
 
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));
