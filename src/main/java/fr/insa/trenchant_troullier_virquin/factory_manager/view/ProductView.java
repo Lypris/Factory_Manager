@@ -17,11 +17,14 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
+import fr.insa.trenchant_troullier_virquin.factory_manager.data.entity.Commande;
+import fr.insa.trenchant_troullier_virquin.factory_manager.data.entity.DefinitionCommande;
 import fr.insa.trenchant_troullier_virquin.factory_manager.data.entity.Operation;
 import fr.insa.trenchant_troullier_virquin.factory_manager.data.entity.Produit;
 import fr.insa.trenchant_troullier_virquin.factory_manager.data.service.CrmService;
 
 import java.io.ByteArrayInputStream;
+import java.util.List;
 
 @Route(value = "produits", layout = MainLayout.class)
 @PageTitle("Produits | Factory Manager")
@@ -160,6 +163,18 @@ public class ProductView extends VerticalLayout {
                 notification.setDuration(1200);
                 notification.open();
             } else {
+                List<Commande> commandes = service.findAllCommande(null);
+                for(Commande commande : commandes){
+                    List<DefinitionCommande> definitionCommandes = service.getDefinitionByProduitAndCommande(grid.asSingleSelect().getValue(), commande);
+                    if(definitionCommandes != null && !definitionCommandes.isEmpty()){
+                        Notification notification = new Notification();
+                        notification.setPosition(Notification.Position.MIDDLE);
+                        notification.setText("Ce produit est déjà utilisé dans une commande");
+                        notification.setDuration(1200);
+                        notification.open();
+                        return;
+                    }
+                }
                 configureDialogDefOpp();
                 defineOperation(grid.asSingleSelect().getValue());
             }
@@ -173,6 +188,18 @@ public class ProductView extends VerticalLayout {
                 notification.setDuration(1200);
                 notification.open();
             } else {
+                List<Commande> commandes = service.findAllCommande(null);
+                for(Commande commande : commandes){
+                    List<DefinitionCommande> definitionCommandes = service.getDefinitionByProduitAndCommande(grid.asSingleSelect().getValue(), commande);
+                    if(definitionCommandes != null && !definitionCommandes.isEmpty()){
+                        Notification notification = new Notification();
+                        notification.setPosition(Notification.Position.MIDDLE);
+                        notification.setText("Ce produit est déjà utilisé dans une commande");
+                        notification.setDuration(1200);
+                        notification.open();
+                        return;
+                    }
+                }
                 configureDialogDefMat();
                 defineMaterial(grid.asSingleSelect().getValue());
             }
