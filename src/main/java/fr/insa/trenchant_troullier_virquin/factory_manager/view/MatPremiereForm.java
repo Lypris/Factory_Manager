@@ -10,6 +10,7 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -56,7 +57,12 @@ public class MatPremiereForm extends FormLayout {
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         save.addClickListener(event -> validateAndSave());
-        delete.addClickListener(event -> fireEvent(new MatPremiereForm.DeleteEvent(this, binder.getBean())));
+        delete.addClickListener(event -> {
+            if(service.MatAsssocieeProd(binder.getBean())){
+                fireEvent(new MatPremiereForm.DeleteEvent(this, binder.getBean()));
+            }else{
+                Notification.show("La matière est utilisée pour un produit");
+            }});
         close.addClickListener(event -> fireEvent(new MatPremiereForm.CloseEvent(this)));
 
         binder.addStatusChangeListener(e -> save.setEnabled(binder.isValid()));

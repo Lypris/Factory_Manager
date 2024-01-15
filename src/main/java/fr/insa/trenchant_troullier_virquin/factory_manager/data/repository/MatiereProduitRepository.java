@@ -28,5 +28,8 @@ public interface MatiereProduitRepository extends JpaRepository<MatiereProduit, 
     
     @Query("SELECT mp FROM MatiereProduit mp WHERE mp.produit = :produit AND mp.matPremiere = :matPre")
     List<MatiereProduit> findByProduitAndMatiere(Produit produit, MatPremiere matPre);
+    
+    @Query("SELECT COUNT(mp) FROM MatiereProduit mp WHERE mp.matPremiere = :matpre")
+    public int countMatPre(MatPremiere matpre);
  
 }

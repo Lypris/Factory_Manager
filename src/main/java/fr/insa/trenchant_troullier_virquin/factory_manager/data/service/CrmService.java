@@ -599,20 +599,19 @@ public class CrmService {
     public void deleteMatPremiere(MatPremiere matPremiere) {
         matPremiereRepository.delete(matPremiere);
     }
+    
+    public boolean MatAsssocieeProd (MatPremiere matpre){
+        if(matiereProduitRepository.countMatPre(matpre) > 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    
+    
 
     
     //////////////////////// MATIEREPRODUIT ////////////////////////////
-    /*public void saveMatiereProduit(MatiereProduit matiereProduit) {
-        if (matiereProduit == null) {
-            System.err.println("MatiereProduit is null. Are you sure you have connected your form to the application?");
-            return;
-        }
-        if(matiereProduitRepository.findByProduitAndMatPremiere(matiereProduit.getProduit(), matiereProduit.getMatPremiere())==null){
-            matiereProduitRepository.save(matiereProduit);
-        }else{
-            matiereProduitRepository.updateQuantite(matiereProduit.getProduit(),matiereProduit.getMatPremiere(),matiereProduit.getQuantite());
-        }
-    }*/
     public void saveAllMatiereProduit(List<MatiereProduit> matiereProduitsList) {
         if (matiereProduitsList == null) {
             System.err.println("MatiereProduit is null. Are you sure you have connected your form to the application?");
