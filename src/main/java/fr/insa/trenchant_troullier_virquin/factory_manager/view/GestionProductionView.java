@@ -188,7 +188,9 @@ public class GestionProductionView extends VerticalLayout implements BeforeEnter
     //Methode pour finaliser la commande et changer sont statut
     private void TerminerCommande() {
         this.service.SetStatutCommande(commande, "Terminée");
-        this.service.setFinCommande(commande, LocalDateTime.now());
+        this.commande.setStatut("Terminée");
+        this.service.saveCommande(this.commande);
+        //this.service.setFinCommande(commande, LocalDateTime.now());
         getUI().ifPresent(ui -> ui.navigate("production"));
     }
 
