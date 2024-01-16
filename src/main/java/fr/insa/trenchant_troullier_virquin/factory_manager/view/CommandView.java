@@ -208,7 +208,7 @@ public class CommandView extends VerticalLayout {
     }
 
     private void updateList() {
-        //deleteCommandeNonDefini(service.findAllCommande(null));
+        deleteCommandeNonDefini(service.findAllCommande(null));
         grid.setItems(service.findAllCommande(filterText.getValue()));
     }
 
