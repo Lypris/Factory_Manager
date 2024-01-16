@@ -1,0 +1,9 @@
+extrusion
+moulage
+empoilage
+découpe
+assemblage
+mélange
+remplissage
+emballage
+étiquetage

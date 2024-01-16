@@ -94,6 +94,8 @@ public class OperatorView extends VerticalLayout {
         addOperateurButton.setIcon(new Icon(VaadinIcon.PLUS_CIRCLE));
         addOperateurButton.addClickListener(click -> addOperateur());
         Button goToStatutButton = new Button("Etats des opérateurs");
+        //<theme-editor-local-classname>
+        goToStatutButton.addClassName("operator-view-button-1");
         goToStatutButton.setIcon(new Icon(VaadinIcon.CALENDAR_USER));
         goToStatutButton.addClickListener(click -> getUI().ifPresent(ui -> ui.navigate("statuts")));
         var toolbar = new HorizontalLayout(filterText, addOperateurButton, goToStatutButton);

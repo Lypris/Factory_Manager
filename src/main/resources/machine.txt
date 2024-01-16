@@ -1,0 +1,25 @@
+MCH-001,Machine d'extrusion de manches de brosses à dents,4500
+MCH-002,Machine de moulage de têtes de brosses à dents,5000
+MCH-003,Machine d'insertion des poils pour brosses à dents,3500
+MCH-004,Machine de découpe des poils de brosses à dents,4000
+MCH-005,Machine de finition pour brosses à dents,3000
+MCH-006,Mélangeur pour pâte de dentifrice,5500
+MCH-007,Machine de remplissage de tubes de dentifrice,4500
+MCH-008,Machine d'emballage pour brosses à dents,5000
+MCH-009,Étiqueteuse pour tubes de dentifrice,3500
+MCH-010,Contrôle qualité par vision pour brosses à dents,2500
+MCH-011,Machine d'assemblage pour composants de brosses à dents,4000
+MCH-012,Convoyeur automatisé pour manutention,3000
+MCH-013,Machine d'emballage secondaire pour kits dentaires,5000
+MCH-014,Machine de sérigraphie pour étiquetage,4500
+MCH-015,Robot de palettisation pour produits finis,6000
+MCH-016,Machine de contrôle de qualité pour dentifrice,3500
+MCH-017,Machine de scellage de tubes de dentifrice,4000
+MCH-018,Machine d'impression pour emballages,3000
+MCH-019,Système de convoyeur avec triage,4500
+MCH-020,Machine d'emballage pour lots promotionnels,5000
+MCH-021,Machine de dosage de composants pour dentifrice,5500
+MCH-022,Machine de formage de blister pour brosses à dents,4000
+MCH-023,Presse hydraulique pour composants plastiques,6000
+MCH-024,Four de traitement thermique pour plastiques,5000
+MCH-025,Machine de nettoyage ultrasonique pour équipements,3500

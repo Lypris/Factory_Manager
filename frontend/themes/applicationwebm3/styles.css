@@ -7,17 +7,19 @@
 }
 
 [theme~="dark"] {
-    --lumo-primary-color: rgba(187, 134, 252);
+    --lumo-primary-color: #06C167;
+    /*
     --lumo-secondary-text-color: #03DAC5;
+     */
     --lumo-base-color: #121212;
-    --lumo-primary-color-10pct: #1F1A24;
-    --lumo-primary-color-50pct: #332940;
+    --lumo-primary-color-10pct: rgba(26, 36, 26, 0.8);
+    --lumo-primary-color-50pct: rgba(37, 47, 38, 0.8);
     --lumo-primary-text-color: #FFFFFF;
     --lumo-contrast-10pct: rgba(3, 218, 197, 0.04);
-    --lumo-contrast-20pct: #1F1A24;
-    --lumo-contrast-30pct: #1F1A24;
-    --lumo-contrast-40pct: #1F1A24;
-    --lumo-contrast-50pct: rgba(187, 134, 252, 0.5);
+    --lumo-contrast-20pct: rgba(26, 36, 26, 0.8);
+    --lumo-contrast-30pct: rgba(26, 36, 26, 0.8);
+    --lumo-contrast-40pct: rgba(26, 36, 26, 0.8);
+    --lumo-contrast-50pct: #06C167;
 }
 .my-grid [part~="vaadin-grid-cell-header"] {
     display: none;
