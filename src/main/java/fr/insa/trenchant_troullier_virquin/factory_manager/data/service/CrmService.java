@@ -456,6 +456,7 @@ public class CrmService {
                     }
                 }
             }
+            Notification.show("La commande a été supprimé");
         }
         //supprimer les opérations effectuées associées aux exemplaires associés à la commande
         for (Exemplaires exemplaire : exemplaires) {
@@ -466,7 +467,6 @@ public class CrmService {
 
 
         commandeRepository.delete(commande);
-        Notification.show("La commande a été supprimé");
     }
 
     public void SetStatutCommande(Commande commande, String statut) {
